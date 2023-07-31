@@ -62,6 +62,7 @@ const Calendar: React.FC = () => {
 	const labelHeight = '7rem'; // Set the desired label height here
 	const buttonHeight = '7rem'; // Set the desired button height here
 	const slotDayHeight = '3rem'; // Set the height for slots with day names
+	const slotsWidth = '200px';
 
 	const commonStyle: React.CSSProperties = {
 		height: '7rem',
@@ -69,6 +70,18 @@ const Calendar: React.FC = () => {
 		alignItems: 'center',
 		justifyContent: 'center',
 		margin: '0.5rem 0',
+	};
+	const dayNamesContainerStyle: React.CSSProperties = {
+		display: 'flex',
+		flexDirection: 'row',
+	};
+	const dayLabelStyle: React.CSSProperties = {
+		...commonStyle,
+		height: slotDayHeight,
+		background: 'transparent',
+		color: 'white',
+		border: '2px solid #a0a0a0',
+		width: slotsWidth,
 	};
 	const timeLabelStyle: React.CSSProperties = {
 		...commonStyle,
@@ -78,7 +91,10 @@ const Calendar: React.FC = () => {
 		border: '2px solid #a0a0a0',
 	};
 	const yearLabelStyle: React.CSSProperties = {
-		...timeLabelStyle,
+		...commonStyle,
+		height: slotDayHeight,
+		color: 'white',
+		border: '2px solid #a0a0a0',
 		background: 'brown',
 	};
 	const buttonStyle: React.CSSProperties = {
@@ -86,6 +102,7 @@ const Calendar: React.FC = () => {
 		height: buttonHeight,
 		background: 'linear-gradient(45deg, #4CAF50, #2E8B57)',
 		color: '#fff',
+		width: slotsWidth,
 	};
 
 	const appointmentInfoStyle: React.CSSProperties = {
@@ -95,6 +112,7 @@ const Calendar: React.FC = () => {
 		padding: '2px',
 		fontSize: '1rem', // Increase font size
 		flexDirection: 'column',
+		width: slotsWidth,
 	};
 
 	const reservationButtonStyle: React.CSSProperties = {
@@ -102,6 +120,7 @@ const Calendar: React.FC = () => {
 		height: buttonHeight,
 		background: 'gray',
 		color: '#fff',
+		width: slotsWidth,
 	};
 	const closedTime: React.CSSProperties = {
 		...reservationButtonStyle,
@@ -109,6 +128,7 @@ const Calendar: React.FC = () => {
 		color: '#6d6d6d',
 		pointerEvents: 'not-allowed' as 'not-allowed',
 		cursor: 'not-allowed',
+		width: slotsWidth,
 	};
 
 	const handleAddAppointment = (day: string, time: string) => {
@@ -135,17 +155,19 @@ const Calendar: React.FC = () => {
 	};
 
 	return (
-		<div className='p-4' style={{ background: '#303030' }}>
+		<div className='p-4' style={{ background: '#303030', width: '100vw', overflow: 'auto' }}>
 			<h1 className='text-2xl font-bold mb-4'>Kliktermin kalendar</h1>
 			<div className='grid grid-cols-9 gap-2'>
 				<div className='col-span-1 text-center font-bold' style={yearLabelStyle}>
 					{getCurrentYear()}
 				</div>
-				{weekDays.map(day => (
-					<div key={day} className='col-span-1 text-center font-bold' style={timeLabelStyle}>
-						{day}
-					</div>
-				))}
+				<div className='col-span-8' style={dayNamesContainerStyle}>
+					{weekDays.map(day => (
+						<div key={day} className='col-span-1 text-center font-bold' style={dayLabelStyle}>
+							{day}
+						</div>
+					))}
+				</div>
 			</div>
 			{timeSlots.map(time => {
 				const hour = time.split(':')[0];
@@ -157,38 +179,40 @@ const Calendar: React.FC = () => {
 								style={{ ...timeLabelStyle, height: labelHeight }}>
 								{time}
 							</div>
-							{weekDays.map(day => (
-								<div key={`${day}-${time}`} className='col-span-1'>
-									{isWorkingHour(day, time) && (
-										<div className='items-center' style={{ height: labelHeight }}>
-											{!clickedSlots.includes(`${day}-${time}`) ? (
-												<button
-													onClick={() => handleAddAppointment(day, time)}
-													className='mt-2 px-4 py-2 bg-blue-500 text-white rounded w-full'
-													style={reservationButtonStyle}>
-													Rezerviši
-												</button>
-											) : (
-												<div
-													className='mt-4 bg-green-500 text-black mb-2 rounded w-full'
-													style={appointmentInfoStyle}>
-													<div>30 minutes</div>
-													<div>John Doe</div>
-													<div>Service XYZ</div>
-													<div>700 RSD</div>
-												</div>
-											)}
-										</div>
-									)}
-									{!isWorkingHour(day, time) && (
-										<div
-											className='text-center font-bold bg-black text-white flex flex-col justify-center'
-											style={{ ...closedTime, height: labelHeight }}>
-											Zatvoreno
-										</div>
-									)}
-								</div>
-							))}
+							<div className='col-span-8' style={dayNamesContainerStyle}>
+								{weekDays.map(day => (
+									<div key={`${day}-${time}`} className='col-span-1'>
+										{isWorkingHour(day, time) && (
+											<div className='items-center' style={{ height: labelHeight }}>
+												{!clickedSlots.includes(`${day}-${time}`) ? (
+													<button
+														onClick={() => handleAddAppointment(day, time)}
+														className='mt-2 px-4 py-2 bg-blue-500 text-white rounded w-full'
+														style={reservationButtonStyle}>
+														Rezerviši
+													</button>
+												) : (
+													<div
+														className='mt-4 bg-green-500 text-black mb-2 rounded w-full'
+														style={appointmentInfoStyle}>
+														<div>30 minutes</div>
+														<div>John Doe</div>
+														<div>Service XYZ</div>
+														<div>700 RSD</div>
+													</div>
+												)}
+											</div>
+										)}
+										{!isWorkingHour(day, time) && (
+											<div
+												className='text-center font-bold bg-black text-white flex flex-col justify-center'
+												style={{ ...closedTime, height: labelHeight }}>
+												Zatvoreno
+											</div>
+										)}
+									</div>
+								))}
+							</div>
 						</div>
 					)
 				);
