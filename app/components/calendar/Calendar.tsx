@@ -60,35 +60,38 @@ const Calendar: React.FC = () => {
 	const weekDays = generateWeekDays();
 	const timeSlots = generateTimeSlots(60); // Set the time slot interval in minutes here
 	const labelHeight = '7rem'; // Set the desired label height here
-	const buttonHeight = '7rem'; // Set the desired button height here
 	const slotDayHeight = '3rem'; // Set the height for slots with day names
 	const slotsWidth = '200px';
+	const border2px = '2px solid #dfdfdf';
 
 	const commonStyle: React.CSSProperties = {
 		height: '7rem',
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
-		margin: '0.5rem 0',
 	};
 	const dayNamesContainerStyle: React.CSSProperties = {
 		display: 'flex',
 		flexDirection: 'row',
+		margin: '0.5rem 0',
 	};
+
 	const dayLabelStyle: React.CSSProperties = {
 		...commonStyle,
 		height: slotDayHeight,
 		background: 'transparent',
 		color: 'white',
-		border: '2px solid #a0a0a0',
-		width: slotsWidth,
+		border: border2px,
+		minWidth: '204px',
+		maxWidth: '204px',
 	};
 	const timeLabelStyle: React.CSSProperties = {
 		...commonStyle,
-		height: slotDayHeight,
+		minHeight: '7.2rem',
 		background: 'transparent',
 		color: 'white',
-		border: '2px solid #a0a0a0',
+		border: border2px,
+		margin: '0.5rem 0',
 	};
 	const yearLabelStyle: React.CSSProperties = {
 		...commonStyle,
@@ -96,39 +99,48 @@ const Calendar: React.FC = () => {
 		color: 'white',
 		border: '2px solid #a0a0a0',
 		background: 'brown',
+		margin: '0.5rem 0',
 	};
 	const buttonStyle: React.CSSProperties = {
 		...commonStyle,
-		height: buttonHeight,
+		height: labelHeight,
 		background: 'linear-gradient(45deg, #4CAF50, #2E8B57)',
 		color: '#fff',
-		width: slotsWidth,
+		minWidth: slotsWidth,
+		maxWidth: slotsWidth,
+	};
+
+	const appointmentContainerStyle: React.CSSProperties = {
+		display: 'flex',
+		justifyContent: 'center', // Center content horizontally
+		minWidth: slotsWidth,
 	};
 
 	const appointmentInfoStyle: React.CSSProperties = {
 		...buttonStyle,
-		background: '#f0f0f0', // Light gray background
-		color: '#333', // Dark gray text color
-		padding: '2px',
+		backgroundImage: 'linear-gradient(45deg, #1E4A34, #0D3220)',
+		backgroundSize: '100% 100%',
+		backgroundClip: 'text',
+		color: '#fff', // Dark gray text color
 		fontSize: '1rem', // Increase font size
 		flexDirection: 'column',
-		width: slotsWidth,
+		margin: 0,
 	};
 
 	const reservationButtonStyle: React.CSSProperties = {
 		...commonStyle,
-		height: buttonHeight,
+		height: labelHeight,
 		background: 'gray',
 		color: '#fff',
-		width: slotsWidth,
 	};
 	const closedTime: React.CSSProperties = {
 		...reservationButtonStyle,
 		background: 'black',
 		color: '#6d6d6d',
-		pointerEvents: 'not-allowed' as 'not-allowed',
+		pointerEvents: 'none',
 		cursor: 'not-allowed',
-		width: slotsWidth,
+		minWidth: slotsWidth,
+		maxWidth: slotsWidth,
 	};
 
 	const handleAddAppointment = (day: string, time: string) => {
@@ -181,19 +193,19 @@ const Calendar: React.FC = () => {
 							</div>
 							<div className='col-span-8' style={dayNamesContainerStyle}>
 								{weekDays.map(day => (
-									<div key={`${day}-${time}`} className='col-span-1'>
+									<div key={`${day}-${time}`} className='col-span-1' style={{ border: border2px }}>
 										{isWorkingHour(day, time) && (
-											<div className='items-center' style={{ height: labelHeight }}>
+											<div style={appointmentContainerStyle}>
 												{!clickedSlots.includes(`${day}-${time}`) ? (
 													<button
 														onClick={() => handleAddAppointment(day, time)}
-														className='mt-2 px-4 py-2 bg-blue-500 text-white rounded w-full'
+														className='bg-blue-500 text-white rounded w-full h-full'
 														style={reservationButtonStyle}>
 														Rezerviši
 													</button>
 												) : (
 													<div
-														className='mt-4 bg-green-500 text-black mb-2 rounded w-full'
+														className='bg-green-500 text-black rounded w-full'
 														style={appointmentInfoStyle}>
 														<div>30 minutes</div>
 														<div>John Doe</div>
