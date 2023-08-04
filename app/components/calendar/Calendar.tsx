@@ -63,6 +63,7 @@ const Calendar: React.FC = () => {
 	const slotDayHeight = '3rem'; // Set the height for slots with day names
 	const slotsWidth = '200px';
 	const border2px = '2px solid #dfdfdf';
+	const primaryBg = '#303030';
 
 	const commonStyle: React.CSSProperties = {
 		height: '7rem',
@@ -70,28 +71,41 @@ const Calendar: React.FC = () => {
 		alignItems: 'center',
 		justifyContent: 'center',
 	};
+	const calendarContainerStyle: React.CSSProperties = {
+		height: '90vh',
+		overflow: 'auto',
+	};
+	const calendarHeadStyle: React.CSSProperties = {
+		position: 'sticky',
+		top: 0,
+		zIndex: 3,
+	};
+	const containerBodyRowStyle: React.CSSProperties = {
+		margin: '0.5rem 0',
+	};
 	const dayNamesContainerStyle: React.CSSProperties = {
 		display: 'flex',
 		flexDirection: 'row',
-		margin: '0.5rem 0',
 	};
-
 	const dayLabelStyle: React.CSSProperties = {
 		...commonStyle,
 		height: slotDayHeight,
-		background: 'transparent',
+		background: primaryBg,
 		color: 'white',
 		border: border2px,
 		minWidth: '204px',
 		maxWidth: '204px',
+		position: 'sticky',
+		top: 0,
 	};
 	const timeLabelStyle: React.CSSProperties = {
 		...commonStyle,
 		minHeight: '7.2rem',
-		background: 'transparent',
+		background: primaryBg,
 		color: 'white',
 		border: border2px,
-		margin: '0.5rem 0',
+		position: 'sticky',
+		left: 0,
 	};
 	const yearLabelStyle: React.CSSProperties = {
 		...commonStyle,
@@ -99,7 +113,9 @@ const Calendar: React.FC = () => {
 		color: 'white',
 		border: '2px solid #a0a0a0',
 		background: 'brown',
-		margin: '0.5rem 0',
+		position: 'sticky',
+		left: 0,
+		zIndex: 3,
 	};
 	const buttonStyle: React.CSSProperties = {
 		...commonStyle,
@@ -167,68 +183,73 @@ const Calendar: React.FC = () => {
 	};
 
 	return (
-		<div className='p-4' style={{ background: '#303030', width: '100vw', overflow: 'auto' }}>
+		<div className='p-4' style={{ background: '#303030', width: '100vw' }}>
 			<h1 className='text-2xl font-bold mb-4'>Kliktermin kalendar</h1>
-			<div className='grid grid-cols-9 gap-2'>
-				<div className='col-span-1 text-center font-bold' style={yearLabelStyle}>
-					{getCurrentYear()}
+			<div style={calendarContainerStyle}>
+				<div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
+					<div className='col-span-1 text-center font-bold' style={yearLabelStyle}>
+						{getCurrentYear()}
+					</div>
+					<div className='col-span-8' style={dayNamesContainerStyle}>
+						{weekDays.map(day => (
+							<div key={day} className='col-span-1 text-center font-bold' style={dayLabelStyle}>
+								{day}
+							</div>
+						))}
+					</div>
 				</div>
-				<div className='col-span-8' style={dayNamesContainerStyle}>
-					{weekDays.map(day => (
-						<div key={day} className='col-span-1 text-center font-bold' style={dayLabelStyle}>
-							{day}
-						</div>
-					))}
-				</div>
+				{timeSlots.map(time => {
+					const hour = time.split(':')[0];
+					return (
+						hasWorkingHourInHour(hour) && (
+							<div key={time} className='grid grid-cols-9 gap-2' style={containerBodyRowStyle}>
+								<div
+									className='col-span-1 text-center font-bold'
+									style={{ ...timeLabelStyle, height: labelHeight }}>
+									{time}
+								</div>
+								<div className='col-span-8' style={dayNamesContainerStyle}>
+									{weekDays.map(day => (
+										<div
+											key={`${day}-${time}`}
+											className='col-span-1'
+											style={{ border: border2px }}>
+											{isWorkingHour(day, time) && (
+												<div style={appointmentContainerStyle}>
+													{!clickedSlots.includes(`${day}-${time}`) ? (
+														<button
+															onClick={() => handleAddAppointment(day, time)}
+															className='bg-blue-500 text-white rounded w-full h-full'
+															style={reservationButtonStyle}>
+															Rezerviši
+														</button>
+													) : (
+														<div
+															className='bg-green-500 text-black rounded w-full'
+															style={appointmentInfoStyle}>
+															<div>30 minutes</div>
+															<div>John Doe</div>
+															<div>Service XYZ</div>
+															<div>700 RSD</div>
+														</div>
+													)}
+												</div>
+											)}
+											{!isWorkingHour(day, time) && (
+												<div
+													className='text-center font-bold bg-black text-white flex flex-col justify-center'
+													style={{ ...closedTime, height: labelHeight }}>
+													Zatvoreno
+												</div>
+											)}
+										</div>
+									))}
+								</div>
+							</div>
+						)
+					);
+				})}
 			</div>
-			{timeSlots.map(time => {
-				const hour = time.split(':')[0];
-				return (
-					hasWorkingHourInHour(hour) && (
-						<div key={time} className='grid grid-cols-9 gap-2'>
-							<div
-								className='col-span-1 text-center font-bold'
-								style={{ ...timeLabelStyle, height: labelHeight }}>
-								{time}
-							</div>
-							<div className='col-span-8' style={dayNamesContainerStyle}>
-								{weekDays.map(day => (
-									<div key={`${day}-${time}`} className='col-span-1' style={{ border: border2px }}>
-										{isWorkingHour(day, time) && (
-											<div style={appointmentContainerStyle}>
-												{!clickedSlots.includes(`${day}-${time}`) ? (
-													<button
-														onClick={() => handleAddAppointment(day, time)}
-														className='bg-blue-500 text-white rounded w-full h-full'
-														style={reservationButtonStyle}>
-														Rezerviši
-													</button>
-												) : (
-													<div
-														className='bg-green-500 text-black rounded w-full'
-														style={appointmentInfoStyle}>
-														<div>30 minutes</div>
-														<div>John Doe</div>
-														<div>Service XYZ</div>
-														<div>700 RSD</div>
-													</div>
-												)}
-											</div>
-										)}
-										{!isWorkingHour(day, time) && (
-											<div
-												className='text-center font-bold bg-black text-white flex flex-col justify-center'
-												style={{ ...closedTime, height: labelHeight }}>
-												Zatvoreno
-											</div>
-										)}
-									</div>
-								))}
-							</div>
-						</div>
-					)
-				);
-			})}
 		</div>
 	);
 };
