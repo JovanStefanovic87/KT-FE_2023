@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { format, addDays } from 'date-fns';
 
 interface Appointment {
 	id: string;
@@ -13,8 +14,21 @@ interface WorkingHours {
 	[day: string]: { start: string; end: string };
 }
 
-const generateWeekDays = (): string[] => {
-	const weekDays: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const generateWeekDays = (): { day: string; date: string }[] => {
+	const weekDays: { day: string; date: string }[] = [];
+	const today = new Date();
+
+	// Get the date for the current Monday (start of the week)
+	const startOfWeek = addDays(today, 1 - today.getDay());
+
+	for (let i = 0; i < 7; i++) {
+		const currentDate = addDays(startOfWeek, i);
+		const day = format(currentDate, 'EEE'); // Format day name (e.g., Mon, Tue, etc.)
+		const date = format(currentDate, 'dd/MM'); // Format date (e.g., 01/08, 02/08, etc.)
+
+		weekDays.push({ day, date });
+	}
+
 	return weekDays;
 };
 
@@ -98,25 +112,6 @@ const Calendar: React.FC = () => {
 		position: 'sticky',
 		top: 0,
 	};
-	const timeLabelStyle: React.CSSProperties = {
-		...commonStyle,
-		minHeight: '7.2rem',
-		background: primaryBg,
-		color: 'white',
-		border: border2px,
-		position: 'sticky',
-		left: 0,
-	};
-	const yearLabelStyle: React.CSSProperties = {
-		...commonStyle,
-		height: slotDayHeight,
-		color: 'white',
-		border: '2px solid #a0a0a0',
-		background: 'brown',
-		position: 'sticky',
-		left: 0,
-		zIndex: 3,
-	};
 	const buttonStyle: React.CSSProperties = {
 		...commonStyle,
 		height: labelHeight,
@@ -138,9 +133,14 @@ const Calendar: React.FC = () => {
 		backgroundSize: '100% 100%',
 		backgroundClip: 'text',
 		color: '#fff', // Dark gray text color
-		fontSize: '1rem', // Increase font size
+		fontSize: '0.9rem', // Adjust the font size as needed
+		lineHeight: '1.2', // Adjust line height to add some spacing between lines
 		flexDirection: 'column',
 		margin: 0,
+		textAlign: 'center', // Center text horizontally
+		whiteSpace: 'pre-wrap', // Allow wrapping for the appointment text
+		overflowWrap: 'break-word', // Break word if it exceeds the label width
+		wordBreak: 'break-word', // Break word if it exceeds the label width
 	};
 
 	const reservationButtonStyle: React.CSSProperties = {
@@ -159,17 +159,36 @@ const Calendar: React.FC = () => {
 		maxWidth: slotsWidth,
 	};
 
+	const AppointmentLabel: React.FC<{ appointment?: Appointment }> = ({ appointment }) => {
+		if (!appointment) return null; // Handle the case when appointment is not available
+		return (
+			<div style={appointmentInfoStyle}>
+				<div>{appointment.duration}</div>
+				<div>{appointment.genericName}</div>
+				<div>{appointment.genericService}</div>
+				<div>700 RSD</div>
+			</div>
+		);
+	};
+
 	const handleAddAppointment = (day: string, time: string) => {
-		const newAppointment: Appointment = {
-			id: `${day}-${time}`,
-			day,
-			time,
-			duration: '30 minutes',
-			genericName: 'John Doe',
-			genericService: 'Service XYZ',
-		};
-		setAppointments([...appointments, newAppointment]);
-		setClickedSlots([...clickedSlots, newAppointment.id]);
+		const appointmentDate = weekDays.find(dayInfo => dayInfo.day === day);
+		if (appointmentDate) {
+			const appointmentTime = time.split(':');
+			const appointmentDateTime = new Date(
+				appointmentDate.date + '/' + getCurrentYear() + ' ' + time
+			);
+			const newAppointment: Appointment = {
+				id: `${day}-${time}`,
+				day: appointmentDate.date,
+				time: time,
+				duration: '30 minutes',
+				genericName: 'Alen Stefanović',
+				genericService: 'Šišanje do glave na ćelavo skroz',
+			};
+			setAppointments([...appointments, newAppointment]);
+			setClickedSlots([...clickedSlots, newAppointment.id]);
+		}
 	};
 
 	const isWorkingHour = (day: string, time: string) => {
@@ -177,65 +196,74 @@ const Calendar: React.FC = () => {
 	};
 
 	const hasWorkingHourInHour = (hour: string) => {
-		return weekDays.some(day =>
-			timeSlots.some(time => isWorkingHour(day, time) && time.startsWith(hour))
+		return weekDays.some(dayInfo =>
+			timeSlots.some(time => {
+				const dayWorkingHours = workingHours[dayInfo.day];
+				return dayWorkingHours && isWorkingHour(dayInfo.day, time) && time.startsWith(hour);
+			})
 		);
 	};
 
 	return (
-		<div className='p-4' style={{ background: '#303030', width: '100vw' }}>
+		<div className='p-4' style={{ background: '#303030' }}>
 			<h1 className='text-2xl font-bold mb-4'>Kliktermin kalendar</h1>
 			<div style={calendarContainerStyle}>
 				<div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
-					<div className='col-span-1 text-center font-bold' style={yearLabelStyle}>
-						{getCurrentYear()}
-					</div>
 					<div className='col-span-8' style={dayNamesContainerStyle}>
-						{weekDays.map(day => (
-							<div key={day} className='col-span-1 text-center font-bold' style={dayLabelStyle}>
-								{day}
+						{/* Updated to display both day names and dates */}
+						{weekDays.map(dayInfo => (
+							<div
+								key={dayInfo.day}
+								className='col-span-1 text-center font-bold'
+								style={dayLabelStyle}>
+								{dayInfo.day} ({dayInfo.date})
 							</div>
 						))}
 					</div>
 				</div>
-				{timeSlots.map(time => {
+
+				{/* Updated to filter and display rows only for working hours */}
+				{timeSlots.map((time, index) => {
 					const hour = time.split(':')[0];
+					const showRow = hasWorkingHourInHour(hour);
+
 					return (
-						hasWorkingHourInHour(hour) && (
+						showRow && (
 							<div key={time} className='grid grid-cols-9 gap-2' style={containerBodyRowStyle}>
-								<div
-									className='col-span-1 text-center font-bold'
-									style={{ ...timeLabelStyle, height: labelHeight }}>
-									{time}
-								</div>
 								<div className='col-span-8' style={dayNamesContainerStyle}>
 									{weekDays.map(day => (
-										<div
-											key={`${day}-${time}`}
-											className='col-span-1'
-											style={{ border: border2px }}>
-											{isWorkingHour(day, time) && (
+										<div className='col-span-1' style={{ border: border2px }} key={day.day}>
+											{isWorkingHour(day.day, time) ? (
 												<div style={appointmentContainerStyle}>
-													{!clickedSlots.includes(`${day}-${time}`) ? (
+													{!clickedSlots.includes(`${day.day}-${time}`) ? (
 														<button
-															onClick={() => handleAddAppointment(day, time)}
+															onClick={() => handleAddAppointment(day.day, time)}
 															className='bg-blue-500 text-white rounded w-full h-full'
-															style={reservationButtonStyle}>
-															Rezerviši
+															style={{
+																...reservationButtonStyle,
+																/* Add any other existing styles you have for the button here */
+															}}>
+															<div
+																style={{
+																	display: 'flex',
+																	flexDirection: 'column',
+																	alignItems: 'center',
+																}}>
+																<div>Rezerviši</div>
+																<div>
+																	<span className='time-text'>{time}</span>
+																</div>
+															</div>
 														</button>
 													) : (
-														<div
-															className='bg-green-500 text-black rounded w-full'
-															style={appointmentInfoStyle}>
-															<div>30 minutes</div>
-															<div>John Doe</div>
-															<div>Service XYZ</div>
-															<div>700 RSD</div>
-														</div>
+														<AppointmentLabel
+															appointment={appointments.find(
+																appointment => appointment.id === `${day.day}-${time}`
+															)}
+														/>
 													)}
 												</div>
-											)}
-											{!isWorkingHour(day, time) && (
+											) : (
 												<div
 													className='text-center font-bold bg-black text-white flex flex-col justify-center'
 													style={{ ...closedTime, height: labelHeight }}>

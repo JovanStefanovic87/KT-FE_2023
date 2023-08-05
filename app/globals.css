@@ -48,3 +48,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
 	background: #555; /* Color of the scrollbar thumb on hover */
 }
+
+.time-text {
+	color: #f8cc03; /* Replace this with the desired color for the time text */
+	font-weight: bold; /* Optionally, apply any other styling you want for the time text */
+	font-size: 1rem;
+}
