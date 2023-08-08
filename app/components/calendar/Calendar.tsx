@@ -2,17 +2,40 @@ import React, { useState } from 'react';
 import { format, addDays } from 'date-fns';
 
 interface Appointment {
-	id: string;
-	day: string;
-	time: string;
-	duration: string;
-	genericName: string;
-	genericService: string;
+  id: string;
+  day: string;
+  time: string;
+  duration: string;
+  genericName: string;
+  genericService: string;
 }
 
 interface WorkingHours {
-	[day: string]: { start: string; end: string };
+  [day: string]: { start: string; end: string };
 }
+
+interface DayTranslations {
+  [day: string]: string;
+}
+
+const dayTranslations: DayTranslations = {
+  Mon: 'Pon', // Monday -> Pon
+  Tue: 'Uto', // Tuesday -> Uto
+  Wed: 'Sre', // Wednesday -> Sre
+  Thu: 'Čet', // Thursday -> Čet
+  Fri: 'Pet', // Friday -> Pet
+  Sat: 'Sub', // Saturday -> Sub
+  Sun: 'Ned', // Sunday -> Ned
+};
+
+interface AppointmentLabelProps {
+  appointment?: Appointment;
+}
+
+  const dayNamesContainerStyle: React.CSSProperties = {
+	display: 'flex',
+	flexDirection: 'row',
+  };
 
 const generateWeekDays = (): { day: string; date: string }[] => {
 	const weekDays: { day: string; date: string }[] = [];
@@ -32,6 +55,7 @@ const generateWeekDays = (): { day: string; date: string }[] => {
 	return weekDays;
 };
 
+
 const getCurrentYear = (): string => {
 	return new Date().getFullYear().toString();
 };
@@ -44,7 +68,7 @@ const workingHours: WorkingHours = {
 	Thu: { start: '09:00', end: '17:00' },
 	Fri: { start: '09:00', end: '19:00' },
 	Sat: { start: '09:00', end: '12:00' },
-};
+  };
 
 const generateTimeSlots = (slotInterval: number): string[] => {
 	const timeSlots: string[] = [];
@@ -104,18 +128,17 @@ const Calendar: React.FC = () => {
 	const dayLabelStyle: React.CSSProperties = {
 		...commonStyle,
 		height: slotDayHeight,
-		background: primaryBg,
+		background: 'gray',
 		color: 'white',
 		border: border2px,
-		minWidth: '204px',
-		maxWidth: '204px',
+		minWidth: '203px',
+		maxWidth: '203px',
 		position: 'sticky',
 		top: 0,
 	};
 	const buttonStyle: React.CSSProperties = {
 		...commonStyle,
 		height: labelHeight,
-		background: 'linear-gradient(45deg, #4CAF50, #2E8B57)',
 		color: '#fff',
 		minWidth: slotsWidth,
 		maxWidth: slotsWidth,
@@ -129,9 +152,6 @@ const Calendar: React.FC = () => {
 
 	const appointmentInfoStyle: React.CSSProperties = {
 		...buttonStyle,
-		backgroundImage: 'linear-gradient(45deg, #1E4A34, #0D3220)',
-		backgroundSize: '100% 100%',
-		backgroundClip: 'text',
 		color: '#fff', // Dark gray text color
 		fontSize: '0.9rem', // Adjust the font size as needed
 		lineHeight: '1.2', // Adjust line height to add some spacing between lines
@@ -146,8 +166,10 @@ const Calendar: React.FC = () => {
 	const reservationButtonStyle: React.CSSProperties = {
 		...commonStyle,
 		height: labelHeight,
-		background: 'gray',
 		color: '#fff',
+		background: 'linear-gradient(45deg, #4CAF50, #2E8B57)',
+		backgroundSize: '100% 100%',
+		backgroundClip: 'text',
 	};
 	const closedTime: React.CSSProperties = {
 		...reservationButtonStyle,
@@ -159,17 +181,21 @@ const Calendar: React.FC = () => {
 		maxWidth: slotsWidth,
 	};
 
-	const AppointmentLabel: React.FC<{ appointment?: Appointment }> = ({ appointment }) => {
+	const AppointmentLabel: React.FC<AppointmentLabelProps> = ({ appointment }) => {
 		if (!appointment) return null; // Handle the case when appointment is not available
+	  
+		const { time, duration, genericName, genericService } = appointment;
+	  
 		return (
-			<div style={appointmentInfoStyle}>
-				<div>{appointment.duration}</div>
-				<div>{appointment.genericName}</div>
-				<div>{appointment.genericService}</div>
-				<div>700 RSD</div>
-			</div>
+		  <div style={appointmentInfoStyle}>
+			<div className='time-text'>{time}</div> {/* Add the start time */}
+			<div>{duration}</div>
+			<div>{genericName}</div>
+			<div>{genericService}</div>
+			<div>700 RSD</div>
+		  </div>
 		);
-	};
+	  };
 
 	const handleAddAppointment = (day: string, time: string) => {
 		const appointmentDate = weekDays.find(dayInfo => dayInfo.day === day);
@@ -184,7 +210,7 @@ const Calendar: React.FC = () => {
 				time: time,
 				duration: '30 minutes',
 				genericName: 'Alen Stefanović',
-				genericService: 'Šišanje do glave na ćelavo skroz',
+				genericService: 'Šišanje makazicama',
 			};
 			setAppointments([...appointments, newAppointment]);
 			setClickedSlots([...clickedSlots, newAppointment.id]);
@@ -206,21 +232,22 @@ const Calendar: React.FC = () => {
 
 	return (
 		<div className='p-4' style={{ background: '#303030' }}>
-			<h1 className='text-2xl font-bold mb-4'>Kliktermin kalendar</h1>
-			<div style={calendarContainerStyle}>
-				<div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
-					<div className='col-span-8' style={dayNamesContainerStyle}>
-						{/* Updated to display both day names and dates */}
-						{weekDays.map(dayInfo => (
-							<div
-								key={dayInfo.day}
-								className='col-span-1 text-center font-bold'
-								style={dayLabelStyle}>
-								{dayInfo.day} ({dayInfo.date})
-							</div>
-						))}
-					</div>
-				</div>
+      <h1 className='text-2xl font-bold mb-4'>Kliktermin kalendar</h1>
+      <div style={calendarContainerStyle}>
+        <div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
+          <div className='col-span-8' style={dayNamesContainerStyle}>
+            {/* Updated to display translated day names */}
+            {weekDays.map(dayInfo => (
+              <div
+                key={dayInfo.day}
+                className='col-span-1 text-center font-bold'
+                style={dayLabelStyle}
+              >
+                {dayTranslations[dayInfo.day]} ({dayInfo.date})
+              </div>
+            ))}
+          </div>
+        </div>
 
 				{/* Updated to filter and display rows only for working hours */}
 				{timeSlots.map((time, index) => {
@@ -248,8 +275,9 @@ const Calendar: React.FC = () => {
 																	display: 'flex',
 																	flexDirection: 'column',
 																	alignItems: 'center',
+																	fontSize: '1rem',
 																}}>
-																<div>Rezerviši</div>
+																<div>REZERVIŠI TERMIN</div>
 																<div>
 																	<span className='time-text'>{time}</span>
 																</div>

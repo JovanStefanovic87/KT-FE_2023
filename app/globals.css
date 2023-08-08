@@ -52,5 +52,5 @@ body {
 .time-text {
 	color: #f8cc03; /* Replace this with the desired color for the time text */
 	font-weight: bold; /* Optionally, apply any other styling you want for the time text */
-	font-size: 1rem;
+	font-size: 1.2rem;
 }
