@@ -14,6 +14,29 @@ interface WorkingHours {
 	[day: string]: { start: string; end: string };
 }
 
+interface DayTranslations {
+	[day: string]: string;
+}
+
+const dayTranslations: DayTranslations = {
+	Mon: 'Pon', // Monday -> Pon
+	Tue: 'Uto', // Tuesday -> Uto
+	Wed: 'Sre', // Wednesday -> Sre
+	Thu: 'Čet', // Thursday -> Čet
+	Fri: 'Pet', // Friday -> Pet
+	Sat: 'Sub', // Saturday -> Sub
+	Sun: 'Ned', // Sunday -> Ned
+};
+
+interface AppointmentLabelProps {
+	appointment?: Appointment;
+}
+
+const dayNamesContainerStyle: React.CSSProperties = {
+	display: 'flex',
+	flexDirection: 'row',
+};
+
 const generateWeekDays = (): { day: string; date: string }[] => {
 	const weekDays: { day: string; date: string }[] = [];
 	const today = new Date();
@@ -72,11 +95,13 @@ const Calendar: React.FC = () => {
 	const [appointments, setAppointments] = useState<Appointment[]>([]);
 	const [clickedSlots, setClickedSlots] = useState<string[]>([]);
 	const weekDays = generateWeekDays();
-	const timeSlots = generateTimeSlots(60); // Set the time slot interval in minutes here
-	const labelHeight = '7rem'; // Set the desired label height here
-	const slotDayHeight = '3rem'; // Set the height for slots with day names
+	const timeSlots = generateTimeSlots(60);
+	const labelHeight = '7rem';
+	const slotDayHeight = '3rem';
 	const slotsWidth = '200px';
-	const border2px = '2px solid #dfdfdf';
+	const borderSize = 2;
+	const border2px = `${borderSize}px solid #dfdfdf`;
+	const rowsGap = 8;
 	const primaryBg = '#303030';
 
 	const commonStyle: React.CSSProperties = {
@@ -115,7 +140,6 @@ const Calendar: React.FC = () => {
 	const buttonStyle: React.CSSProperties = {
 		...commonStyle,
 		height: labelHeight,
-		background: 'linear-gradient(45deg, #4CAF50, #2E8B57)',
 		color: '#fff',
 		minWidth: slotsWidth,
 		maxWidth: slotsWidth,
@@ -123,31 +147,37 @@ const Calendar: React.FC = () => {
 
 	const appointmentContainerStyle: React.CSSProperties = {
 		display: 'flex',
-		justifyContent: 'center', // Center content horizontally
+		justifyContent: 'center',
 		minWidth: slotsWidth,
+		position: 'relative', // Add relative positioning
 	};
 
 	const appointmentInfoStyle: React.CSSProperties = {
 		...buttonStyle,
-		backgroundImage: 'linear-gradient(45deg, #1E4A34, #0D3220)',
-		backgroundSize: '100% 100%',
-		backgroundClip: 'text',
-		color: '#fff', // Dark gray text color
-		fontSize: '0.9rem', // Adjust the font size as needed
-		lineHeight: '1.2', // Adjust line height to add some spacing between lines
+		color: '#fff',
+		backgroundColor: '#555555',
+		fontSize: '0.9rem',
+		lineHeight: '1.2',
 		flexDirection: 'column',
 		margin: 0,
-		textAlign: 'center', // Center text horizontally
-		whiteSpace: 'pre-wrap', // Allow wrapping for the appointment text
-		overflowWrap: 'break-word', // Break word if it exceeds the label width
-		wordBreak: 'break-word', // Break word if it exceeds the label width
+		textAlign: 'center',
+		whiteSpace: 'pre-wrap',
+		overflowWrap: 'break-word',
+		wordBreak: 'break-word',
+		height: `${rowsGap}px`,
+		position: 'absolute', // Add absolute positioning
+		top: 0, // Position it at the top
+		left: 0, // Position it at the left
+		zIndex: 1, // Set a higher z-index to make it overlap other elements
 	};
 
 	const reservationButtonStyle: React.CSSProperties = {
 		...commonStyle,
 		height: labelHeight,
-		background: 'gray',
 		color: '#fff',
+		background: 'linear-gradient(45deg, #4CAF50, #2E8B57)',
+		backgroundSize: '100% 100%',
+		backgroundClip: 'text',
 	};
 	const closedTime: React.CSSProperties = {
 		...reservationButtonStyle,
@@ -159,13 +189,57 @@ const Calendar: React.FC = () => {
 		maxWidth: slotsWidth,
 	};
 
-	const AppointmentLabel: React.FC<{ appointment?: Appointment }> = ({ appointment }) => {
+	const calculateSlotsForDuration = (duration: string): number => {
+		// Parse the duration (e.g., '30 minutes' -> 30)
+		const durationInMinutes = parseInt(duration.split(' ')[0], 10);
+		// Calculate the number of slots needed for the duration
+		return Math.ceil(durationInMinutes / 60);
+	};
+
+	const AppointmentLabel: React.FC<AppointmentLabelProps> = ({ appointment }) => {
 		if (!appointment) return null; // Handle the case when appointment is not available
+
+		const { time, duration, genericName, genericService } = appointment;
+
+		// Parse the start time to extract hours and minutes
+		const [startHours, startMinutes] = time.split(':').map(Number);
+
+		// Parse the duration to get the duration in minutes
+		const durationInMinutes = parseInt(duration.split(' ')[0], 10);
+
+		// Calculate the total minutes of the end time
+		const totalMinutes = startHours * 60 + startMinutes + durationInMinutes;
+
+		// Format the total minutes as the end time
+		const endHours = Math.floor(totalMinutes / 60);
+		const endMinutes = totalMinutes % 60;
+		const formattedEndTime = `${endHours.toString().padStart(2, '0')}:${endMinutes
+			.toString()
+			.padStart(2, '0')}`;
+
+		// Calculate the number of slots needed for the appointment duration
+		const slotsNeeded = calculateSlotsForDuration(duration);
+
+		// Determine the height of the appointment label for a single slot
+		const singleSlotHeight = 112;
+
+		// calculate gap and border size between slots
+		const spaceBetweenSlots = (slotsNeeded - 1) * (borderSize * 2 + rowsGap);
+
+		// Calculate the total height needed for the appointment label when it spans multiple slots
+		const totalHeight = singleSlotHeight * slotsNeeded + spaceBetweenSlots; // 2px for the gap between slots
+
 		return (
-			<div style={appointmentInfoStyle}>
-				<div>{appointment.duration}</div>
-				<div>{appointment.genericName}</div>
-				<div>{appointment.genericService}</div>
+			<div
+				style={{ ...appointmentInfoStyle, height: `${totalHeight}px` }}
+				data-slots-needed={slotsNeeded}>
+				<div className='time-text'>
+					{time}h - {formattedEndTime}h
+				</div>{' '}
+				{/* Add the start time */}
+				{/* <div>{duration}</div> */}
+				<div>{genericName}</div>
+				<div>{genericService}</div>
 				<div>700 RSD</div>
 			</div>
 		);
@@ -182,9 +256,9 @@ const Calendar: React.FC = () => {
 				id: `${day}-${time}`,
 				day: appointmentDate.date,
 				time: time,
-				duration: '30 minutes',
+				duration: '180 minutes',
 				genericName: 'Alen Stefanović',
-				genericService: 'Šišanje do glave na ćelavo skroz',
+				genericService: 'Šišanje makazicama',
 			};
 			setAppointments([...appointments, newAppointment]);
 			setClickedSlots([...clickedSlots, newAppointment.id]);
@@ -210,13 +284,13 @@ const Calendar: React.FC = () => {
 			<div style={calendarContainerStyle}>
 				<div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
 					<div className='col-span-8' style={dayNamesContainerStyle}>
-						{/* Updated to display both day names and dates */}
+						{/* Updated to display translated day names */}
 						{weekDays.map(dayInfo => (
 							<div
 								key={dayInfo.day}
 								className='col-span-1 text-center font-bold'
 								style={dayLabelStyle}>
-								{dayInfo.day} ({dayInfo.date})
+								{dayTranslations[dayInfo.day]} ({dayInfo.date})
 							</div>
 						))}
 					</div>
@@ -248,11 +322,12 @@ const Calendar: React.FC = () => {
 																	display: 'flex',
 																	flexDirection: 'column',
 																	alignItems: 'center',
+																	fontSize: '1rem',
 																}}>
-																<div>Rezerviši</div>
 																<div>
 																	<span className='time-text'>{time}</span>
 																</div>
+																<div>REZERVIŠI TERMIN</div>
 															</div>
 														</button>
 													) : (
