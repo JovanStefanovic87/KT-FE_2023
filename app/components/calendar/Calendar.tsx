@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { format, addDays, addMinutes } from 'date-fns';
+import { format, addDays, addMinutes, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
 
 interface Appointment {
 	id: string;
@@ -32,13 +32,14 @@ interface AppointmentLabelProps {
 	appointment?: Appointment;
 }
 
-const generateWeekDays = (): { day: string; date: string }[] => {
+const generateWeekDays = (selectedWeekIndex: number): { day: string; date: string }[] => {
 	const weekDays: { day: string; date: string }[] = [];
 	const today = new Date();
 	const startOfWeek = addDays(today, 1 - today.getDay());
+	const currentWeekStart = addWeeks(startOfWeek, selectedWeekIndex);
 
 	for (let i = 0; i < 7; i++) {
-		const currentDate = addDays(startOfWeek, i);
+		const currentDate = addDays(currentWeekStart, i);
 		const day = format(currentDate, 'EEE');
 
 		if (workingHours[day].start !== '--:--' && workingHours[day].end !== '--:--') {
@@ -65,6 +66,36 @@ const workingHours: WorkingHours = {
 	Sat: { start: '09:00', end: '12:00' },
 };
 
+const generateWeekOptions = () => {
+	const today = new Date();
+	const currentYear = parseInt(getCurrentYear(), 10);
+	const nextYear = currentYear + 1;
+
+	const weeks = [];
+	let currentDate = new Date(currentYear, 0, 1); // Start from the beginning of the current year
+
+	while (currentDate.getFullYear() <= nextYear) {
+		if (currentDate >= today) {
+			// Check if the current date is greater than or equal to today
+			const startOfWeekDate = startOfWeek(currentDate);
+			const endOfWeekDate = endOfWeek(currentDate);
+
+			weeks.push({
+				label: `Nedelja ${format(startOfWeekDate, 'w')} (${format(
+					startOfWeekDate,
+					'dd.MM.yy.'
+				)} - ${format(endOfWeekDate, 'dd.MM.yy.')})`,
+				start: startOfWeekDate,
+				end: endOfWeekDate,
+			});
+		}
+
+		currentDate = addWeeks(currentDate, 1);
+	}
+
+	return weeks;
+};
+
 const generateTimeSlots = (slotInterval: number): string[] => {
 	const timeSlots: string[] = [];
 	const startTime = '00:00';
@@ -88,9 +119,11 @@ const generateTimeSlots = (slotInterval: number): string[] => {
 };
 
 const Calendar: React.FC = () => {
+	const [selectedWeek, setSelectedWeek] = useState(0);
+	const weekOptions = generateWeekOptions();
 	const [appointments, setAppointments] = useState<Appointment[]>([]);
 	const [clickedSlots, setClickedSlots] = useState<string[]>([]);
-	const weekDays = generateWeekDays();
+	const weekDays = generateWeekDays(selectedWeek);
 	const timeSlots = generateTimeSlots(60);
 	const labelHeight = '7rem';
 	const slotDayHeight = '3rem';
@@ -322,6 +355,18 @@ const Calendar: React.FC = () => {
 	return (
 		<div className='p-4' style={{ background: '#303030' }}>
 			<h1 className='text-2xl font-bold mb-4'>Kliktermin kalendar</h1>
+			<div>
+				<select
+					value={selectedWeek}
+					onChange={e => setSelectedWeek(parseInt(e.target.value, 10))}
+					className='mb-2'>
+					{weekOptions.map((week, index) => (
+						<option key={index} value={index}>
+							{week.label}
+						</option>
+					))}
+				</select>
+			</div>
 			<div style={calendarContainerStyle}>
 				<div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
 					<div className='col-span-8' style={dayNamesContainerStyle}>
