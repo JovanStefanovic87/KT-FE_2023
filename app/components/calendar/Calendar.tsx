@@ -32,35 +32,28 @@ interface AppointmentLabelProps {
 	appointment?: Appointment;
 }
 
-const dayNamesContainerStyle: React.CSSProperties = {
-	display: 'flex',
-	flexDirection: 'row',
-};
-
 const generateWeekDays = (): { day: string; date: string }[] => {
 	const weekDays: { day: string; date: string }[] = [];
 	const today = new Date();
 	const startOfWeek = addDays(today, 1 - today.getDay());
-  
+
 	for (let i = 0; i < 7; i++) {
-	  const currentDate = addDays(startOfWeek, i);
-	  const day = format(currentDate, 'EEE');
-  
-	  if (workingHours[day].start !== '--:--' && workingHours[day].end !== '--:--') {
-		const date = format(currentDate, 'dd/MM');
-		weekDays.push({ day, date });
-	  }
+		const currentDate = addDays(startOfWeek, i);
+		const day = format(currentDate, 'EEE');
+
+		if (workingHours[day].start !== '--:--' && workingHours[day].end !== '--:--') {
+			const date = format(currentDate, 'dd/MM');
+			weekDays.push({ day, date });
+		}
 	}
-  
+
 	return weekDays;
-  };
-  
-  
+};
 
 const getCurrentYear = (): string => {
 	const today = new Date();
 	return today.getFullYear().toString();
-  };
+};
 
 const workingHours: WorkingHours = {
 	Sun: { start: '--:--', end: '--:--' },
@@ -106,6 +99,7 @@ const Calendar: React.FC = () => {
 	const border2px = `${borderSize}px solid #dfdfdf`;
 	const rowsGap = 8;
 	const primaryBg = '#303030';
+	const appointmentDuration = 180;
 
 	const commonStyle: React.CSSProperties = {
 		height: '7rem',
@@ -186,7 +180,6 @@ const Calendar: React.FC = () => {
 		...reservationButtonStyle,
 		background: 'black',
 		color: '#6d6d6d',
-		pointerEvents: 'none',
 		cursor: 'not-allowed',
 		minWidth: slotsWidth,
 		maxWidth: slotsWidth,
@@ -249,56 +242,73 @@ const Calendar: React.FC = () => {
 	};
 
 	const handleAddAppointment = (day: string, time: string) => {
-		console.log('day:', day);
-		console.log('time:', time);
-		console.log('workingHours:', workingHours);
-		console.log('weekDays:', weekDays);
-		const appointmentDateTime = new Date(`${day}/${getCurrentYear()} ${time}`);
-  
-  // Check if the appointment falls within working hours
-  if (!isWorkingHour(day, time)) {
-    alert('Cannot make an appointment during unworking hours.');
-    return;
-  }
-	  
-		// Check if the appointment overlaps with existing appointments
-		const appointmentEndDateTime = addMinutes(appointmentDateTime, 180); // Assuming appointment duration is always 180 minutes
-		const overlaps = appointments.some(appointment => {
-		  const existingAppointmentStart = new Date(`${appointment.day}/${getCurrentYear()} ${appointment.time}`);
-		  const existingAppointmentEnd = addMinutes(existingAppointmentStart, 180); // Assuming existing appointment duration is always 180 minutes
-		  return (
-			appointment.day === day &&
-			((appointmentDateTime >= existingAppointmentStart &&
-			  appointmentDateTime < existingAppointmentEnd) ||
-			  (appointmentEndDateTime > existingAppointmentStart &&
-				appointmentEndDateTime <= existingAppointmentEnd) ||
-			  (appointmentDateTime <= existingAppointmentStart &&
-				appointmentEndDateTime >= existingAppointmentEnd))
-		  );
-		});
-	  
-		if (overlaps) {
-		  alert('Cannot make an appointment that overlaps with an existing appointment.');
-		  return;
+		const currentYear = getCurrentYear();
+		const appointmentDateTime = new Date(`${day}/${currentYear} ${time}`);
+
+		if (!isWorkingHour(day, time)) {
+			alert('Cannot make an appointment during unworking hours.');
+			return;
 		}
-	  
+
+		const appointmentEndDateTime = addMinutes(appointmentDateTime, appointmentDuration);
+		const workingEndDateTime = new Date(`${day}/${currentYear} ${workingHours[day].end}`);
+		const unworkingHour = new Date(workingEndDateTime.getTime() + 65 * 1000 * 60);
+
+		if (appointmentEndDateTime.getTime() > unworkingHour.getTime()) {
+			alert('Termin nije moguće zakazati zato što se završava nakon kraja radnog vremena.');
+			return;
+		}
+
+		const overlaps = appointments.some(appointment => {
+			const existingAppointmentStart = new Date(
+				`${appointment.day}/${currentYear} ${appointment.time}`
+			);
+			const existingAppointmentEnd = addMinutes(
+				existingAppointmentStart,
+				calculateSlotsForDuration(appointment.duration) * 60
+			);
+
+			return (
+				appointment.day === day &&
+				((appointmentDateTime >= existingAppointmentStart &&
+					appointmentDateTime < existingAppointmentEnd) ||
+					(appointmentEndDateTime > existingAppointmentStart &&
+						appointmentEndDateTime <= existingAppointmentEnd) ||
+					(appointmentDateTime <= existingAppointmentStart &&
+						appointmentEndDateTime >= existingAppointmentEnd))
+			);
+		});
+
+		if (overlaps) {
+			alert('Termin nije moguće zakazati zato što se preklapa sa narednim terminom.');
+			return;
+		}
+
 		const newAppointment: Appointment = {
-		  id: `${day}-${time}`,
-		  day: day,
-		  time: time,
-		  duration: '180 minutes',
-		  genericName: 'Alen Stefanović',
-		  genericService: 'Šišanje makazicama',
+			id: `${day}-${time}`,
+			day,
+			time,
+			duration: `${appointmentDuration} minutes`,
+			genericName: 'Alen Stefanović',
+			genericService: 'Šišanje makazicama',
 		};
 		setAppointments([...appointments, newAppointment]);
 		setClickedSlots([...clickedSlots, newAppointment.id]);
-	  };
-	  
-	  
-	  const isWorkingHour = (day: string, time: string) => {
+	};
+
+	const isWorkingHour = (day: string, time: string) => {
 		const dayWorkingHours = workingHours[day];
-		return dayWorkingHours && dayWorkingHours.start !== '--:--' && dayWorkingHours.end !== '--:--' && time >= dayWorkingHours.start && time <= dayWorkingHours.end;
-	  };
+		if (dayWorkingHours.start === '--:--' || dayWorkingHours.end === '--:--') {
+			// Unworking hours are defined as '--:--', so anything not in that format is working time
+			return true;
+		}
+
+		const appointmentTime = parseInt(time.replace(':', ''), 10);
+		const startTime = parseInt(dayWorkingHours.start.replace(':', ''), 10);
+		const endTime = parseInt(dayWorkingHours.end.replace(':', ''), 10);
+
+		return appointmentTime >= startTime && appointmentTime <= endTime;
+	};
 
 	const hasWorkingHourInHour = (hour: string) => {
 		return weekDays.some(dayInfo =>
@@ -315,7 +325,6 @@ const Calendar: React.FC = () => {
 			<div style={calendarContainerStyle}>
 				<div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
 					<div className='col-span-8' style={dayNamesContainerStyle}>
-						{/* Updated to display translated day names */}
 						{weekDays.map(dayInfo => (
 							<div
 								key={dayInfo.day}
@@ -327,8 +336,7 @@ const Calendar: React.FC = () => {
 					</div>
 				</div>
 
-				{/* Updated to filter and display rows only for working hours */}
-				{timeSlots.map((time, index) => {
+				{timeSlots.map(time => {
 					const hour = time.split(':')[0];
 					const showRow = hasWorkingHourInHour(hour);
 
@@ -343,9 +351,9 @@ const Calendar: React.FC = () => {
 													{!clickedSlots.includes(`${day.day}-${time}`) ? (
 														<button
 															onClick={() => handleAddAppointment(day.day, time)}
-															className='bg-blue-500 text-white rounded w-full h-full'
+															className='bg-green-700 text-white rounded w-full h-full'
 															style={{
-																...reservationButtonStyle,
+																...buttonStyle,
 																/* Add any other existing styles you have for the button here */
 															}}>
 															<div
