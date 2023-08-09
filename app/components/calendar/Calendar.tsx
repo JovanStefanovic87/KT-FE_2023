@@ -5,6 +5,7 @@ interface Appointment {
 	id: string;
 	day: string;
 	time: string;
+	date: Date;
 	duration: string;
 	genericName: string;
 	genericService: string;
@@ -72,29 +73,27 @@ const generateWeekOptions = () => {
 	const nextYear = currentYear + 1;
 
 	const weeks = [];
-	let currentDate = new Date(currentYear, 0, 1); // Start from the beginning of the current year
+	let currentDate = startOfWeek(today, { weekStartsOn: 1 }); // Start from the beginning of the current week, with Monday as the start of the week
 
 	while (currentDate.getFullYear() <= nextYear) {
-		if (currentDate >= today) {
-			// Check if the current date is greater than or equal to today
-			const startOfWeekDate = startOfWeek(currentDate);
-			const endOfWeekDate = endOfWeek(currentDate);
+		const startOfWeekDate = currentDate;
+		const endOfWeekDate = endOfWeek(currentDate);
 
-			weeks.push({
-				label: `Nedelja ${format(startOfWeekDate, 'w')} (${format(
-					startOfWeekDate,
-					'dd.MM.yy.'
-				)} - ${format(endOfWeekDate, 'dd.MM.yy.')})`,
-				start: startOfWeekDate,
-				end: endOfWeekDate,
-			});
-		}
+		weeks.push({
+			label: `Nedelja ${format(startOfWeekDate, 'w')} (${format(
+				startOfWeekDate,
+				'dd.MM.yy.'
+			)} - ${format(endOfWeekDate, 'dd.MM.yy.')})`,
+			start: startOfWeekDate,
+			end: endOfWeekDate,
+		});
 
 		currentDate = addWeeks(currentDate, 1);
 	}
 
 	return weeks;
 };
+
 
 const generateTimeSlots = (slotInterval: number): string[] => {
 	const timeSlots: string[] = [];
@@ -275,59 +274,26 @@ const Calendar: React.FC = () => {
 	};
 
 	const handleAddAppointment = (day: string, time: string) => {
-		const currentYear = getCurrentYear();
-		const appointmentDateTime = new Date(`${day}/${currentYear} ${time}`);
-
-		if (!isWorkingHour(day, time)) {
-			alert('Cannot make an appointment during unworking hours.');
-			return;
-		}
-
-		const appointmentEndDateTime = addMinutes(appointmentDateTime, appointmentDuration);
-		const workingEndDateTime = new Date(`${day}/${currentYear} ${workingHours[day].end}`);
-		const unworkingHour = new Date(workingEndDateTime.getTime() + 65 * 1000 * 60);
-
-		if (appointmentEndDateTime.getTime() > unworkingHour.getTime()) {
-			alert('Termin nije moguće zakazati zato što se završava nakon kraja radnog vremena.');
-			return;
-		}
-
-		const overlaps = appointments.some(appointment => {
-			const existingAppointmentStart = new Date(
-				`${appointment.day}/${currentYear} ${appointment.time}`
-			);
-			const existingAppointmentEnd = addMinutes(
-				existingAppointmentStart,
-				calculateSlotsForDuration(appointment.duration) * 60
-			);
-
-			return (
-				appointment.day === day &&
-				((appointmentDateTime >= existingAppointmentStart &&
-					appointmentDateTime < existingAppointmentEnd) ||
-					(appointmentEndDateTime > existingAppointmentStart &&
-						appointmentEndDateTime <= existingAppointmentEnd) ||
-					(appointmentDateTime <= existingAppointmentStart &&
-						appointmentEndDateTime >= existingAppointmentEnd))
-			);
-		});
-
-		if (overlaps) {
-			alert('Termin nije moguće zakazati zato što se preklapa sa narednim terminom.');
-			return;
-		}
-
+		const weekStart = weekOptions[selectedWeek].start;
+		const dayIndex = weekDays.findIndex(dayInfo => dayInfo.day === day);
+		const appointmentDate = addDays(weekStart, dayIndex);
+	  
 		const newAppointment: Appointment = {
-			id: `${day}-${time}`,
-			day,
-			time,
-			duration: `${appointmentDuration} minutes`,
-			genericName: 'Alen Stefanović',
-			genericService: 'Šišanje makazicama',
+		  id: `${format(appointmentDate, 'yyyy-MM-dd')}-${time}`,
+		  day,
+		  time,
+		  date: appointmentDate, // Store the date as well
+		  duration: `${appointmentDuration} minutes`,
+		  genericName: 'Alen Stefanović',
+		  genericService: 'Šišanje makazicama',
 		};
+		console.log(appointmentDate)
+		console.log(time)
+	  
 		setAppointments([...appointments, newAppointment]);
 		setClickedSlots([...clickedSlots, newAppointment.id]);
-	};
+	  };
+	  
 
 	const isWorkingHour = (day: string, time: string) => {
 		const dayWorkingHours = workingHours[day];
@@ -352,21 +318,26 @@ const Calendar: React.FC = () => {
 		);
 	};
 
+	const getWeekLabel = (selectedWeekIndex: number) => {
+		const week = weekOptions[selectedWeekIndex];
+		return `Nedelja ${format(week.start, 'w')} (${format(week.start, 'dd.MM.yy.')} - ${format(week.end, 'dd.MM.yy.')})`;
+	  };
+
 	return (
 		<div className='p-4' style={{ background: '#303030' }}>
 			<h1 className='text-2xl font-bold mb-4'>Kliktermin kalendar</h1>
 			<div>
-				<select
-					value={selectedWeek}
-					onChange={e => setSelectedWeek(parseInt(e.target.value, 10))}
-					className='mb-2'>
-					{weekOptions.map((week, index) => (
-						<option key={index} value={index}>
-							{week.label}
-						</option>
-					))}
-				</select>
-			</div>
+  <select
+    value={selectedWeek}
+    onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))}
+    className='mb-2'>
+    {weekOptions.map((week, index) => (
+      <option key={index} value={index}>
+        {getWeekLabel(index)}
+      </option>
+    ))}
+  </select>
+</div>
 			<div style={calendarContainerStyle}>
 				<div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
 					<div className='col-span-8' style={dayNamesContainerStyle}>
