@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, addDays, addMinutes, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
 
 interface Appointment {
 	id: string;
 	day: string;
 	time: string;
-	date: Date;
 	duration: string;
 	genericName: string;
 	genericService: string;
+	date: string; // Add the date property
 }
 
 interface WorkingHours {
@@ -42,9 +42,9 @@ const generateWeekDays = (selectedWeekIndex: number): { day: string; date: strin
 	for (let i = 0; i < 7; i++) {
 		const currentDate = addDays(currentWeekStart, i);
 		const day = format(currentDate, 'EEE');
+		const date = format(currentDate, 'dd.MM.yy'); // Add this line
 
 		if (workingHours[day].start !== '--:--' && workingHours[day].end !== '--:--') {
-			const date = format(currentDate, 'dd/MM');
 			weekDays.push({ day, date });
 		}
 	}
@@ -58,7 +58,7 @@ const getCurrentYear = (): string => {
 };
 
 const workingHours: WorkingHours = {
-	Sun: { start: '--:--', end: '--:--' },
+	Sun: { start: 'nn:nn', end: 'nn:nn' },
 	Mon: { start: '09:00', end: '17:00' },
 	Tue: { start: '09:00', end: '17:00' },
 	Wed: { start: '09:00', end: '17:00' },
@@ -69,22 +69,21 @@ const workingHours: WorkingHours = {
 
 const generateWeekOptions = () => {
 	const today = new Date();
-	const currentYear = parseInt(getCurrentYear(), 10);
+	const currentYear = today.getFullYear();
 	const nextYear = currentYear + 1;
 
 	const weeks = [];
-	let currentDate = startOfWeek(today, { weekStartsOn: 1 }); // Start from the beginning of the current week, with Monday as the start of the week
+	let currentDate = startOfWeek(today, { weekStartsOn: 1 }); // Start from the current week, with Monday as the starting day
 
 	while (currentDate.getFullYear() <= nextYear) {
-		const startOfWeekDate = currentDate;
 		const endOfWeekDate = endOfWeek(currentDate);
 
 		weeks.push({
-			label: `Nedelja ${format(startOfWeekDate, 'w')} (${format(
-				startOfWeekDate,
+			label: `Nedelja ${format(currentDate, 'w')} (${format(currentDate, 'dd.MM.yy.')} - ${format(
+				endOfWeekDate,
 				'dd.MM.yy.'
-			)} - ${format(endOfWeekDate, 'dd.MM.yy.')})`,
-			start: startOfWeekDate,
+			)})`,
+			start: currentDate,
 			end: endOfWeekDate,
 		});
 
@@ -93,7 +92,6 @@ const generateWeekOptions = () => {
 
 	return weeks;
 };
-
 
 const generateTimeSlots = (slotInterval: number): string[] => {
 	const timeSlots: string[] = [];
@@ -117,10 +115,39 @@ const generateTimeSlots = (slotInterval: number): string[] => {
 	return timeSlots;
 };
 
+const initialAppointmentsWeek32: Appointment[] = [
+	{
+		id: 'Mon-09:00',
+		day: 'Mon',
+		time: '09:00',
+		duration: '60 minutes',
+		genericName: 'John Doe',
+		genericService: 'Haircut',
+		date: '07.08.23', // Replace with actual date
+	},
+	// Add more initial appointments for week 32
+	// ...
+];
+
+// Initial appointments for week 33
+const initialAppointmentsWeek33: Appointment[] = [
+	{
+		id: 'Mon-09:00',
+		day: 'Mon',
+		time: '09:00',
+		duration: '60 minutes',
+		genericName: 'Jane Smith',
+		genericService: 'Haircut',
+		date: 'dd.MM.yy', // Replace with actual date
+	},
+	// Add more initial appointments for week 33
+	// ...
+];
+
 const Calendar: React.FC = () => {
 	const [selectedWeek, setSelectedWeek] = useState(0);
 	const weekOptions = generateWeekOptions();
-	const [appointments, setAppointments] = useState<Appointment[]>([]);
+	const [appointments, setAppointments] = useState<Appointment[]>(initialAppointmentsWeek32); // Set initial appointments for week 32
 	const [clickedSlots, setClickedSlots] = useState<string[]>([]);
 	const weekDays = generateWeekDays(selectedWeek);
 	const timeSlots = generateTimeSlots(60);
@@ -132,6 +159,13 @@ const Calendar: React.FC = () => {
 	const rowsGap = 8;
 	const primaryBg = '#303030';
 	const appointmentDuration = 180;
+
+	useEffect(() => {
+		// Set initial appointments based on the selected week
+		setAppointments(initialAppointmentsWeek32);
+	}, []);
+
+	console.log(appointments);
 
 	const commonStyle: React.CSSProperties = {
 		height: '7rem',
@@ -225,9 +259,9 @@ const Calendar: React.FC = () => {
 	};
 
 	const AppointmentLabel: React.FC<AppointmentLabelProps> = ({ appointment }) => {
-		if (!appointment) return null; // Handle the case when appointment is not available
+		if (!appointment) return null;
 
-		const { time, duration, genericName, genericService } = appointment;
+		const { time, duration, genericName, genericService, date } = appointment;
 
 		// Parse the start time to extract hours and minutes
 		const [startHours, startMinutes] = time.split(':').map(Number);
@@ -263,9 +297,8 @@ const Calendar: React.FC = () => {
 				data-slots-needed={slotsNeeded}>
 				<div className='time-text'>
 					{time}h - {formattedEndTime}h
-				</div>{' '}
-				{/* Add the start time */}
-				{/* <div>{duration}</div> */}
+				</div>
+				{/* <div>{date}</div> */}
 				<div>{genericName}</div>
 				<div>{genericService}</div>
 				<div>700 RSD</div>
@@ -273,34 +306,22 @@ const Calendar: React.FC = () => {
 		);
 	};
 
-	const handleAddAppointment = (day: string, time: string) => {
-		const weekStart = weekOptions[selectedWeek].start;
-		const dayIndex = weekDays.findIndex(dayInfo => dayInfo.day === day);
-		const appointmentDate = addDays(weekStart, dayIndex);
-	  
+	const handleAddAppointment = (day: string, time: string, date: string) => {
 		const newAppointment: Appointment = {
-		  id: `${format(appointmentDate, 'yyyy-MM-dd')}-${time}`,
-		  day,
-		  time,
-		  date: appointmentDate, // Store the date as well
-		  duration: `${appointmentDuration} minutes`,
-		  genericName: 'Alen Stefanović',
-		  genericService: 'Šišanje makazicama',
+			id: `${day}-${time}`,
+			day,
+			time,
+			duration: `${appointmentDuration} minutes`,
+			genericName: 'Alen Stefanović',
+			genericService: 'Šišanje makazicama',
+			date, // Include the date
 		};
-		console.log(appointmentDate)
-		console.log(time)
-	  
 		setAppointments([...appointments, newAppointment]);
 		setClickedSlots([...clickedSlots, newAppointment.id]);
-	  };
-	  
+	};
 
 	const isWorkingHour = (day: string, time: string) => {
 		const dayWorkingHours = workingHours[day];
-		if (dayWorkingHours.start === '--:--' || dayWorkingHours.end === '--:--') {
-			// Unworking hours are defined as '--:--', so anything not in that format is working time
-			return true;
-		}
 
 		const appointmentTime = parseInt(time.replace(':', ''), 10);
 		const startTime = parseInt(dayWorkingHours.start.replace(':', ''), 10);
@@ -318,26 +339,21 @@ const Calendar: React.FC = () => {
 		);
 	};
 
-	const getWeekLabel = (selectedWeekIndex: number) => {
-		const week = weekOptions[selectedWeekIndex];
-		return `Nedelja ${format(week.start, 'w')} (${format(week.start, 'dd.MM.yy.')} - ${format(week.end, 'dd.MM.yy.')})`;
-	  };
-
 	return (
 		<div className='p-4' style={{ background: '#303030' }}>
 			<h1 className='text-2xl font-bold mb-4'>Kliktermin kalendar</h1>
 			<div>
-  <select
-    value={selectedWeek}
-    onChange={(e) => setSelectedWeek(parseInt(e.target.value, 10))}
-    className='mb-2'>
-    {weekOptions.map((week, index) => (
-      <option key={index} value={index}>
-        {getWeekLabel(index)}
-      </option>
-    ))}
-  </select>
-</div>
+				<select
+					value={selectedWeek}
+					onChange={e => setSelectedWeek(parseInt(e.target.value, 10))}
+					className='mb-2'>
+					{weekOptions.map((week, index) => (
+						<option key={index} value={index}>
+							{week.label}
+						</option>
+					))}
+				</select>
+			</div>
 			<div style={calendarContainerStyle}>
 				<div className='grid grid-cols-9 gap-2' style={calendarHeadStyle}>
 					<div className='col-span-8' style={dayNamesContainerStyle}>
@@ -364,9 +380,36 @@ const Calendar: React.FC = () => {
 										<div className='col-span-1' style={{ border: border2px }} key={day.day}>
 											{isWorkingHour(day.day, time) ? (
 												<div style={appointmentContainerStyle}>
-													{!clickedSlots.includes(`${day.day}-${time}`) ? (
+													{appointments.map(appointment => {
+														if (
+															appointment.day === day.day &&
+															appointment.time === time &&
+															appointment.date === day.date // Check if appointment date matches day date
+														) {
+															return (
+																<AppointmentLabel key={appointment.id} appointment={appointment} />
+															);
+														}
+														return null;
+													})}
+													{/* Render button or appointment label based on appointment existence */}
+													{appointments.find(
+														appointment =>
+															appointment.day === day.day &&
+															appointment.time === time &&
+															appointment.date === day.date
+													) ? (
+														<AppointmentLabel
+															appointment={appointments.find(
+																appointment =>
+																	appointment.day === day.day &&
+																	appointment.time === time &&
+																	appointment.date === day.date
+															)}
+														/>
+													) : (
 														<button
-															onClick={() => handleAddAppointment(day.day, time)}
+															onClick={() => handleAddAppointment(day.day, time, day.date)}
 															className='bg-green-700 text-white rounded w-full h-full'
 															style={{
 																...buttonStyle,
@@ -385,12 +428,6 @@ const Calendar: React.FC = () => {
 																<div>REZERVIŠI TERMIN</div>
 															</div>
 														</button>
-													) : (
-														<AppointmentLabel
-															appointment={appointments.find(
-																appointment => appointment.id === `${day.day}-${time}`
-															)}
-														/>
 													)}
 												</div>
 											) : (
