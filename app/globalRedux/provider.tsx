@@ -2,8 +2,8 @@
 
 import { Provider } from 'react-redux';
 import { store } from './store';
-import React from 'react';
+import React, { ReactNode } from 'react'; // Import ReactNode type
 
-export function Providers({ children }) {
-    return <Provider store={store}>{children}</Provider>;
+export function Providers({ children }: { children: ReactNode }) {
+  return <Provider store={store}>{children}</Provider>;
 }
