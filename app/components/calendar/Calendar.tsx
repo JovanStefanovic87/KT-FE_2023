@@ -1,39 +1,10 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { format, addDays, addMinutes, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
+import React, { useState } from 'react';
+import { format, addDays, addWeeks } from 'date-fns';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
-
-interface Appointment {
-  id: string;
-  day: string;
-  time: string;
-  duration: string;
-  genericName: string;
-  genericService: string;
-  date: string; // Add the date property
-}
-
-interface WorkingHours {
-  [day: string]: { start: string; end: string };
-}
-
-interface DayTranslations {
-  [day: string]: string;
-}
-
-const dayTranslations: DayTranslations = {
-  Mon: 'Pon', // Monday -> Pon
-  Tue: 'Uto', // Tuesday -> Uto
-  Wed: 'Sre', // Wednesday -> Sre
-  Thu: 'Čet', // Thursday -> Čet
-  Fri: 'Pet', // Friday -> Pet
-  Sat: 'Sub', // Saturday -> Sub
-  Sun: 'Ned', // Sunday -> Ned
-};
-
-interface AppointmentLabelProps {
-  appointment?: Appointment;
-}
+import { generateWeekOptions, generateTimeSlots } from '../../helpers/universalFunctions';
+import { workingHours, initialAppointmentsWeek32, dayTranslations } from '../../helpers/mock';
+import { Appointment, AppointmentLabelProps } from '../../helpers/interfaces';
 
 const generateWeekDays = (selectedWeekIndex: number): { day: string; date: string }[] => {
   const weekDays: { day: string; date: string }[] = [];
@@ -57,98 +28,6 @@ const generateWeekDays = (selectedWeekIndex: number): { day: string; date: strin
   return weekDays;
 };
 
-const getCurrentYear = (): string => {
-  const today = new Date();
-  return today.getFullYear().toString();
-};
-
-const workingHours: WorkingHours = {
-  Sun: { start: 'nn:nn', end: 'nn:nn' },
-  Mon: { start: '09:00', end: '17:00' },
-  Tue: { start: '09:00', end: '17:00' },
-  Wed: { start: '09:00', end: '17:00' },
-  Thu: { start: '09:00', end: '17:00' },
-  Fri: { start: '09:00', end: '19:00' },
-  Sat: { start: '09:00', end: '12:00' },
-};
-
-const generateWeekOptions = () => {
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const nextYear = currentYear + 1;
-
-  const weeks = [];
-  let currentDate = startOfWeek(today, { weekStartsOn: 1 }); // Start from the current week, with Monday as the starting day
-
-  while (currentDate.getFullYear() <= nextYear) {
-    const endOfWeekDate = endOfWeek(currentDate);
-
-    weeks.push({
-      label: `Nedelja ${format(currentDate, 'w')} (${format(currentDate, 'dd.MM.yy.')} - ${format(
-        endOfWeekDate,
-        'dd.MM.yy.'
-      )})`,
-      start: currentDate,
-      end: endOfWeekDate,
-    });
-
-    currentDate = addWeeks(currentDate, 1);
-  }
-
-  return weeks;
-};
-
-const generateTimeSlots = (slotInterval: number): string[] => {
-  const timeSlots: string[] = [];
-  const startTime = '00:00';
-  const endTime = '23:59';
-
-  let currentTime = startTime;
-  while (currentTime <= endTime) {
-    timeSlots.push(currentTime);
-
-    // Increment currentTime by the slotInterval
-    const [hours, minutes] = currentTime.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    const nextTotalMinutes = totalMinutes + slotInterval;
-    const nextHours = Math.floor(nextTotalMinutes / 60);
-    const nextMinutes = nextTotalMinutes % 60;
-    currentTime = `${nextHours.toString().padStart(2, '0')}:${nextMinutes
-      .toString()
-      .padStart(2, '0')}`;
-  }
-  return timeSlots;
-};
-
-const initialAppointmentsWeek32: Appointment[] = [
-  {
-    id: 'Mon-09:00',
-    day: 'Mon',
-    time: '09:00',
-    duration: '60 minutes',
-    genericName: 'John Doe',
-    genericService: 'Haircut',
-    date: '07.08.23', // Replace with actual date
-  },
-  // Add more initial appointments for week 32
-  // ...
-];
-
-// Initial appointments for week 33
-const initialAppointmentsWeek33: Appointment[] = [
-  {
-    id: 'Mon-09:00',
-    day: 'Mon',
-    time: '09:00',
-    duration: '60 minutes',
-    genericName: 'Jane Smith',
-    genericService: 'Haircut',
-    date: 'dd.MM.yy', // Replace with actual date
-  },
-  // Add more initial appointments for week 33
-  // ...
-];
-
 const Calendar: React.FC = () => {
   const [selectedWeek, setSelectedWeek] = useState(0);
   const weekOptions = generateWeekOptions();
@@ -166,11 +45,6 @@ const Calendar: React.FC = () => {
   const rowsGap = 8;
   const primaryBg = '#303030';
   const appointmentDuration = 180;
-
-  useEffect(() => {
-    // Set initial appointments based on the selected week
-    setAppointments(initialAppointmentsWeek32);
-  }, []);
 
   const commonStyle: React.CSSProperties = {
     height: '7rem',
