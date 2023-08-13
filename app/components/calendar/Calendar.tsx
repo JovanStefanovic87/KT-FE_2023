@@ -37,13 +37,16 @@ interface AppointmentLabelProps {
 const generateWeekDays = (selectedWeekIndex: number): { day: string; date: string }[] => {
   const weekDays: { day: string; date: string }[] = [];
   const today = new Date();
-  const startOfWeek = addDays(today, 1 - today.getDay());
+
+  // Calculate the day offset for Monday as the first day of the week
+  const dayOffset = today.getDay() === 0 ? 6 : today.getDay() - 1;
+  const startOfWeek = addDays(today, -dayOffset); // Adjust the offset here
   const currentWeekStart = addWeeks(startOfWeek, selectedWeekIndex);
 
   for (let i = 0; i < 7; i++) {
     const currentDate = addDays(currentWeekStart, i);
     const day = format(currentDate, 'EEE');
-    const date = format(currentDate, 'dd.MM.yy'); // Add this line
+    const date = format(currentDate, 'dd.MM.yy');
 
     if (workingHours[day].start !== '--:--' && workingHours[day].end !== '--:--') {
       weekDays.push({ day, date });
