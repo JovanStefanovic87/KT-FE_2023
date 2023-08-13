@@ -155,7 +155,8 @@ const Calendar: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointmentsWeek32); // Set initial appointments for week 32
   const [clickedSlots, setClickedSlots] = useState<string[]>([]);
   const weekDays = generateWeekDays(selectedWeek);
-  const timeSlots = generateTimeSlots(60);
+  const slotDuration = 60;
+  const timeSlots = generateTimeSlots(slotDuration);
   const labelHeight = '7rem';
   const slotDayHeight = '3rem';
   const slotsWidth = 200;
@@ -273,7 +274,7 @@ const Calendar: React.FC = () => {
     // Parse the duration (e.g., '30 minutes' -> 30)
     const durationInMinutes = parseInt(duration.split(' ')[0], 10);
     // Calculate the number of slots needed for the duration
-    return Math.ceil(durationInMinutes / 60);
+    return Math.ceil(durationInMinutes / slotDuration);
   };
 
   const AppointmentLabel: React.FC<AppointmentLabelProps> = ({ appointment }) => {
