@@ -2,9 +2,14 @@
 import React, { useState } from 'react';
 import { format, addDays, addWeeks } from 'date-fns';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
-import { generateWeekOptions, generateTimeSlots } from '../../helpers/universalFunctions';
+import {
+  generateWeekOptions,
+  generateTimeSlots,
+  handleSelectChange,
+} from '../../helpers/universalFunctions';
 import { workingHours, initialAppointmentsWeek32, dayTranslations } from '../../helpers/mock';
 import { Appointment, AppointmentLabelProps } from '../../helpers/interfaces';
+import { ktLabelForBtnAndSelect } from '../../../styles/tailwindGoup';
 
 const generateWeekDays = (selectedWeekIndex: number): { day: string; date: string }[] => {
   const weekDays: { day: string; date: string }[] = [];
@@ -29,6 +34,8 @@ const generateWeekDays = (selectedWeekIndex: number): { day: string; date: strin
 };
 
 const Calendar: React.FC = () => {
+  const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
+  const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
   const weekOptions = generateWeekOptions();
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointmentsWeek32); // Set initial appointments for week 32
@@ -53,13 +60,13 @@ const Calendar: React.FC = () => {
     justifyContent: 'center',
   };
   const calendarContainerStyle: React.CSSProperties = {
-    height: '80dvh',
+    height: '72dvh',
     width: slotsWidth * 7.22,
     maxWidth: '95vw',
     overflow: 'auto',
     border: '1px solid white',
     boxShadow: '0 0 1px 2px white',
-    margin: '0 auto',
+    margin: '10px auto 20px auto',
     padding: '1px',
   };
   const calendarHeadStyle: React.CSSProperties = {
@@ -72,6 +79,7 @@ const Calendar: React.FC = () => {
     justifyContent: 'space-between',
     alignItems: 'center',
     margin: '0 auto', // Center the container horizontally
+    minWidth: '300px', // Set the maximum width to 95vw
     maxWidth: '95vw', // Set the maximum width to 95vw
     overflow: 'hidden',
   };
@@ -235,140 +243,173 @@ const Calendar: React.FC = () => {
 
   return (
     <div
-      className="bg-ktBg flex flex-col py-4"
+      className="bg-ktBg flex flex-col py-4 "
       style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
     >
-      <div className="flex justify-between items-center mb-2" style={SelectContainerStyle}>
-        <div className="flex mx-auto mb-2 w-fit">
-          <button
-            onClick={() => setSelectedWeek(selectedWeek - 1)}
-            className="arrow-button mr-2 md:mr-4"
-            disabled={selectedWeek === 0}
-          >
-            <BsArrowLeft className="arrow-icon" />
-            <span className="hidden md:inline">Sledeća</span>
-          </button>
+      <div className="flex flex-col">
+        <div className="flex justify-between items-center mb-2" style={SelectContainerStyle}>
+          <div className="flex mx-auto mb-2 w-full">
+            <button
+              onClick={() => setSelectedWeek(selectedWeek - 1)}
+              className={`arrow-button mr-2 md:mr-4 ${ktLabelForBtnAndSelect}`}
+              disabled={selectedWeek === 0}
+            >
+              <BsArrowLeft className="arrow-icon" />
+              <span className="hidden md:inline">Sledeća</span>
+            </button>
 
-          <select
-            value={selectedWeek}
-            onChange={e => setSelectedWeek(parseInt(e.target.value, 10))}
-            className="p-2"
-          >
-            {weekOptions.map((week, index) => (
-              <option key={index} value={index}>
-                {week.label}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={() => setSelectedWeek(selectedWeek + 1)}
-            className="arrow-button ml-2 md:ml-4"
-            disabled={selectedWeek === weekOptions.length - 1}
-          >
-            <span className="hidden md:inline">Prethodna</span>
-            <BsArrowRight className="arrow-icon" />
-          </button>
-        </div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <div style={calendarContainerStyle}>
-          <div className="grid grid-cols-9 gap-2" style={calendarHeadStyle}>
-            <div className="col-span-8" style={dayNamesContainerStyle}>
-              {weekDays.map(dayInfo => (
-                <div
-                  key={dayInfo.day}
-                  className="col-span-1 text-center font-bold"
-                  style={dayLabelStyle}
-                >
-                  {dayTranslations[dayInfo.day]} ({dayInfo.date})
-                </div>
+            <select
+              value={selectedWeek}
+              onChange={e => setSelectedWeek(parseInt(e.target.value, 10))}
+              className={ktLabelForBtnAndSelect}
+            >
+              {weekOptions.map((week, index) => (
+                <option key={index} value={index}>
+                  {week.label}
+                </option>
               ))}
-            </div>
+            </select>
+            <button
+              onClick={() => setSelectedWeek(selectedWeek + 1)}
+              className={`arrow-button ml-2 md:ml-4 ${ktLabelForBtnAndSelect}`}
+              disabled={selectedWeek === weekOptions.length - 1}
+            >
+              <span className="hidden md:inline">Prethodna</span>
+              <BsArrowRight className="arrow-icon" />
+            </button>
           </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={calendarContainerStyle}>
+            <div className="grid grid-cols-9 gap-2" style={calendarHeadStyle}>
+              <div className="col-span-8" style={dayNamesContainerStyle}>
+                {weekDays.map(dayInfo => (
+                  <div
+                    key={dayInfo.day}
+                    className="col-span-1 text-center font-bold"
+                    style={dayLabelStyle}
+                  >
+                    {dayTranslations[dayInfo.day]} ({dayInfo.date})
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          {timeSlots.map(time => {
-            const hour = time.split(':')[0];
-            const showRow = hasWorkingHourInHour(hour);
+            {timeSlots.map(time => {
+              const hour = time.split(':')[0];
+              const showRow = hasWorkingHourInHour(hour);
 
-            return (
-              showRow && (
-                <div key={time} className="grid grid-cols-9 gap-2" style={containerBodyRowStyle}>
-                  <div className="col-span-8" style={dayNamesContainerStyle}>
-                    {weekDays.map(day => (
-                      <div className="col-span-1" style={{ border: border2px }} key={day.day}>
-                        {isWorkingHour(day.day, time) ? (
-                          <div style={appointmentContainerStyle}>
-                            {appointments.map(appointment => {
-                              if (
-                                appointment.day === day.day &&
-                                appointment.time === time &&
-                                appointment.date === day.date // Check if appointment date matches day date
-                              ) {
-                                return (
-                                  <AppointmentLabel
-                                    key={appointment.id}
-                                    appointment={appointment}
-                                  />
-                                );
-                              }
-                              return null;
-                            })}
-                            {/* Render button or appointment label based on appointment existence */}
-                            {appointments.find(
-                              appointment =>
-                                appointment.day === day.day &&
-                                appointment.time === time &&
-                                appointment.date === day.date
-                            ) ? (
-                              <AppointmentLabel
-                                appointment={appointments.find(
-                                  appointment =>
-                                    appointment.day === day.day &&
-                                    appointment.time === time &&
-                                    appointment.date === day.date
-                                )}
-                              />
-                            ) : (
-                              <button
-                                onClick={() => handleAddAppointment(day.day, time, day.date)}
-                                className="bg-ktCyan text-white rounded w-full h-full"
-                                style={{
-                                  ...buttonStyle,
-                                  /* Add any other existing styles you have for the button here */
-                                }}
-                              >
-                                <div
+              return (
+                showRow && (
+                  <div key={time} className="grid grid-cols-9 gap-2" style={containerBodyRowStyle}>
+                    <div className="col-span-8" style={dayNamesContainerStyle}>
+                      {weekDays.map(day => (
+                        <div className="col-span-1" style={{ border: border2px }} key={day.day}>
+                          {isWorkingHour(day.day, time) ? (
+                            <div style={appointmentContainerStyle}>
+                              {appointments.map(appointment => {
+                                if (
+                                  appointment.day === day.day &&
+                                  appointment.time === time &&
+                                  appointment.date === day.date // Check if appointment date matches day date
+                                ) {
+                                  return (
+                                    <AppointmentLabel
+                                      key={appointment.id}
+                                      appointment={appointment}
+                                    />
+                                  );
+                                }
+                                return null;
+                              })}
+                              {/* Render button or appointment label based on appointment existence */}
+                              {appointments.find(
+                                appointment =>
+                                  appointment.day === day.day &&
+                                  appointment.time === time &&
+                                  appointment.date === day.date
+                              ) ? (
+                                <AppointmentLabel
+                                  appointment={appointments.find(
+                                    appointment =>
+                                      appointment.day === day.day &&
+                                      appointment.time === time &&
+                                      appointment.date === day.date
+                                  )}
+                                />
+                              ) : (
+                                <button
+                                  onClick={() => handleAddAppointment(day.day, time, day.date)}
+                                  className="bg-ktCyan text-white rounded w-full h-full"
                                   style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    fontSize: '1rem',
+                                    ...buttonStyle,
+                                    /* Add any other existing styles you have for the button here */
                                   }}
                                 >
-                                  <div>
-                                    <span className="time-text">{time}</span>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      alignItems: 'center',
+                                      fontSize: '1rem',
+                                    }}
+                                  >
+                                    <div>
+                                      <span className="time-text">{time}</span>
+                                    </div>
+                                    <div>REZERVIŠI TERMIN</div>
                                   </div>
-                                  <div>REZERVIŠI TERMIN</div>
-                                </div>
-                              </button>
-                            )}
-                          </div>
-                        ) : (
-                          <div
-                            className="text-center font-bold bg-black text-white flex flex-col justify-center"
-                            style={{ ...closedTime, height: labelHeight }}
-                          >
-                            Zatvoreno
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                                </button>
+                              )}
+                            </div>
+                          ) : (
+                            <div
+                              className="text-center font-bold bg-black text-white flex flex-col justify-center"
+                              style={{ ...closedTime, height: labelHeight }}
+                            >
+                              Zatvoreno
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )
-            );
-          })}
+                )
+              );
+            })}
+          </div>
         </div>
+      </div>
+      <div className="flex justify-between items-center" style={SelectContainerStyle}>
+        <select
+          value={selectedServiceProvider || ''}
+          onChange={e =>
+            handleSelectChange(
+              e,
+              setSelectedServiceProvider as React.Dispatch<
+                React.SetStateAction<string | number | null>
+              >
+            )
+          }
+          className={ktLabelForBtnAndSelect}
+        >
+          <option value="Šovljanski">Šovljanski</option>
+          <option value="Brica">Brica</option>
+        </select>
+
+        <select
+          value={selectedEmployee || ''}
+          onChange={e =>
+            handleSelectChange(
+              e,
+              setSelectedEmployee as React.Dispatch<React.SetStateAction<string | number | null>>
+            )
+          }
+          className={ktLabelForBtnAndSelect}
+        >
+          <option value="Stevan Poljaković">Stevan Poljaković</option>
+          <option value="Milica">Milica</option>
+        </select>
       </div>
     </div>
   );

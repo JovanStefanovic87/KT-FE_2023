@@ -1,4 +1,19 @@
+import { useState, useEffect } from 'react';
 import { format, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
+
+export function useDeviceDetect() {
+  const [isMobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent : '';
+    const mobile = Boolean(
+      userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i)
+    );
+    setMobile(mobile);
+  }, []);
+
+  return { isMobile };
+}
 
 export const generateWeekOptions = () => {
   const today = new Date();
@@ -50,4 +65,12 @@ export const generateTimeSlots = (slotInterval: number): string[] => {
 export const getCurrentYear = (): string => {
   const today = new Date();
   return today.getFullYear().toString();
+};
+
+export const handleSelectChange = (
+  event: React.ChangeEvent<HTMLSelectElement>,
+  setState: React.Dispatch<React.SetStateAction<string | number | null>>
+) => {
+  const selectedValue = event.target.value;
+  setState(selectedValue);
 };
