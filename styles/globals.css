@@ -28,6 +28,17 @@ body {
   overflow-x: hidden;
 }
 
+.Button {
+  height: '7rem';
+  display: 'flex';
+  align-items: 'center';
+  justify-content: 'center';
+  height: labelHeight;
+  color: '#fff';
+  min-width: slotsWidth;
+  max-width: slotsWidth;
+}
+
 /* Hide default scrollbar */
 ::-webkit-scrollbar {
   width: 10px; /* Width of the scrollbar */
@@ -67,4 +78,30 @@ body {
 
 .arrow-icon {
   margin-right: 0.3rem;
+}
+
+.responsive-select {
+  font-size: 1rem;
+}
+
+.responsive-select option {
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .responsive-select {
+    font-size: 0.8rem;
+  }
+  .responsive-select option {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-select {
+    font-size: 0.7rem;
+  }
+  .responsive-select option {
+    font-size: 0.7rem;
+  }
 }

@@ -2,14 +2,15 @@
 import React, { useState } from 'react';
 import { format, addDays, addWeeks } from 'date-fns';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
-import {
-  generateWeekOptions,
-  generateTimeSlots,
-  handleSelectChange,
-} from '../../helpers/universalFunctions';
+import { generateWeekOptions, generateTimeSlots } from '../../helpers/universalFunctions';
 import { workingHours, initialAppointmentsWeek32, dayTranslations } from '../../helpers/mock';
 import { Appointment, AppointmentLabelProps } from '../../helpers/interfaces';
-import { ktLabelForBtnAndSelect } from '../../../styles/tailwindGoup';
+import ClientForm from './ClientForm';
+import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
+import WeekSelect from '../ui/select/WeekSelect';
+import AppointmentButton from '../ui/buttons/AppointmentButton';
+import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
+import SelectUser from '../ui/select/SelectUser';
 
 const generateWeekDays = (selectedWeekIndex: number): { day: string; date: string }[] => {
   const weekDays: { day: string; date: string }[] = [];
@@ -76,11 +77,8 @@ const Calendar: React.FC = () => {
   };
   const SelectContainerStyle: React.CSSProperties = {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    margin: '0 auto', // Center the container horizontally
-    minWidth: '300px', // Set the maximum width to 95vw
-    maxWidth: '95vw', // Set the maximum width to 95vw
+    justifyContent: 'center',
+    minWidth: '320px',
     overflow: 'hidden',
   };
   const containerBodyRowStyle: React.CSSProperties = {
@@ -246,38 +244,32 @@ const Calendar: React.FC = () => {
       className="bg-ktBg flex flex-col py-4 "
       style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
     >
+      {/* <ClientForm /> */}
       <div className="flex flex-col">
-        <div className="flex justify-between items-center mb-2" style={SelectContainerStyle}>
-          <div className="flex mx-auto mb-2 w-full">
-            <button
-              onClick={() => setSelectedWeek(selectedWeek - 1)}
-              className={`arrow-button mr-2 md:mr-4 ${ktLabelForBtnAndSelect}`}
-              disabled={selectedWeek === 0}
-            >
-              <BsArrowLeft className="arrow-icon" />
-              <span className="hidden md:inline">Sledeća</span>
-            </button>
+        <div style={SelectContainerStyle}>
+          <CalendarArrowBtn
+            onClick={() => setSelectedWeek(selectedWeek - 1)}
+            disabled={selectedWeek === 0}
+          >
+            <BsArrowLeft className="arrow-icon" />
+            <span className="hidden md:inline">Prethodna</span>
+          </CalendarArrowBtn>
 
-            <select
-              value={selectedWeek}
-              onChange={e => setSelectedWeek(parseInt(e.target.value, 10))}
-              className={ktLabelForBtnAndSelect}
-            >
-              {weekOptions.map((week, index) => (
-                <option key={index} value={index}>
-                  {week.label}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={() => setSelectedWeek(selectedWeek + 1)}
-              className={`arrow-button ml-2 md:ml-4 ${ktLabelForBtnAndSelect}`}
-              disabled={selectedWeek === weekOptions.length - 1}
-            >
-              <span className="hidden md:inline">Prethodna</span>
-              <BsArrowRight className="arrow-icon" />
-            </button>
-          </div>
+          <WeekSelect value={selectedWeek} onChange={value => setSelectedWeek(value)}>
+            {weekOptions.map((week, index) => (
+              <option key={index} value={index}>
+                {week.label}
+              </option>
+            ))}
+          </WeekSelect>
+
+          <CalendarArrowBtn
+            onClick={() => setSelectedWeek(selectedWeek + 1)}
+            disabled={selectedWeek === weekOptions.length - 1}
+          >
+            <span className="hidden md:inline">Naredna</span>
+            <BsArrowRight className="arrow-icon" />
+          </CalendarArrowBtn>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <div style={calendarContainerStyle}>
@@ -338,37 +330,17 @@ const Calendar: React.FC = () => {
                                   )}
                                 />
                               ) : (
-                                <button
+                                <AppointmentButton
                                   onClick={() => handleAddAppointment(day.day, time, day.date)}
-                                  className="bg-ktCyan text-white rounded w-full h-full"
+                                  time={time}
                                   style={{
                                     ...buttonStyle,
-                                    /* Add any other existing styles you have for the button here */
                                   }}
-                                >
-                                  <div
-                                    style={{
-                                      display: 'flex',
-                                      flexDirection: 'column',
-                                      alignItems: 'center',
-                                      fontSize: '1rem',
-                                    }}
-                                  >
-                                    <div>
-                                      <span className="time-text">{time}</span>
-                                    </div>
-                                    <div>REZERVIŠI TERMIN</div>
-                                  </div>
-                                </button>
+                                />
                               )}
                             </div>
                           ) : (
-                            <div
-                              className="text-center font-bold bg-black text-white flex flex-col justify-center"
-                              style={{ ...closedTime, height: labelHeight }}
-                            >
-                              Zatvoreno
-                            </div>
+                            <UnworkingHoursLabel />
                           )}
                         </div>
                       ))}
@@ -381,35 +353,21 @@ const Calendar: React.FC = () => {
         </div>
       </div>
       <div className="flex justify-between items-center" style={SelectContainerStyle}>
-        <select
-          value={selectedServiceProvider || ''}
-          onChange={e =>
-            handleSelectChange(
-              e,
-              setSelectedServiceProvider as React.Dispatch<
-                React.SetStateAction<string | number | null>
-              >
-            )
-          }
-          className={ktLabelForBtnAndSelect}
+        <SelectUser
+          selectedUser={selectedServiceProvider || ''}
+          onSelectUser={user => setSelectedServiceProvider(user)}
         >
           <option value="Šovljanski">Šovljanski</option>
           <option value="Brica">Brica</option>
-        </select>
+        </SelectUser>
 
-        <select
-          value={selectedEmployee || ''}
-          onChange={e =>
-            handleSelectChange(
-              e,
-              setSelectedEmployee as React.Dispatch<React.SetStateAction<string | number | null>>
-            )
-          }
-          className={ktLabelForBtnAndSelect}
+        <SelectUser
+          selectedUser={selectedEmployee || ''}
+          onSelectUser={user => setSelectedEmployee(user)}
         >
           <option value="Stevan Poljaković">Stevan Poljaković</option>
           <option value="Milica">Milica</option>
-        </select>
+        </SelectUser>
       </div>
     </div>
   );

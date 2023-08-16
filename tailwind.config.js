@@ -25,9 +25,11 @@ module.exports = {
       },
       maxWidth: {
         '95': '95dvw',
-        'label': '100px',
       },
     },
+    minWidth: {
+      'label': '180px',
+    }
   },
   plugins: [],
 };
