@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import Backdrop from '../ui/Backdrop'
+import Backdrop from '../ui/Backdrop';
 
-const clientsData = [
+interface Client {
+  id: number;
+  name: string;
+  phoneNumber: string;
+  email: string;
+}
+
+const clientsData: Client[] = [
   {
     id: 1,
     name: 'John Doe',
@@ -83,45 +90,43 @@ const clientsData = [
   },
 ];
 
+const ClientForm: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedName, setSelectedName] = useState<string | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(true); // Added state for form visibility
+  const [backdrop, setBackdrop] = useState<boolean>(true);
 
-const ClientForm = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedName, setSelectedName] = useState(null); // Newly added state
-
-  const filteredClients = clientsData.filter(client =>
-    client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.phoneNumber.includes(searchQuery)
+  const filteredClients = clientsData.filter(
+    client =>
+      client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      client.phoneNumber.includes(searchQuery)
   );
 
-  const handleNameClick = name => {
+  const handleNameClick = (name: string) => {
     setSelectedName(name);
   };
 
-  const listContainerStyle = {
-    display: 'flex',
-    flexWrap: 'wrap', // Wrap items to next row
-    justifyContent: 'center',
-    gap: '0.5rem', // Add some space between items
-    listStyle: 'none', // Remove default list styles
-    padding: 2, // Remove default padding
+  const handleFormClose = () => {
+    setIsFormOpen(false);
+    setBackdrop(false);
   };
 
-  const formStyle = {
-  width: '850px',
-  maxWidth: '90vw',
-  height: '850px',
-  maxHeight: '70vh',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center', // Center horizontally
-  position: 'fixed',
-  left: '50%',
-  transform: 'translateX(-50%)', // Center horizontally using transform
-  backgroundColor: 'white',
-  zIndex: 10,
-  }
+  const formStyle: React.CSSProperties = {
+    width: '850px',
+    maxWidth: '90vw',
+    height: '850px',
+    maxHeight: '70vh',
+    display: isFormOpen ? 'flex' : 'none',
+    flexDirection: 'column',
+    alignItems: 'center', // Center horizontally
+    position: 'fixed',
+    left: '50%',
+    transform: 'translateX(-50%)', // Center horizontally using transform
+    backgroundColor: 'white',
+    zIndex: 10,
+  };
 
-  const stickyHeaderStyle = {
+  const stickyHeaderStyle: React.CSSProperties = {
     position: 'sticky',
     top: 0, // Stick to the top of the container
     marginBottom: '1rem', // Add margin to create space between header and content
@@ -130,9 +135,9 @@ const ClientForm = () => {
   };
 
   return (
-    <div className="mx-auto max-w-lg">
-      <div className="fixed bg-white h-screen overflow-y-auto z-10" style={formStyle}>
-        <div style={stickyHeaderStyle} className='bg-ktCyan z-11 w-full flex flex-col items-center'>
+    <div className="fixed mx-auto max-w-lg z-10">
+      <div className="bg-white h-screen overflow-y-auto z-10" style={formStyle}>
+        <div style={stickyHeaderStyle} className="bg-ktCyan z-11 w-full flex flex-col items-center">
           <h1 className="text-2xl font-bold mb-4 text-white">IZBOR KLIJENTA</h1>
           <input
             type="text"
@@ -142,14 +147,13 @@ const ClientForm = () => {
             onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
-        <ul style={listContainerStyle}>
+        <ul className="grid px-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
           {filteredClients.map((client, index) => (
             <li
               key={client.id}
-              className={`border p-2 rounded-md cursor-pointer ${
+              className={`border-2 p-2 rounded-md cursor-pointer ${
                 selectedName === client.name ? 'bg-blue-100' : ''
               }`}
-              style={{ flex: '0 0 calc(33.33% - 1rem)' }} // Set width for each item
               onClick={() => handleNameClick(client.name)}
             >
               <h2 className="font-bold mb-1">{`${index + 1}. ${client.name}`}</h2>
@@ -166,7 +170,7 @@ const ClientForm = () => {
           </p>
         )}
       </div>
-      <Backdrop/>
+      <Backdrop onClick={handleFormClose} isVisible={backdrop} />
     </div>
   );
 };

@@ -28,8 +28,8 @@ module.exports = {
       },
     },
     minWidth: {
-      'label': '180px',
-    }
+      'label': '140px',
+    },
   },
   plugins: [],
 };

@@ -11,6 +11,11 @@ import WeekSelect from '../ui/select/WeekSelect';
 import AppointmentButton from '../ui/buttons/AppointmentButton';
 import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
 import SelectUser from '../ui/select/SelectUser';
+import SlotsRow from './SlotsRow';
+import Container from './Container';
+import WeekDaySlot from './WeekDaySlot';
+import AppointmentContainer from './AppointmentContainer';
+import SelectContainer from './SelectContainer';
 
 const generateWeekDays = (selectedWeekIndex: number): { day: string; date: string }[] => {
   const weekDays: { day: string; date: string }[] = [];
@@ -47,7 +52,6 @@ const Calendar: React.FC = () => {
   const labelHeight = '7rem';
   const slotDayHeight = '3rem';
   const slotsWidth = 200;
-  const headerHeight = 68;
   const borderSize = 2;
   const border2px = `${borderSize}px solid #dfdfdf`;
   const rowsGap = 8;
@@ -70,24 +74,6 @@ const Calendar: React.FC = () => {
     margin: '10px auto 20px auto',
     padding: '1px',
   };
-  const calendarHeadStyle: React.CSSProperties = {
-    position: 'sticky',
-    top: 0,
-    zIndex: 3,
-  };
-  const SelectContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: 'center',
-    minWidth: '320px',
-    overflow: 'hidden',
-  };
-  const containerBodyRowStyle: React.CSSProperties = {
-    margin: '0.5rem 0',
-  };
-  const dayNamesContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'row',
-  };
   const dayLabelStyle: React.CSSProperties = {
     ...commonStyle,
     height: slotDayHeight,
@@ -107,13 +93,6 @@ const Calendar: React.FC = () => {
     maxWidth: slotsWidth,
   };
 
-  const appointmentContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: 'center',
-    minWidth: slotsWidth,
-    position: 'relative', // Add relative positioning
-  };
-
   const appointmentInfoStyle: React.CSSProperties = {
     ...buttonStyle,
     color: '#fff',
@@ -131,23 +110,6 @@ const Calendar: React.FC = () => {
     top: 0, // Position it at the top
     left: 0, // Position it at the left
     zIndex: 1, // Set a higher z-index to make it overlap other elements
-  };
-
-  const reservationButtonStyle: React.CSSProperties = {
-    ...commonStyle,
-    height: labelHeight,
-    color: '#fff',
-    background: 'linear-gradient(45deg, #4CAF50, #2E8B57)',
-    backgroundSize: '100% 100%',
-    backgroundClip: 'text',
-  };
-  const closedTime: React.CSSProperties = {
-    ...reservationButtonStyle,
-    background: 'black',
-    color: '#6d6d6d',
-    cursor: 'not-allowed',
-    minWidth: slotsWidth,
-    maxWidth: slotsWidth,
   };
 
   const calculateSlotsForDuration = (duration: string): number => {
@@ -240,13 +202,10 @@ const Calendar: React.FC = () => {
   };
 
   return (
-    <div
-      className="bg-ktBg flex flex-col py-4 "
-      style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
-    >
-      {/* <ClientForm /> */}
+    <Container>
+      <ClientForm />
       <div className="flex flex-col">
-        <div style={SelectContainerStyle}>
+        <SelectContainer>
           <CalendarArrowBtn
             onClick={() => setSelectedWeek(selectedWeek - 1)}
             disabled={selectedWeek === 0}
@@ -270,22 +229,20 @@ const Calendar: React.FC = () => {
             <span className="hidden md:inline">Naredna</span>
             <BsArrowRight className="arrow-icon" />
           </CalendarArrowBtn>
-        </div>
+        </SelectContainer>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <div style={calendarContainerStyle}>
-            <div className="grid grid-cols-9 gap-2" style={calendarHeadStyle}>
-              <div className="col-span-8" style={dayNamesContainerStyle}>
-                {weekDays.map(dayInfo => (
-                  <div
-                    key={dayInfo.day}
-                    className="col-span-1 text-center font-bold"
-                    style={dayLabelStyle}
-                  >
-                    {dayTranslations[dayInfo.day]} ({dayInfo.date})
-                  </div>
-                ))}
-              </div>
-            </div>
+            <WeekDaySlot>
+              {weekDays.map(dayInfo => (
+                <div
+                  key={dayInfo.day}
+                  className="col-span-1 text-center font-bold"
+                  style={dayLabelStyle}
+                >
+                  {dayTranslations[dayInfo.day]} ({dayInfo.date})
+                </div>
+              ))}
+            </WeekDaySlot>
 
             {timeSlots.map(time => {
               const hour = time.split(':')[0];
@@ -293,66 +250,64 @@ const Calendar: React.FC = () => {
 
               return (
                 showRow && (
-                  <div key={time} className="grid grid-cols-9 gap-2" style={containerBodyRowStyle}>
-                    <div className="col-span-8" style={dayNamesContainerStyle}>
-                      {weekDays.map(day => (
-                        <div className="col-span-1" style={{ border: border2px }} key={day.day}>
-                          {isWorkingHour(day.day, time) ? (
-                            <div style={appointmentContainerStyle}>
-                              {appointments.map(appointment => {
-                                if (
-                                  appointment.day === day.day &&
-                                  appointment.time === time &&
-                                  appointment.date === day.date // Check if appointment date matches day date
-                                ) {
-                                  return (
-                                    <AppointmentLabel
-                                      key={appointment.id}
-                                      appointment={appointment}
-                                    />
-                                  );
-                                }
-                                return null;
-                              })}
-                              {/* Render button or appointment label based on appointment existence */}
-                              {appointments.find(
-                                appointment =>
-                                  appointment.day === day.day &&
-                                  appointment.time === time &&
-                                  appointment.date === day.date
-                              ) ? (
-                                <AppointmentLabel
-                                  appointment={appointments.find(
-                                    appointment =>
-                                      appointment.day === day.day &&
-                                      appointment.time === time &&
-                                      appointment.date === day.date
-                                  )}
-                                />
-                              ) : (
-                                <AppointmentButton
-                                  onClick={() => handleAddAppointment(day.day, time, day.date)}
-                                  time={time}
-                                  style={{
-                                    ...buttonStyle,
-                                  }}
-                                />
-                              )}
-                            </div>
-                          ) : (
-                            <UnworkingHoursLabel />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <SlotsRow key={time}>
+                    {weekDays.map(day => (
+                      <div className="col-span-1" style={{ border: border2px }} key={day.day}>
+                        {isWorkingHour(day.day, time) ? (
+                          <AppointmentContainer>
+                            {appointments.map(appointment => {
+                              if (
+                                appointment.day === day.day &&
+                                appointment.time === time &&
+                                appointment.date === day.date // Check if appointment date matches day date
+                              ) {
+                                return (
+                                  <AppointmentLabel
+                                    key={appointment.id}
+                                    appointment={appointment}
+                                  />
+                                );
+                              }
+                              return null;
+                            })}
+                            {/* Render button or appointment label based on appointment existence */}
+                            {appointments.find(
+                              appointment =>
+                                appointment.day === day.day &&
+                                appointment.time === time &&
+                                appointment.date === day.date
+                            ) ? (
+                              <AppointmentLabel
+                                appointment={appointments.find(
+                                  appointment =>
+                                    appointment.day === day.day &&
+                                    appointment.time === time &&
+                                    appointment.date === day.date
+                                )}
+                              />
+                            ) : (
+                              <AppointmentButton
+                                onClick={() => handleAddAppointment(day.day, time, day.date)}
+                                time={time}
+                                style={{
+                                  ...buttonStyle,
+                                }}
+                              />
+                            )}
+                          </AppointmentContainer>
+                        ) : (
+                          <UnworkingHoursLabel />
+                        )}
+                      </div>
+                    ))}
+                  </SlotsRow>
                 )
               );
             })}
           </div>
         </div>
       </div>
-      <div className="flex justify-between items-center" style={SelectContainerStyle}>
+      <SelectContainer>
         <SelectUser
           selectedUser={selectedServiceProvider || ''}
           onSelectUser={user => setSelectedServiceProvider(user)}
@@ -368,8 +323,8 @@ const Calendar: React.FC = () => {
           <option value="Stevan Poljaković">Stevan Poljaković</option>
           <option value="Milica">Milica</option>
         </SelectUser>
-      </div>
-    </div>
+      </SelectContainer>
+    </Container>
   );
 };
 
