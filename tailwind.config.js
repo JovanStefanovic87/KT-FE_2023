@@ -16,6 +16,8 @@ module.exports = {
         ktHeaderGray: '#202020',
         ktCyan: '#0D3B4E',
         ktBg: '#303030',
+        ktAppointmentBg: '#555555',
+        ktAppointmentTime: '#f8cc03',
       },
       transitionDuration: {
         'instant': '0ms',
@@ -23,12 +25,26 @@ module.exports = {
         'medium': '500ms',
         'slow': '1000ms',
       },
+      height: {
+        'appointmentSlot': '7rem',
+        'calHeight': '72dvh',
+        'slotDayHeight': '3rem',
+      },
+      width: {
+        'slotsWidth': 200,
+      },
+      minWidth: {
+        'label': 140,
+        'slotsWidth': 200,
+      },
       maxWidth: {
         '95': '95dvw',
+        'select': 150,
+        'slotsWidth': 200,
       },
-    },
-    minWidth: {
-      'label': '140px',
+      zIndex: {
+        '3': 3,
+      },
     },
   },
   plugins: [],

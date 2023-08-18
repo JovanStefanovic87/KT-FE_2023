@@ -13,7 +13,7 @@ import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
 import SelectUser from '../ui/select/SelectUser';
 import SlotsRow from './SlotsRow';
 import Container from './Container';
-import WeekDaySlot from './WeekDaySlot';
+import DaysRow from './DaysRow';
 import AppointmentContainer from './AppointmentContainer';
 import SelectContainer from './SelectContainer';
 
@@ -49,68 +49,10 @@ const Calendar: React.FC = () => {
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);
-  const labelHeight = '7rem';
-  const slotDayHeight = '3rem';
   const slotsWidth = 200;
   const borderSize = 2;
-  const border2px = `${borderSize}px solid #dfdfdf`;
   const rowsGap = 8;
-  const primaryBg = '#303030';
   const appointmentDuration = 180;
-
-  const commonStyle: React.CSSProperties = {
-    height: '7rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-  const calendarContainerStyle: React.CSSProperties = {
-    height: '72dvh',
-    width: slotsWidth * 7.22,
-    maxWidth: '95vw',
-    overflow: 'auto',
-    border: '1px solid white',
-    boxShadow: '0 0 1px 2px white',
-    margin: '10px auto 20px auto',
-    padding: '1px',
-  };
-  const dayLabelStyle: React.CSSProperties = {
-    ...commonStyle,
-    height: slotDayHeight,
-    background: primaryBg,
-    color: 'white',
-    border: border2px,
-    minWidth: '204px',
-    maxWidth: '204px',
-    position: 'sticky',
-    top: 0,
-  };
-  const buttonStyle: React.CSSProperties = {
-    ...commonStyle,
-    height: labelHeight,
-    color: '#fff',
-    minWidth: slotsWidth,
-    maxWidth: slotsWidth,
-  };
-
-  const appointmentInfoStyle: React.CSSProperties = {
-    ...buttonStyle,
-    color: '#fff',
-    backgroundColor: '#555555',
-    fontSize: '0.9rem',
-    lineHeight: '1.2',
-    flexDirection: 'column',
-    margin: 0,
-    textAlign: 'center',
-    whiteSpace: 'pre-wrap',
-    overflowWrap: 'break-word',
-    wordBreak: 'break-word',
-    height: `${rowsGap}px`,
-    position: 'absolute', // Add absolute positioning
-    top: 0, // Position it at the top
-    left: 0, // Position it at the left
-    zIndex: 1, // Set a higher z-index to make it overlap other elements
-  };
 
   const calculateSlotsForDuration = (duration: string): number => {
     // Parse the duration (e.g., '30 minutes' -> 30)
@@ -151,13 +93,13 @@ const Calendar: React.FC = () => {
 
     // Calculate the total height needed for the appointment label when it spans multiple slots
     const totalHeight = singleSlotHeight * slotsNeeded + spaceBetweenSlots; // 2px for the gap between slots
-
     return (
       <div
-        style={{ ...appointmentInfoStyle, height: `${totalHeight}px` }}
+        className="flex flex-col justify-center min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-10"
+        style={{ height: `${totalHeight}px` }}
         data-slots-needed={slotsNeeded}
       >
-        <div className="time-text">
+        <div className="text-ktAppointmentTime text-xl font-bold">
           {time}h - {formattedEndTime}h
         </div>
         {/* <div>{date}</div> */}
@@ -230,19 +172,21 @@ const Calendar: React.FC = () => {
             <BsArrowRight className="arrow-icon" />
           </CalendarArrowBtn>
         </SelectContainer>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <div style={calendarContainerStyle}>
-            <WeekDaySlot>
+        <div className="flex justify-end">
+          <div
+            className="h-calHeight overflow-auto border-2 bg-ktBg border-solid border-white mt-3 mb-3 mx-auto"
+            style={{ width: slotsWidth * 7.22 }}
+          >
+            <DaysRow>
               {weekDays.map(dayInfo => (
                 <div
                   key={dayInfo.day}
-                  className="col-span-1 text-center font-bold"
-                  style={dayLabelStyle}
+                  className="flex justify-center items-center h-slotDayHeight w-slotsWidth mx-0.5 mt-1 min-w-slotsWidth text-white font-bold border-2 border-white border-solid bg-gray-800"
                 >
                   {dayTranslations[dayInfo.day]} ({dayInfo.date})
                 </div>
               ))}
-            </WeekDaySlot>
+            </DaysRow>
 
             {timeSlots.map(time => {
               const hour = time.split(':')[0];
@@ -252,7 +196,7 @@ const Calendar: React.FC = () => {
                 showRow && (
                   <SlotsRow key={time}>
                     {weekDays.map(day => (
-                      <div className="col-span-1" style={{ border: border2px }} key={day.day}>
+                      <div className="col-span-1 border-2 border-solid border-white" key={day.day}>
                         {isWorkingHour(day.day, time) ? (
                           <AppointmentContainer>
                             {appointments.map(appointment => {
@@ -289,9 +233,6 @@ const Calendar: React.FC = () => {
                               <AppointmentButton
                                 onClick={() => handleAddAppointment(day.day, time, day.date)}
                                 time={time}
-                                style={{
-                                  ...buttonStyle,
-                                }}
                               />
                             )}
                           </AppointmentContainer>

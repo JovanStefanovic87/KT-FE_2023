@@ -6,26 +6,11 @@ interface AppointmentButtonProps {
   style?: CSSProperties;
 }
 
-const AppointmentButton: React.FC<AppointmentButtonProps> = ({ onClick, time, style }) => {
+const AppointmentButton: React.FC<AppointmentButtonProps> = ({ onClick, time }) => {
   return (
-    <button
-      onClick={onClick}
-      className="bg-ktCyan text-white rounded w-full h-full Button"
-      style={style}
-    >
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          fontSize: '1rem',
-        }}
-      >
-        <div>
-          <span className="time-text">{time}</span>
-        </div>
-        <div>REZERVIŠI TERMIN</div>
-      </div>
+    <button onClick={onClick} className="bg-ktCyan text-white w-full h-appointmentSlot">
+      <span className="text-ktAppointmentTime text-xl font-bold">{time}</span>
+      <div>REZERVIŠI TERMIN</div>
     </button>
   );
 };

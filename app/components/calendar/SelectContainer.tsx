@@ -5,14 +5,7 @@ interface SelectContainerProps {
 }
 
 const SelectContainer: React.FC<SelectContainerProps> = ({ children }) => {
-  const SelectContainerStyle: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: 'center',
-    minWidth: '320px',
-    overflow: 'hidden',
-  };
-
-  return <div style={SelectContainerStyle}>{children}</div>;
+  return <div className="flex justify-center gap-x-6 w-screen">{children}</div>;
 };
 
 export default SelectContainer;
