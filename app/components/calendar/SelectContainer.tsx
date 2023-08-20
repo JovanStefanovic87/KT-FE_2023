@@ -5,7 +5,7 @@ interface SelectContainerProps {
 }
 
 const SelectContainer: React.FC<SelectContainerProps> = ({ children }) => {
-  return <div className="flex justify-center gap-x-6 w-screen">{children}</div>;
+  return <div className="flex justify-center gap-x-6 w-screen md:w-calendar-lg">{children}</div>;
 };
 
 export default SelectContainer;

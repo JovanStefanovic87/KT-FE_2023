@@ -9,10 +9,10 @@ const Container: React.FC<ContainerProps> = ({ children }) => {
 
   return (
     <div
-      className="bg-ktBg flex flex-col py-4 "
+      className="bg-ktBg flex flex-col py-4 md:w-calendar-lg"
       style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
     >
-      {children}
+      <div className="flex flex-col">{children}</div>
     </div>
   );
 };

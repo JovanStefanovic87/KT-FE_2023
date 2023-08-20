@@ -32,6 +32,8 @@ module.exports = {
       },
       width: {
         'slotsWidth': 200,
+        'calendarSlots': 200 * 7.22,
+        'calendar-lg': 'calc(100dvw - 24rem)',
       },
       minWidth: {
         'label': 140,

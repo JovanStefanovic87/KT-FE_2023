@@ -49,10 +49,6 @@ const Calendar: React.FC = () => {
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);
-  const slotsWidth = 200;
-  const borderSize = 2;
-  const rowsGap = 8;
-  const appointmentDuration = 180;
 
   const calculateSlotsForDuration = (duration: string): number => {
     // Parse the duration (e.g., '30 minutes' -> 30)
@@ -62,6 +58,9 @@ const Calendar: React.FC = () => {
   };
 
   const AppointmentLabel: React.FC<AppointmentLabelProps> = ({ appointment }) => {
+    const borderSize = 2;
+    const rowsGap = 8;
+
     if (!appointment) return null;
 
     const { time, duration, genericName, genericService, date } = appointment;
@@ -111,6 +110,8 @@ const Calendar: React.FC = () => {
   };
 
   const handleAddAppointment = (day: string, time: string, date: string) => {
+    const appointmentDuration = 180;
+
     const newAppointment: Appointment = {
       id: `${day}-${time}`,
       day,
@@ -144,16 +145,16 @@ const Calendar: React.FC = () => {
   };
 
   return (
-    <Container>
+    <>
       <ClientForm />
-      <div className="flex flex-col">
+      <Container>
         <SelectContainer>
           <CalendarArrowBtn
             onClick={() => setSelectedWeek(selectedWeek - 1)}
             disabled={selectedWeek === 0}
           >
             <BsArrowLeft className="arrow-icon" />
-            <span className="hidden md:inline">Prethodna</span>
+            <span className="hidden lg:inline">Prethodna</span>
           </CalendarArrowBtn>
 
           <WeekSelect value={selectedWeek} onChange={value => setSelectedWeek(value)}>
@@ -168,15 +169,12 @@ const Calendar: React.FC = () => {
             onClick={() => setSelectedWeek(selectedWeek + 1)}
             disabled={selectedWeek === weekOptions.length - 1}
           >
-            <span className="hidden md:inline">Naredna</span>
+            <span className="hidden lg:inline">Naredna</span>
             <BsArrowRight className="arrow-icon" />
           </CalendarArrowBtn>
         </SelectContainer>
-        <div className="flex justify-end">
-          <div
-            className="h-calHeight overflow-auto border-2 bg-ktBg border-solid border-white mt-3 mb-3 mx-auto"
-            style={{ width: slotsWidth * 7.22 }}
-          >
+        <div className="flex px-2">
+          <div className="h-calHeight w-calendarSlots overflow-auto border-2 bg-ktBg border-solid border-white mt-3 mb-3 mx-auto">
             <DaysRow>
               {weekDays.map(dayInfo => (
                 <div
@@ -247,25 +245,25 @@ const Calendar: React.FC = () => {
             })}
           </div>
         </div>
-      </div>
-      <SelectContainer>
-        <SelectUser
-          selectedUser={selectedServiceProvider || ''}
-          onSelectUser={user => setSelectedServiceProvider(user)}
-        >
-          <option value="Šovljanski">Šovljanski</option>
-          <option value="Brica">Brica</option>
-        </SelectUser>
+        <SelectContainer>
+          <SelectUser
+            selectedUser={selectedServiceProvider || ''}
+            onSelectUser={user => setSelectedServiceProvider(user)}
+          >
+            <option value="Šovljanski">Šovljanski</option>
+            <option value="Brica">Brica</option>
+          </SelectUser>
 
-        <SelectUser
-          selectedUser={selectedEmployee || ''}
-          onSelectUser={user => setSelectedEmployee(user)}
-        >
-          <option value="Stevan Poljaković">Stevan Poljaković</option>
-          <option value="Milica">Milica</option>
-        </SelectUser>
-      </SelectContainer>
-    </Container>
+          <SelectUser
+            selectedUser={selectedEmployee || ''}
+            onSelectUser={user => setSelectedEmployee(user)}
+          >
+            <option value="Stevan Poljaković">Stevan Poljaković</option>
+            <option value="Milica">Milica</option>
+          </SelectUser>
+        </SelectContainer>
+      </Container>
+    </>
   );
 };
 
