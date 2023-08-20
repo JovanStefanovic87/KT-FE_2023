@@ -46,6 +46,14 @@ const Calendar: React.FC = () => {
   const weekOptions = generateWeekOptions();
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointmentsWeek32); // Set initial appointments for week 32
   const [clickedSlots, setClickedSlots] = useState<string[]>([]);
+  const [displayForm, setDisplayForm] = useState<{
+    form: boolean;
+    backdrop: boolean;
+  }>({
+    form: false,
+    backdrop: false,
+  });
+  const [displayBackdrop, setDisplayBackdrop] = useState<boolean>(false);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);
@@ -146,7 +154,7 @@ const Calendar: React.FC = () => {
 
   return (
     <>
-      <ClientForm />
+      <ClientForm displayForm={displayForm} setDisplayForm={setDisplayForm} />
       <Container>
         <SelectContainer>
           <CalendarArrowBtn
@@ -197,22 +205,6 @@ const Calendar: React.FC = () => {
                       <div className="col-span-1 border-2 border-solid border-white" key={day.day}>
                         {isWorkingHour(day.day, time) ? (
                           <AppointmentContainer>
-                            {appointments.map(appointment => {
-                              if (
-                                appointment.day === day.day &&
-                                appointment.time === time &&
-                                appointment.date === day.date // Check if appointment date matches day date
-                              ) {
-                                return (
-                                  <AppointmentLabel
-                                    key={appointment.id}
-                                    appointment={appointment}
-                                  />
-                                );
-                              }
-                              return null;
-                            })}
-                            {/* Render button or appointment label based on appointment existence */}
                             {appointments.find(
                               appointment =>
                                 appointment.day === day.day &&
@@ -229,7 +221,12 @@ const Calendar: React.FC = () => {
                               />
                             ) : (
                               <AppointmentButton
-                                onClick={() => handleAddAppointment(day.day, time, day.date)}
+                                onClick={() =>
+                                  setDisplayForm({
+                                    form: true,
+                                    backdrop: true,
+                                  })
+                                }
                                 time={time}
                               />
                             )}

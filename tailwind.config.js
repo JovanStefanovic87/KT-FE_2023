@@ -29,15 +29,19 @@ module.exports = {
         'appointmentSlot': '7rem',
         'calHeight': '72dvh',
         'slotDayHeight': '3rem',
+        'header': 68,
+        'main': 'calc(100dvh - 68px)',
       },
       width: {
         'slotsWidth': 200,
         'calendarSlots': 200 * 7.22,
         'calendar-lg': 'calc(100dvw - 24rem)',
+        'form': '850px',
       },
       minWidth: {
         'label': 140,
         'slotsWidth': 200,
+        'form': '95dvw'
       },
       maxWidth: {
         '95': '95dvw',

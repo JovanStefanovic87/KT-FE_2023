@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 import Backdrop from '../ui/Backdrop';
 
+interface ClientFormProps {
+  displayForm: {
+    form: boolean;
+    backdrop: boolean;
+  };
+  setDisplayForm: React.Dispatch<
+    React.SetStateAction<{
+      form: boolean;
+      backdrop: boolean;
+    }>
+  >;
+}
+
 interface Client {
   id: number;
   name: string;
@@ -90,11 +103,9 @@ const clientsData: Client[] = [
   },
 ];
 
-const ClientForm: React.FC = () => {
+const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedName, setSelectedName] = useState<string | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState<boolean>(true); // Added state for form visibility
-  const [backdrop, setBackdrop] = useState<boolean>(true);
 
   const filteredClients = clientsData.filter(
     client =>
@@ -107,37 +118,19 @@ const ClientForm: React.FC = () => {
   };
 
   const handleFormClose = () => {
-    setIsFormOpen(false);
-    setBackdrop(false);
-  };
-
-  const formStyle: React.CSSProperties = {
-    width: '850px',
-    maxWidth: '90vw',
-    height: '850px',
-    maxHeight: '70vh',
-    display: isFormOpen ? 'flex' : 'none',
-    flexDirection: 'column',
-    alignItems: 'center', // Center horizontally
-    position: 'fixed',
-    left: '50%',
-    transform: 'translateX(-50%)', // Center horizontally using transform
-    backgroundColor: 'white',
-    zIndex: 10,
-  };
-
-  const stickyHeaderStyle: React.CSSProperties = {
-    position: 'sticky',
-    top: 0, // Stick to the top of the container
-    marginBottom: '1rem', // Add margin to create space between header and content
-    padding: '1rem', // Add padding for spacing
-    justifyContent: 'center',
+    setDisplayForm({
+      form: false,
+      backdrop: false,
+    });
   };
 
   return (
-    <div className="fixed mx-auto max-w-lg z-10">
-      <div className="bg-white h-screen overflow-y-auto z-10" style={formStyle}>
-        <div style={stickyHeaderStyle} className="bg-ktCyan z-11 w-full flex flex-col items-center">
+    <div
+      className="fixed mx-auto max-w-lg z-10"
+      style={{ display: displayForm.form ? 'flex' : 'none' }}
+    >
+      <div className="flex flex-col items-center fixed left-1/2 -translate-x-1/2 bg-white overflow-y-auto z-10 w-form max-w-form h-main">
+        <div className="bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1">
           <h1 className="text-2xl font-bold mb-4 text-white">IZBOR KLIJENTA</h1>
           <input
             type="text"
@@ -170,7 +163,7 @@ const ClientForm: React.FC = () => {
           </p>
         )}
       </div>
-      <Backdrop onClick={handleFormClose} isVisible={backdrop} />
+      <Backdrop onClick={handleFormClose} isVisible={displayForm.backdrop} />
     </div>
   );
 };
