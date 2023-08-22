@@ -52,11 +52,10 @@ const Calendar: React.FC = () => {
     serviceForm: boolean;
     backdrop: boolean;
   }>({
-    clientForm: false,
-    serviceForm: true,
-    backdrop: false,
+    clientForm: true,
+    serviceForm: false,
+    backdrop: true,
   });
-  const [displayBackdrop, setDisplayBackdrop] = useState<boolean>(false);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);

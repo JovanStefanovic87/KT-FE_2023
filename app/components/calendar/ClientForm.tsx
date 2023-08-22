@@ -17,98 +17,9 @@ interface ClientFormProps {
   >;
 }
 
-interface Client {
-  id: number;
-  name: string;
-  phoneNumber: string;
-  email: string;
-}
-
-const clientsData: Client[] = [
-  {
-    id: 1,
-    name: 'John Doe',
-    phoneNumber: '123-456-7890',
-    email: 'john@example.com',
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    phoneNumber: '987-654-3210',
-    email: 'jane@example.com',
-  },
-  {
-    id: 3,
-    name: 'Alen Stefanovic',
-    phoneNumber: '987-654-3210',
-    email: 'alen@example.com',
-  },
-  // Add more clients as needed
-  {
-    id: 4,
-    name: 'Emily Johnson',
-    phoneNumber: '555-123-4567',
-    email: 'emily@example.com',
-  },
-  {
-    id: 5,
-    name: 'Michael Brown',
-    phoneNumber: '888-555-7890',
-    email: 'michael@example.com',
-  },
-  {
-    id: 6,
-    name: 'Olivia Wilson',
-    phoneNumber: '777-444-1234',
-    email: 'olivia@example.com',
-  },
-  {
-    id: 7,
-    name: 'William Davis',
-    phoneNumber: '555-777-8888',
-    email: 'william@example.com',
-  },
-  {
-    id: 8,
-    name: 'Sophia Martinez',
-    phoneNumber: '222-333-4444',
-    email: 'sophia@example.com',
-  },
-  {
-    id: 9,
-    name: 'Liam Garcia',
-    phoneNumber: '777-999-1111',
-    email: 'liam@example.com',
-  },
-  {
-    id: 10,
-    name: 'Ava Rodriguez',
-    phoneNumber: '888-222-3333',
-    email: 'ava@example.com',
-  },
-  {
-    id: 11,
-    name: 'Ava Rodriguez',
-    phoneNumber: '888-222-3333',
-    email: 'ava@example.com',
-  },
-  {
-    id: 12,
-    name: 'Ava Rodriguez',
-    phoneNumber: '888-222-3333',
-    email: 'ava@example.com',
-  },
-  {
-    id: 13,
-    name: 'Ava Rodriguez',
-    phoneNumber: '888-222-3333',
-    email: 'ava@example.com',
-  },
-];
-
 const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedName, setSelectedName] = useState<string | null>(null);
+  const [selectedClient, setSelectedClient] = useState<string>('');
 
   const filteredClients = clientsData.filter(
     client =>
@@ -116,8 +27,16 @@ const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) 
       client.phoneNumber.includes(searchQuery)
   );
 
-  const handleNameClick = (name: string) => {
-    setSelectedName(name);
+  const handleNameClick = (clientId: string) => {
+    setSelectedClient(clientId);
+  };
+
+  const handleNextClick = () => {
+    setDisplayForm({
+      ...displayForm,
+      clientForm: false,
+      serviceForm: true,
+    });
   };
 
   const handleFormClose = () => {
@@ -141,14 +60,14 @@ const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) 
             onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
-        <ul className="grid px-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+        <ul className="grid px-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-4/6 overflow-auto">
           {filteredClients.map((client, index) => (
             <li
               key={client.id}
               className={`border-2 p-2 rounded-md cursor-pointer ${
-                selectedName === client.name ? 'bg-blue-100' : ''
+                selectedClient.includes(client.id) ? 'bg-blue-100' : ''
               }`}
-              onClick={() => handleNameClick(client.name)}
+              onClick={() => handleNameClick(client.id)}
             >
               <h2 className="font-bold text-ktFormItemName mb-1">{`${index + 1}. ${
                 client.name
@@ -168,13 +87,12 @@ const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) 
             </li>
           ))}
         </ul>
-      </div>
-      <div className="ml-72 p-4">
-        {selectedName && (
-          <p>
-            Selected Name: <strong>{selectedName}</strong>
-          </p>
-        )}
+        <button
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+          onClick={handleNextClick}
+        >
+          {`Dalje >>`}
+        </button>
       </div>
       <Backdrop onClick={handleFormClose} isVisible={displayForm.backdrop} />
     </div>
@@ -182,3 +100,91 @@ const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) 
 };
 
 export default ClientForm;
+
+interface Client {
+  id: string;
+  name: string;
+  phoneNumber: string;
+  email: string;
+}
+
+const clientsData: Client[] = [
+  {
+    id: '1',
+    name: 'John Doe',
+    phoneNumber: '123-456-7890',
+    email: 'john@example.com',
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    phoneNumber: '987-654-3210',
+    email: 'jane@example.com',
+  },
+  {
+    id: '3',
+    name: 'Alen Stefanovic',
+    phoneNumber: '987-654-3210',
+    email: 'alen@example.com',
+  },
+  {
+    id: '4',
+    name: 'Emily Johnson',
+    phoneNumber: '555-123-4567',
+    email: 'emily@example.com',
+  },
+  {
+    id: '5',
+    name: 'Michael Brown',
+    phoneNumber: '888-555-7890',
+    email: 'michael@example.com',
+  },
+  {
+    id: '6',
+    name: 'Olivia Wilson',
+    phoneNumber: '777-444-1234',
+    email: 'olivia@example.com',
+  },
+  {
+    id: '7',
+    name: 'William Davis',
+    phoneNumber: '555-777-8888',
+    email: 'william@example.com',
+  },
+  {
+    id: '8',
+    name: 'Sophia Martinez',
+    phoneNumber: '222-333-4444',
+    email: 'sophia@example.com',
+  },
+  {
+    id: '9',
+    name: 'Liam Garcia',
+    phoneNumber: '777-999-1111',
+    email: 'liam@example.com',
+  },
+  {
+    id: '10',
+    name: 'Ava Rodriguez',
+    phoneNumber: '888-222-3333',
+    email: 'ava@example.com',
+  },
+  {
+    id: '11',
+    name: 'Ava Rodriguez',
+    phoneNumber: '888-222-3333',
+    email: 'ava@example.com',
+  },
+  {
+    id: '12',
+    name: 'Ava Rodriguez',
+    phoneNumber: '888-222-3333',
+    email: 'ava@example.com',
+  },
+  {
+    id: '13',
+    name: 'Ava Rodriguez',
+    phoneNumber: '888-222-3333',
+    email: 'ava@example.com',
+  },
+];
