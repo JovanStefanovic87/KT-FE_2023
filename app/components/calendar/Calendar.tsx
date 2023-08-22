@@ -8,7 +8,7 @@ import { Appointment, AppointmentLabelProps } from '../../helpers/interfaces';
 import ClientForm from './ClientForm';
 import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
 import WeekSelect from '../ui/select/WeekSelect';
-import AppointmentButton from '../ui/buttons/AppointmentButton';
+import AppointmentButton from '../ui/buttons/AppointmentBtn';
 import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
 import SelectUser from '../ui/select/SelectUser';
 import SlotsRow from './SlotsRow';
