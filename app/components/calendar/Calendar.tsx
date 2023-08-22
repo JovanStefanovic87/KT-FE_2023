@@ -16,6 +16,7 @@ import Container from './Container';
 import DaysRow from './DaysRow';
 import AppointmentContainer from './AppointmentContainer';
 import SelectContainer from './SelectContainer';
+import ServiceForm from './ServiceForm';
 
 const generateWeekDays = (selectedWeekIndex: number): { day: string; date: string }[] => {
   const weekDays: { day: string; date: string }[] = [];
@@ -47,10 +48,12 @@ const Calendar: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>(initialAppointmentsWeek32); // Set initial appointments for week 32
   const [clickedSlots, setClickedSlots] = useState<string[]>([]);
   const [displayForm, setDisplayForm] = useState<{
-    form: boolean;
+    clientForm: boolean;
+    serviceForm: boolean;
     backdrop: boolean;
   }>({
-    form: false,
+    clientForm: false,
+    serviceForm: true,
     backdrop: false,
   });
   const [displayBackdrop, setDisplayBackdrop] = useState<boolean>(false);
@@ -155,6 +158,7 @@ const Calendar: React.FC = () => {
   return (
     <>
       <ClientForm displayForm={displayForm} setDisplayForm={setDisplayForm} />
+      <ServiceForm displayForm={displayForm} setDisplayForm={setDisplayForm} />
       <Container>
         <SelectContainer>
           <CalendarArrowBtn
@@ -223,7 +227,8 @@ const Calendar: React.FC = () => {
                               <AppointmentButton
                                 onClick={() =>
                                   setDisplayForm({
-                                    form: true,
+                                    clientForm: true,
+                                    serviceForm: false,
                                     backdrop: true,
                                   })
                                 }

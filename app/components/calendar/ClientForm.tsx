@@ -4,12 +4,14 @@ import CloseBtn from '../ui/buttons/CloseBtn';
 
 interface ClientFormProps {
   displayForm: {
-    form: boolean;
+    clientForm: boolean;
+    serviceForm: boolean;
     backdrop: boolean;
   };
   setDisplayForm: React.Dispatch<
     React.SetStateAction<{
-      form: boolean;
+      clientForm: boolean;
+      serviceForm: boolean;
       backdrop: boolean;
     }>
   >;
@@ -119,14 +121,14 @@ const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) 
   };
 
   const handleFormClose = () => {
-    setDisplayForm({
-      form: false,
-      backdrop: false,
-    });
+    setDisplayForm({ ...displayForm, clientForm: false, backdrop: false });
   };
 
   return (
-    <div className="fixed mx-auto z-10" style={{ display: displayForm.form ? 'flex' : 'none' }}>
+    <div
+      className="fixed mx-auto z-10"
+      style={{ display: displayForm.clientForm ? 'flex' : 'none' }}
+    >
       <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-10">
         <div className="bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1">
           <CloseBtn onClick={handleFormClose} />
@@ -148,9 +150,21 @@ const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) 
               }`}
               onClick={() => handleNameClick(client.name)}
             >
-              <h2 className="font-bold mb-1">{`${index + 1}. ${client.name}`}</h2>
-              <p className="mb-1">Phone: {client.phoneNumber}</p>
-              <p>Email: {client.email}</p>
+              <h2 className="font-bold text-ktFormItemName mb-1">{`${index + 1}. ${
+                client.name
+              }`}</h2>
+              <p className="mb-1">
+                <b>
+                  <em>Phone:</em>
+                </b>
+                {` ${client.phoneNumber}`}
+              </p>
+              <p>
+                <b>
+                  <em>Email:</em>
+                </b>
+                {` ${client.email}`}
+              </p>
             </li>
           ))}
         </ul>
