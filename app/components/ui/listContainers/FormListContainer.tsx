@@ -7,6 +7,7 @@ interface FormListContainerProps {
     name: string;
   };
   selectedName: string;
+  onClick: () => void;
 }
 
 const FormListContainer: React.FC<FormListContainerProps> = ({

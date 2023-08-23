@@ -15,11 +15,17 @@ interface ClientFormProps {
       backdrop: boolean;
     }>
   >;
+  selectedClient: string;
+  setSelectedClient: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) => {
+const ClientForm: React.FC<ClientFormProps> = ({
+  displayForm,
+  setDisplayForm,
+  selectedClient,
+  setSelectedClient,
+}) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedClient, setSelectedClient] = useState<string>('');
 
   const filteredClients = clientsData.filter(
     client =>
@@ -45,7 +51,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ displayForm, setDisplayForm }) 
 
   return (
     <div
-      className="fixed mx-auto z-10"
+      className="fixed mx-auto z-20"
       style={{ display: displayForm.clientForm ? 'flex' : 'none' }}
     >
       <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-10">

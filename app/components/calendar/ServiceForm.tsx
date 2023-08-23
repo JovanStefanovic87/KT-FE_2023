@@ -17,11 +17,17 @@ interface ServiceFormProps {
       backdrop: boolean;
     }>
   >;
+  selectedServices: string[];
+  setSelectedServices: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const ServiceForm: React.FC<ServiceFormProps> = ({ displayForm, setDisplayForm }) => {
+const ServiceForm: React.FC<ServiceFormProps> = ({
+  displayForm,
+  setDisplayForm,
+  selectedServices,
+  setSelectedServices,
+}) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   const filteredServices = servicesData.filter(
     service =>
@@ -44,21 +50,17 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ displayForm, setDisplayForm }
     }
   };
 
-  const handleNextClick = () => {
-    setDisplayForm({
-      ...displayForm,
-      serviceForm: false,
-      backdrop: false,
-    });
-  };
-
   const handleFormClose = () => {
     setDisplayForm({ ...displayForm, serviceForm: false, backdrop: false });
   };
 
+  const handleNextClick = () => {
+    handleFormClose();
+  };
+
   return (
     <div
-      className="fixed mx-auto z-10"
+      className="fixed mx-auto z-20"
       style={{ display: displayForm.serviceForm ? 'flex' : 'none' }}
     >
       <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-10">
@@ -93,7 +95,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ displayForm, setDisplayForm }
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
           onClick={handleNextClick}
         >
-          {`Dalje >>`}
+          {`Rezerviši termin`}
         </button>
       </div>
       <Backdrop onClick={handleFormClose} isVisible={displayForm.backdrop} />

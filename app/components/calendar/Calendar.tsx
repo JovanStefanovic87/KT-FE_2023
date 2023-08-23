@@ -52,10 +52,12 @@ const Calendar: React.FC = () => {
     serviceForm: boolean;
     backdrop: boolean;
   }>({
-    clientForm: true,
+    clientForm: false,
     serviceForm: false,
-    backdrop: true,
+    backdrop: false,
   });
+  const [selectedClient, setSelectedClient] = useState<string>('');
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);
@@ -156,8 +158,18 @@ const Calendar: React.FC = () => {
 
   return (
     <>
-      <ClientForm displayForm={displayForm} setDisplayForm={setDisplayForm} />
-      <ServiceForm displayForm={displayForm} setDisplayForm={setDisplayForm} />
+      <ClientForm
+        displayForm={displayForm}
+        setDisplayForm={setDisplayForm}
+        selectedClient={selectedClient}
+        setSelectedClient={setSelectedClient}
+      />
+      <ServiceForm
+        displayForm={displayForm}
+        setDisplayForm={setDisplayForm}
+        selectedServices={selectedServices}
+        setSelectedServices={setSelectedServices}
+      />
       <Container>
         <SelectContainer>
           <CalendarArrowBtn
@@ -224,13 +236,14 @@ const Calendar: React.FC = () => {
                               />
                             ) : (
                               <AppointmentButton
-                                onClick={() =>
+                                onClick={() => {
                                   setDisplayForm({
                                     clientForm: true,
                                     serviceForm: false,
                                     backdrop: true,
-                                  })
-                                }
+                                  });
+                                  handleAddAppointment(day.day, time, day.date);
+                                }}
                                 time={time}
                               />
                             )}
