@@ -62,10 +62,9 @@ const Header: React.FC = () => {
             <GiHamburgerMenu />
           </button>
         </div>
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="text-white text-xl font-bold">
-            <Image src={logo} alt="Your Logo" width={150} height={150} />{' '}
-            {/* Set appropriate width and height */}
+        <div>
+          <Link href="/" className="w-150px h-150px relative">
+            <Image src={logo} alt="Your Logo" fill priority />
           </Link>
         </div>
       </div>

@@ -1,9 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { format, addDays, addWeeks } from 'date-fns';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import { generateWeekOptions, generateTimeSlots } from '../../helpers/universalFunctions';
-import { workingHours, initialAppointmentsWeek32, dayTranslations } from '../../helpers/mock';
+import { workingHours, dayTranslations } from '../../helpers/mock';
 import { Appointment, AppointmentLabelProps } from '../../helpers/interfaces';
 import ClientForm from './ClientForm';
 import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
@@ -45,7 +46,7 @@ const Calendar: React.FC = () => {
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
   const weekOptions = generateWeekOptions();
-  const [appointments, setAppointments] = useState<Appointment[]>(initialAppointmentsWeek32); // Set initial appointments for week 32
+  const [appointments, setAppointments] = useState<Appointment[]>([]); // Set initial appointments for week 32
   const [clickedSlots, setClickedSlots] = useState<string[]>([]);
   const [displayForm, setDisplayForm] = useState<{
     clientForm: boolean;
@@ -155,6 +156,12 @@ const Calendar: React.FC = () => {
       })
     );
   };
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:8000/appointments')
+      .then(response => setAppointments([...appointments, response.data]));
+  }, []);
 
   return (
     <>

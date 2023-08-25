@@ -1,0 +1,14 @@
+{
+  "posts": [{ "id": 1, "title": "json-server", "author": "typicode" }],
+  "comments": [{ "id": 1, "body": "some comment", "postId": 1 }],
+  "profile": { "name": "typicode" },
+  "appointments": {
+    "id": "Tue-09:00",
+    "date": "22.08.23",
+    "day": "Tue",
+    "duration": "180 minutes",
+    "genericName": "Alen Stefanović",
+    "genericService": "Šišanje makazicama",
+    "time": "09:00"
+  }
+}
