@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Backdrop from '../ui/Backdrop';
 import CloseBtn from '../ui/buttons/CloseBtn';
 import FormItemName from '../ui/text/FormItemName';
@@ -28,6 +29,24 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
   setSelectedServices,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [allServices, setAllServices] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/services');
+        setAllServices(response.data); // Update the state
+      } catch (error) {
+        console.error('An error occurred while fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(allServices);
+
+  const servicesData: any[] = /* fetch from API or keep hardcoded array */ [];
 
   const filteredServices = servicesData.filter(
     service =>
@@ -36,26 +55,25 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
   );
 
   const handleNameClick = (serviceId: string) => {
-    // Check if the clicked service is already in the selectedServices array
     const serviceIndex = selectedServices.indexOf(serviceId);
 
     if (serviceIndex === -1) {
-      // Service is not in the array, add it
       setSelectedServices([...selectedServices, serviceId]);
     } else {
-      // Service is in the array, remove it
       const updatedSelectedServices = [...selectedServices];
       updatedSelectedServices.splice(serviceIndex, 1);
       setSelectedServices(updatedSelectedServices);
     }
   };
 
-  const handleFormClose = () => {
+  const handleFormClose = (event: React.FormEvent) => {
+    event.preventDefault();
     setDisplayForm({ ...displayForm, serviceForm: false, backdrop: false });
   };
 
-  const handleNextClick = () => {
-    handleFormClose();
+  const handleNextClick = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleFormClose(event);
   };
 
   return (
@@ -85,7 +103,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
               className={`border-2 p-2 rounded-md cursor-pointer ${
                 selectedServices.includes(service.id) ? 'bg-blue-100' : ''
               }`}
-              onClick={() => handleNameClick(service.id)}
+              onClick={event => handleNameClick(service.id)}
             >
               <FormItemName index={index} title={service.name} />
               <FormItemData title="Opis" item={` ${service.description}`} />

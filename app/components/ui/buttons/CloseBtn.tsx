@@ -1,5 +1,5 @@
 interface CloseBtnProps {
-  onClick: () => void;
+  onClick: (event: React.FormEvent) => void;
 }
 
 const CloseBtn: React.FC<CloseBtnProps> = ({ onClick }) => {

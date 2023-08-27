@@ -15,15 +15,17 @@ interface ClientFormProps {
       backdrop: boolean;
     }>
   >;
-  selectedClient: string;
-  setSelectedClient: React.Dispatch<React.SetStateAction<string>>;
+  formData: { client?: string; [key: string]: any };
+  setFormData: React.Dispatch<
+    React.SetStateAction<{ client: string; service: string[]; sent: boolean }>
+  >;
 }
 
 const ClientForm: React.FC<ClientFormProps> = ({
   displayForm,
   setDisplayForm,
-  selectedClient,
-  setSelectedClient,
+  formData,
+  setFormData,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -34,10 +36,14 @@ const ClientForm: React.FC<ClientFormProps> = ({
   );
 
   const handleNameClick = (clientId: string) => {
-    setSelectedClient(clientId);
+    setFormData(prevData => ({
+      ...prevData,
+      client: clientId,
+    }));
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = (event: React.FormEvent) => {
+    event.preventDefault();
     setDisplayForm({
       ...displayForm,
       clientForm: false,
@@ -45,7 +51,8 @@ const ClientForm: React.FC<ClientFormProps> = ({
     });
   };
 
-  const handleFormClose = () => {
+  const handleFormClose = (event: React.FormEvent) => {
+    event.preventDefault();
     setDisplayForm({ ...displayForm, clientForm: false, backdrop: false });
   };
 
@@ -57,7 +64,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
     >
       <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-10">
         <div className="bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1">
-          <CloseBtn onClick={handleFormClose} />
+          <CloseBtn onClick={event => handleFormClose(event)} />
           <h1 className="text-2xl font-bold mb-4 text-white">IZBOR KLIJENTA</h1>
           <input
             id="ClientSearchQuery"
@@ -74,7 +81,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
             <li
               key={client.id}
               className={`border-2 p-2 rounded-md cursor-pointer ${
-                selectedClient.includes(client.id) ? 'bg-blue-100' : ''
+                formData.client?.includes(client.id) ? 'bg-blue-100' : ''
               }`}
               onClick={() => handleNameClick(client.id)}
             >
@@ -103,7 +110,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
           {`Dalje >>`}
         </button>
       </div>
-      <Backdrop onClick={handleFormClose} isVisible={displayForm.backdrop} />
+      <Backdrop onClick={event => handleFormClose(event)} isVisible={displayForm.backdrop} />
     </form>
   );
 };
@@ -119,55 +126,55 @@ interface Client {
 
 const clientsData: Client[] = [
   {
-    id: '1',
+    id: '01',
     name: 'John Doe',
     phoneNumber: '123-456-7890',
     email: 'john@example.com',
   },
   {
-    id: '2',
+    id: '02',
     name: 'Jane Smith',
     phoneNumber: '987-654-3210',
     email: 'jane@example.com',
   },
   {
-    id: '3',
+    id: '03',
     name: 'Alen Stefanovic',
     phoneNumber: '987-654-3210',
     email: 'alen@example.com',
   },
   {
-    id: '4',
+    id: '04',
     name: 'Emily Johnson',
     phoneNumber: '555-123-4567',
     email: 'emily@example.com',
   },
   {
-    id: '5',
+    id: '05',
     name: 'Michael Brown',
     phoneNumber: '888-555-7890',
     email: 'michael@example.com',
   },
   {
-    id: '6',
+    id: '06',
     name: 'Olivia Wilson',
     phoneNumber: '777-444-1234',
     email: 'olivia@example.com',
   },
   {
-    id: '7',
+    id: '07',
     name: 'William Davis',
     phoneNumber: '555-777-8888',
     email: 'william@example.com',
   },
   {
-    id: '8',
+    id: '08',
     name: 'Sophia Martinez',
     phoneNumber: '222-333-4444',
     email: 'sophia@example.com',
   },
   {
-    id: '9',
+    id: '09',
     name: 'Liam Garcia',
     phoneNumber: '777-999-1111',
     email: 'liam@example.com',
@@ -176,19 +183,19 @@ const clientsData: Client[] = [
     id: '10',
     name: 'Ava Rodriguez',
     phoneNumber: '888-222-3333',
-    email: 'ava@example.com',
+    email: 'avsa@example.com',
   },
   {
     id: '11',
     name: 'Ava Rodriguez',
     phoneNumber: '888-222-3333',
-    email: 'ava@example.com',
+    email: 'avda@example.com',
   },
   {
     id: '12',
     name: 'Ava Rodriguez',
     phoneNumber: '888-222-3333',
-    email: 'ava@example.com',
+    email: 'avaa@example.com',
   },
   {
     id: '13',

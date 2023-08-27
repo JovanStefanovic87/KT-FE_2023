@@ -1,14 +1,46 @@
 {
-  "posts": [{ "id": 1, "title": "json-server", "author": "typicode" }],
-  "comments": [{ "id": 1, "body": "some comment", "postId": 1 }],
-  "profile": { "name": "typicode" },
-  "appointments": {
-    "id": "Tue-09:00",
-    "date": "22.08.23",
-    "day": "Tue",
-    "duration": "180 minutes",
-    "genericName": "Alen Stefanović",
-    "genericService": "Šišanje makazicama",
-    "time": "09:00"
-  }
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  },
+  "appointments": [
+    {
+      "id": "Tue-09:00",
+      "date": "22.08.23",
+      "day": "Tue",
+      "duration": "180 minutes",
+      "genericName": "Alen Stefanović",
+      "genericService": "Šišanje makazicama",
+      "time": "09:00"
+    }
+  ],
+  "services": [
+    {
+      "id": "sisanje01",
+      "name": "Sianje Masincom",
+      "description": "Na brzaka",
+      "duration": 60,
+      "price": 500
+    },
+    {
+      "id": "sisanje02",
+      "name": "Sianje makazama",
+      "description": "Detaljno",
+      "duration": 120,
+      "price": 1200
+    }
+  ]
 }

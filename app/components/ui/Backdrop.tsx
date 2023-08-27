@@ -1,5 +1,5 @@
 interface BackdropProps {
-  onClick: () => void;
+  onClick: (event: React.FormEvent) => void;
   isVisible: boolean;
 }
 

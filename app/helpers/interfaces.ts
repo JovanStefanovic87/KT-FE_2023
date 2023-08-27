@@ -3,8 +3,7 @@ export interface Appointment {
   day: string;
   time: string;
   duration: string;
-  genericName: string;
-  genericService: string;
+  clientName: string;
   date: string; // Add the date property
 }
 
@@ -18,4 +17,9 @@ export interface DayTranslations {
 
 export interface AppointmentLabelProps {
   appointment?: Appointment;
+}
+
+export interface ServecesProps {
+  selectedServices: string[];
+  setSelectedServices: React.Dispatch<React.SetStateAction<string[]>>;
 }

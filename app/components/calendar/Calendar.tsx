@@ -45,9 +45,8 @@ const Calendar: React.FC = () => {
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const weekOptions = generateWeekOptions();
-  const [appointments, setAppointments] = useState<Appointment[]>([]); // Set initial appointments for week 32
-  const [clickedSlots, setClickedSlots] = useState<string[]>([]);
   const [displayForm, setDisplayForm] = useState<{
     clientForm: boolean;
     serviceForm: boolean;
@@ -57,11 +56,29 @@ const Calendar: React.FC = () => {
     serviceForm: false,
     backdrop: false,
   });
-  const [selectedClient, setSelectedClient] = useState<string>('');
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [formData, setFormData] = useState<{ client: string; service: string[]; sent: boolean }>({
+    client: '',
+    service: [],
+    sent: false,
+  });
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [clickedSlots, setClickedSlots] = useState<string[]>([]);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/appointments');
+        setAppointments([...response.data]);
+      } catch (error) {
+        console.error('An error occurred while fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const calculateSlotsForDuration = (duration: string): number => {
     // Parse the duration (e.g., '30 minutes' -> 30)
@@ -76,7 +93,7 @@ const Calendar: React.FC = () => {
 
     if (!appointment) return null;
 
-    const { time, duration, genericName, genericService, date } = appointment;
+    const { time, duration, clientName, date } = appointment;
 
     // Parse the start time to extract hours and minutes
     const [startHours, startMinutes] = time.split(':').map(Number);
@@ -105,6 +122,7 @@ const Calendar: React.FC = () => {
 
     // Calculate the total height needed for the appointment label when it spans multiple slots
     const totalHeight = singleSlotHeight * slotsNeeded + spaceBetweenSlots; // 2px for the gap between slots
+    /* const appointmentServices = services?.map(s => s); */
     return (
       <div
         className="flex flex-col justify-center min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-10"
@@ -115,14 +133,14 @@ const Calendar: React.FC = () => {
           {time}h - {formattedEndTime}h
         </div>
         {/* <div>{date}</div> */}
-        <div>{genericName}</div>
-        <div>{genericService}</div>
+        <div>{clientName}</div>
+        {/* <div>{appointmentServices}</div> */}
         <div>700 RSD</div>
       </div>
     );
   };
 
-  const handleAddAppointment = (day: string, time: string, date: string) => {
+  const handleAddAppointment = async (day: string, time: string, date: string) => {
     const appointmentDuration = 180;
 
     const newAppointment: Appointment = {
@@ -130,12 +148,26 @@ const Calendar: React.FC = () => {
       day,
       time,
       duration: `${appointmentDuration} minutes`,
-      genericName: 'Alen Stefanović',
-      genericService: 'Šišanje makazicama',
-      date, // Include the date
+      clientName: 'Alen Stefanović',
+      date,
     };
-    setAppointments([...appointments, newAppointment]);
-    setClickedSlots([...clickedSlots, newAppointment.id]);
+    try {
+      // Send a POST request to the server to save the new appointment
+      await axios.post('http://localhost:8000/appointments', newAppointment);
+
+      // Update the state only if the server operation is successful
+      setClickedSlots([...clickedSlots, newAppointment.id]);
+      setFormData(prevData => ({
+        ...prevData,
+        sent: !formData.sent,
+      }));
+    } catch (error) {
+      console.error('An error occurred while pushing data:', error);
+    }
+  };
+
+  const handleAppointmentButton = async (day: string, time: string) => {
+    setClickedSlots([...clickedSlots, `${day}-${time}`]);
   };
 
   const isWorkingHour = (day: string, time: string) => {
@@ -157,19 +189,13 @@ const Calendar: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    axios
-      .get('http://localhost:8000/appointments')
-      .then(response => setAppointments([...appointments, response.data]));
-  }, []);
-
   return (
     <>
       <ClientForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}
-        selectedClient={selectedClient}
-        setSelectedClient={setSelectedClient}
+        formData={formData}
+        setFormData={setFormData}
       />
       <ServiceForm
         displayForm={displayForm}
@@ -249,7 +275,7 @@ const Calendar: React.FC = () => {
                                     serviceForm: false,
                                     backdrop: true,
                                   });
-                                  handleAddAppointment(day.day, time, day.date);
+                                  handleAppointmentButton(day.day, time);
                                 }}
                                 time={time}
                               />
