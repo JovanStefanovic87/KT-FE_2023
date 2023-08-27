@@ -22,9 +22,9 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-ktHeaderGray p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="hidden md:flex space-x-4">
+    <header className="bg-ktHeaderGray px-4 py-1">
+      <div className="flex justify-between items-center">
+        <div className="hidden md:flex space-x-2 lg:space-x-4">
           <Link href="/" className={isActive('/')}>
             Početna
           </Link>
@@ -62,9 +62,18 @@ const Header: React.FC = () => {
             <GiHamburgerMenu />
           </button>
         </div>
-        <div>
-          <Link href="/" className="w-150px h-150px relative">
-            <Image src={logo} alt="Your Logo" fill priority />
+        <div className="h-logo w-logo relative mr-0 lg:mr-10">
+          <Link href="/">
+            <div className="absolute h-logo w-logo">
+              <Image
+                src={logo}
+                alt="Your Logo"
+                priority
+                fill
+                sizes="(max-width: 600px) 200px, (max-width: 1200px) 300px, 400px"
+                quality={100}
+              />
+            </div>
           </Link>
         </div>
       </div>

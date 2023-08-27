@@ -270,6 +270,7 @@ const Calendar: React.FC = () => {
           <SelectUser
             selectedUser={selectedServiceProvider || ''}
             onSelectUser={user => setSelectedServiceProvider(user)}
+            id="selectedServiceProvider"
           >
             <option value="Šovljanski">Šovljanski</option>
             <option value="Brica">Brica</option>
@@ -278,6 +279,7 @@ const Calendar: React.FC = () => {
           <SelectUser
             selectedUser={selectedEmployee || ''}
             onSelectUser={user => setSelectedEmployee(user)}
+            id="selectedEmployee"
           >
             <option value="Stevan Poljaković">Stevan Poljaković</option>
             <option value="Milica">Milica</option>

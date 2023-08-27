@@ -3,10 +3,11 @@ import React, { ReactNode } from 'react';
 interface SelectUserProps {
   selectedUser: string;
   onSelectUser: (user: string) => void;
+  id: string;
   children: ReactNode;
 }
 
-const SelectUser: React.FC<SelectUserProps> = ({ selectedUser, onSelectUser, children }) => {
+const SelectUser: React.FC<SelectUserProps> = ({ selectedUser, onSelectUser, id, children }) => {
   const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
     onSelectUser(selectedValue);
@@ -14,6 +15,8 @@ const SelectUser: React.FC<SelectUserProps> = ({ selectedUser, onSelectUser, chi
 
   return (
     <select
+      id={id}
+      name={id}
       value={selectedUser}
       onChange={handleUserChange}
       className={

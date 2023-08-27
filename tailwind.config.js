@@ -32,6 +32,7 @@ module.exports = {
         slotDayHeight: '3rem',
         header: 68,
         main: 'calc(100dvh - 75px)',
+        logo: 55,
       },
       width: {
         slotsWidth: 200,
@@ -39,7 +40,7 @@ module.exports = {
         'calendar-lg': 'calc(100dvw - 24rem)',
         form: '850px',
         '98dvw': '98dvw',
-        '150px': 150,
+        logo: 225,
       },
       minWidth: {
         label: 140,
