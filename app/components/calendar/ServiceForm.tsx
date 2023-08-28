@@ -1,26 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ServecesProps, ServiceFormProps } from '../../helpers/interfaces';
 import Backdrop from '../ui/Backdrop';
 import CloseBtn from '../ui/buttons/CloseBtn';
 import FormItemName from '../ui/text/FormItemName';
 import FormItemData from '../ui/text/FormItemData';
-
-interface ServiceFormProps {
-  displayForm: {
-    clientForm: boolean;
-    serviceForm: boolean;
-    backdrop: boolean;
-  };
-  setDisplayForm: React.Dispatch<
-    React.SetStateAction<{
-      clientForm: boolean;
-      serviceForm: boolean;
-      backdrop: boolean;
-    }>
-  >;
-  selectedServices: string[];
-  setSelectedServices: React.Dispatch<React.SetStateAction<string[]>>;
-}
 
 const ServiceForm: React.FC<ServiceFormProps> = ({
   displayForm,
@@ -29,13 +13,14 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
   setSelectedServices,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [allServices, setAllServices] = useState([]);
+  const [allServices, setAllServices] = useState<ServecesProps[]>([]);
+  const [preSelectedServeces, setPreSelectedServeces] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:8000/services');
-        setAllServices(response.data); // Update the state
+        setAllServices(response.data);
       } catch (error) {
         console.error('An error occurred while fetching data:', error);
       }
@@ -44,36 +29,33 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
     fetchData();
   }, []);
 
-  console.log(allServices);
-
-  const servicesData: any[] = /* fetch from API or keep hardcoded array */ [];
-
-  const filteredServices = servicesData.filter(
+  const filteredServices = allServices.filter(
     service =>
       service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       service.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleNameClick = (serviceId: string) => {
-    const serviceIndex = selectedServices.indexOf(serviceId);
+    const serviceIndex = preSelectedServeces.indexOf(serviceId);
 
     if (serviceIndex === -1) {
-      setSelectedServices([...selectedServices, serviceId]);
+      setPreSelectedServeces([...selectedServices, serviceId]);
     } else {
       const updatedSelectedServices = [...selectedServices];
       updatedSelectedServices.splice(serviceIndex, 1);
-      setSelectedServices(updatedSelectedServices);
+      setPreSelectedServeces(updatedSelectedServices);
     }
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setSelectedServices(preSelectedServeces);
+    handleFormClose(event);
   };
 
   const handleFormClose = (event: React.FormEvent) => {
     event.preventDefault();
     setDisplayForm({ ...displayForm, serviceForm: false, backdrop: false });
-  };
-
-  const handleNextClick = (event: React.FormEvent) => {
-    event.preventDefault();
-    handleFormClose(event);
   };
 
   return (
@@ -101,9 +83,9 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
             <li
               key={service.id}
               className={`border-2 p-2 rounded-md cursor-pointer ${
-                selectedServices.includes(service.id) ? 'bg-blue-100' : ''
+                preSelectedServeces.includes(service.id) ? 'bg-blue-100' : ''
               }`}
-              onClick={event => handleNameClick(service.id)}
+              onClick={() => handleNameClick(service.id)}
             >
               <FormItemName index={index} title={service.name} />
               <FormItemData title="Opis" item={` ${service.description}`} />
@@ -112,10 +94,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
             </li>
           ))}
         </ul>
-        <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-          onClick={handleNextClick}
-        >
+        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={handleSubmit}>
           {`Rezerviši termin`}
         </button>
       </div>
@@ -125,105 +104,3 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
 };
 
 export default ServiceForm;
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  duration: number;
-  price: number;
-}
-
-const servicesData: Service[] = [
-  {
-    id: '1',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '2',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '3',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '4',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '5',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '6',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '7',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '8',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '9',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '10',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '11',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '12',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-  {
-    id: '13',
-    name: 'Šišanje mašinicom',
-    description: 'Na brzaka',
-    duration: 60,
-    price: 500,
-  },
-];

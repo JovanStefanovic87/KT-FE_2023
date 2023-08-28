@@ -1,48 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { ClientProps, ClientFormProps } from '../../helpers/interfaces';
 import Backdrop from '../ui/Backdrop';
 import CloseBtn from '../ui/buttons/CloseBtn';
-
-interface ClientFormProps {
-  displayForm: {
-    clientForm: boolean;
-    serviceForm: boolean;
-    backdrop: boolean;
-  };
-  setDisplayForm: React.Dispatch<
-    React.SetStateAction<{
-      clientForm: boolean;
-      serviceForm: boolean;
-      backdrop: boolean;
-    }>
-  >;
-  formData: { client?: string; [key: string]: any };
-  setFormData: React.Dispatch<
-    React.SetStateAction<{ client: string; service: string[]; sent: boolean }>
-  >;
-}
 
 const ClientForm: React.FC<ClientFormProps> = ({
   displayForm,
   setDisplayForm,
-  formData,
-  setFormData,
+  selectedClient,
+  setSelectedClient,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [allClients, setAllClients] = useState<ClientProps[]>([]);
 
-  const filteredClients = clientsData.filter(
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/clients');
+        setAllClients(response.data);
+      } catch (error) {
+        console.error('An error occurred while fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredClients = allClients.filter(
     client =>
       client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       client.phoneNumber.includes(searchQuery)
   );
 
   const handleNameClick = (clientId: string) => {
-    setFormData(prevData => ({
-      ...prevData,
-      client: clientId,
-    }));
+    setSelectedClient(clientId);
   };
 
-  const handleNextClick = (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setDisplayForm({
       ...displayForm,
@@ -64,7 +58,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
     >
       <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-10">
         <div className="bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1">
-          <CloseBtn onClick={event => handleFormClose(event)} />
+          <CloseBtn onClick={handleFormClose} />
           <h1 className="text-2xl font-bold mb-4 text-white">IZBOR KLIJENTA</h1>
           <input
             id="ClientSearchQuery"
@@ -81,7 +75,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
             <li
               key={client.id}
               className={`border-2 p-2 rounded-md cursor-pointer ${
-                formData.client?.includes(client.id) ? 'bg-blue-100' : ''
+                selectedClient?.includes(client.id) ? 'bg-blue-100' : ''
               }`}
               onClick={() => handleNameClick(client.id)}
             >
@@ -103,10 +97,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
             </li>
           ))}
         </ul>
-        <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-          onClick={handleNextClick}
-        >
+        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={handleSubmit}>
           {`Dalje >>`}
         </button>
       </div>
@@ -116,91 +107,3 @@ const ClientForm: React.FC<ClientFormProps> = ({
 };
 
 export default ClientForm;
-
-interface Client {
-  id: string;
-  name: string;
-  phoneNumber: string;
-  email: string;
-}
-
-const clientsData: Client[] = [
-  {
-    id: '01',
-    name: 'John Doe',
-    phoneNumber: '123-456-7890',
-    email: 'john@example.com',
-  },
-  {
-    id: '02',
-    name: 'Jane Smith',
-    phoneNumber: '987-654-3210',
-    email: 'jane@example.com',
-  },
-  {
-    id: '03',
-    name: 'Alen Stefanovic',
-    phoneNumber: '987-654-3210',
-    email: 'alen@example.com',
-  },
-  {
-    id: '04',
-    name: 'Emily Johnson',
-    phoneNumber: '555-123-4567',
-    email: 'emily@example.com',
-  },
-  {
-    id: '05',
-    name: 'Michael Brown',
-    phoneNumber: '888-555-7890',
-    email: 'michael@example.com',
-  },
-  {
-    id: '06',
-    name: 'Olivia Wilson',
-    phoneNumber: '777-444-1234',
-    email: 'olivia@example.com',
-  },
-  {
-    id: '07',
-    name: 'William Davis',
-    phoneNumber: '555-777-8888',
-    email: 'william@example.com',
-  },
-  {
-    id: '08',
-    name: 'Sophia Martinez',
-    phoneNumber: '222-333-4444',
-    email: 'sophia@example.com',
-  },
-  {
-    id: '09',
-    name: 'Liam Garcia',
-    phoneNumber: '777-999-1111',
-    email: 'liam@example.com',
-  },
-  {
-    id: '10',
-    name: 'Ava Rodriguez',
-    phoneNumber: '888-222-3333',
-    email: 'avsa@example.com',
-  },
-  {
-    id: '11',
-    name: 'Ava Rodriguez',
-    phoneNumber: '888-222-3333',
-    email: 'avda@example.com',
-  },
-  {
-    id: '12',
-    name: 'Ava Rodriguez',
-    phoneNumber: '888-222-3333',
-    email: 'avaa@example.com',
-  },
-  {
-    id: '13',
-    name: 'Ava Rodriguez',
-    phoneNumber: '888-222-3333',
-    email: 'ava@example.com',
-  },
-];

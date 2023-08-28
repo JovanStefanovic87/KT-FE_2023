@@ -5,7 +5,12 @@ import { format, addDays, addWeeks } from 'date-fns';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import { generateWeekOptions, generateTimeSlots } from '../../helpers/universalFunctions';
 import { workingHours, dayTranslations } from '../../helpers/mock';
-import { Appointment, AppointmentLabelProps } from '../../helpers/interfaces';
+import {
+  Appointment,
+  NewAppointment,
+  AppointmentLabelProps,
+  SelectedSlotProps,
+} from '../../helpers/interfaces';
 import ClientForm from './ClientForm';
 import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
 import WeekSelect from '../ui/select/WeekSelect';
@@ -45,7 +50,13 @@ const Calendar: React.FC = () => {
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
+  const [selectedClient, setSelectedClient] = useState<string>('');
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<SelectedSlotProps>({
+    time: '',
+    day: '',
+    date: '',
+  });
   const weekOptions = generateWeekOptions();
   const [displayForm, setDisplayForm] = useState<{
     clientForm: boolean;
@@ -56,13 +67,7 @@ const Calendar: React.FC = () => {
     serviceForm: false,
     backdrop: false,
   });
-  const [formData, setFormData] = useState<{ client: string; service: string[]; sent: boolean }>({
-    client: '',
-    service: [],
-    sent: false,
-  });
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [clickedSlots, setClickedSlots] = useState<string[]>([]);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);
@@ -79,6 +84,12 @@ const Calendar: React.FC = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (appointments.length > 0) {
+      handleAddAppointment();
+    }
+  }, [appointments]);
 
   const calculateSlotsForDuration = (duration: string): number => {
     // Parse the duration (e.g., '30 minutes' -> 30)
@@ -140,34 +151,31 @@ const Calendar: React.FC = () => {
     );
   };
 
-  const handleAddAppointment = async (day: string, time: string, date: string) => {
+  const handleAddAppointment = async () => {
     const appointmentDuration = 180;
 
-    const newAppointment: Appointment = {
-      id: `${day}-${time}`,
-      day,
-      time,
-      duration: `${appointmentDuration} minutes`,
-      clientName: 'Alen Stefanović',
-      date,
+    const newAppointment: NewAppointment = {
+      id: `${selectedSlot.date}-${selectedSlot.time}`,
+      day: selectedSlot.day,
+      time: selectedSlot.time,
+      date: selectedSlot.date,
+      clientName: selectedClient,
+      services: selectedServices,
     };
     try {
       // Send a POST request to the server to save the new appointment
       await axios.post('http://localhost:8000/appointments', newAppointment);
-
-      // Update the state only if the server operation is successful
-      setClickedSlots([...clickedSlots, newAppointment.id]);
-      setFormData(prevData => ({
-        ...prevData,
-        sent: !formData.sent,
-      }));
     } catch (error) {
       console.error('An error occurred while pushing data:', error);
     }
   };
 
-  const handleAppointmentButton = async (day: string, time: string) => {
-    setClickedSlots([...clickedSlots, `${day}-${time}`]);
+  const handleAppointmentButton = (day: string, time: string) => {
+    setSelectedSlot({
+      ...selectedSlot,
+      day,
+      time,
+    });
   };
 
   const isWorkingHour = (day: string, time: string) => {
@@ -194,8 +202,8 @@ const Calendar: React.FC = () => {
       <ClientForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}
-        formData={formData}
-        setFormData={setFormData}
+        selectedClient={selectedClient}
+        setSelectedClient={setSelectedClient}
       />
       <ServiceForm
         displayForm={displayForm}
