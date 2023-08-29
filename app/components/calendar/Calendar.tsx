@@ -1,16 +1,11 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { format, addDays, addWeeks } from 'date-fns';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import { generateWeekOptions, generateTimeSlots } from '../../helpers/universalFunctions';
 import { workingHours, dayTranslations } from '../../helpers/mock';
-import {
-  Appointment,
-  NewAppointment,
-  AppointmentLabelProps,
-  SelectedSlotProps,
-} from '../../helpers/interfaces';
+import { Appointment, NewAppointment, AppointmentLabelProps } from '../../helpers/interfaces';
 import ClientForm from './ClientForm';
 import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
 import WeekSelect from '../ui/select/WeekSelect';
@@ -47,49 +42,81 @@ const generateWeekDays = (selectedWeekIndex: number): { day: string; date: strin
 };
 
 const Calendar: React.FC = () => {
+  const firstRun = useRef(true);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
-  const [selectedClient, setSelectedClient] = useState<string>('');
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [selectedSlot, setSelectedSlot] = useState<SelectedSlotProps>({
-    time: '',
-    day: '',
+  const [newAppointment, setNewAppointment] = useState<NewAppointment>({
+    id: '',
     date: '',
+    day: '',
+    time: '',
+    client: '',
+    services: [],
   });
   const weekOptions = generateWeekOptions();
   const [displayForm, setDisplayForm] = useState<{
     clientForm: boolean;
     serviceForm: boolean;
     backdrop: boolean;
+    post: boolean;
   }>({
     clientForm: false,
     serviceForm: false,
     backdrop: false,
+    post: false,
   });
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);
 
+  console.log(newAppointment);
+
   useEffect(() => {
-    const fetchData = async () => {
+    // Function to fetch appointments from the server
+    const fetchAppointments = async () => {
       try {
         const response = await axios.get('http://localhost:8000/appointments');
-        setAppointments([...response.data]);
+        if (response.data) {
+          setAppointments(response.data);
+        }
       } catch (error) {
         console.error('An error occurred while fetching data:', error);
       }
     };
 
-    fetchData();
+    // Call the fetch function
+    fetchAppointments();
   }, []);
 
-  useEffect(() => {
-    if (appointments.length > 0) {
-      handleAddAppointment();
+  const handleAddAppointment = useCallback(() => {
+    try {
+      axios.post('http://localhost:8000/appointments', newAppointment);
+    } catch (error) {
+      console.error('An error occurred while pushing data:', error);
     }
-  }, [appointments]);
+    setNewAppointment({
+      id: '',
+      date: '',
+      day: '',
+      time: '',
+      client: '',
+      services: [],
+    });
+  }, [newAppointment]);
+
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    displayForm.post && handleAddAppointment();
+    setDisplayForm(prevState => ({
+      ...prevState,
+      post: false,
+    }));
+  }, [displayForm.post, handleAddAppointment]);
 
   const calculateSlotsForDuration = (duration: string): number => {
     // Parse the duration (e.g., '30 minutes' -> 30)
@@ -99,6 +126,7 @@ const Calendar: React.FC = () => {
   };
 
   const AppointmentLabel: React.FC<AppointmentLabelProps> = ({ appointment }) => {
+    const duartion = 60;
     const borderSize = 2;
     const rowsGap = 8;
 
@@ -151,30 +179,13 @@ const Calendar: React.FC = () => {
     );
   };
 
-  const handleAddAppointment = async () => {
-    const appointmentDuration = 180;
-
-    const newAppointment: NewAppointment = {
-      id: `${selectedSlot.date}-${selectedSlot.time}`,
-      day: selectedSlot.day,
-      time: selectedSlot.time,
-      date: selectedSlot.date,
-      clientName: selectedClient,
-      services: selectedServices,
-    };
-    try {
-      // Send a POST request to the server to save the new appointment
-      await axios.post('http://localhost:8000/appointments', newAppointment);
-    } catch (error) {
-      console.error('An error occurred while pushing data:', error);
-    }
-  };
-
-  const handleAppointmentButton = (day: string, time: string) => {
-    setSelectedSlot({
-      ...selectedSlot,
+  const handleAppointmentButton = (day: string, time: string, date: string) => {
+    setNewAppointment({
+      ...newAppointment,
+      id: `${day}${time}${date}`,
       day,
       time,
+      date,
     });
   };
 
@@ -202,14 +213,14 @@ const Calendar: React.FC = () => {
       <ClientForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}
-        selectedClient={selectedClient}
-        setSelectedClient={setSelectedClient}
+        newAppointment={newAppointment}
+        setNewAppointment={setNewAppointment}
       />
       <ServiceForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}
-        selectedServices={selectedServices}
-        setSelectedServices={setSelectedServices}
+        newAppointment={newAppointment}
+        setNewAppointment={setNewAppointment}
       />
       <Container>
         <SelectContainer>
@@ -282,8 +293,9 @@ const Calendar: React.FC = () => {
                                     clientForm: true,
                                     serviceForm: false,
                                     backdrop: true,
+                                    post: false,
                                   });
-                                  handleAppointmentButton(day.day, time);
+                                  handleAppointmentButton(day.day, time, day.date);
                                 }}
                                 time={time}
                               />

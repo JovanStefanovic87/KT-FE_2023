@@ -11,15 +11,9 @@ export interface NewAppointment {
   id: string;
   day: string;
   time: string;
-  clientName: string;
+  client: string;
   date: string;
   services: string[];
-}
-
-export interface SelectedSlotProps {
-  time: string;
-  day: string;
-  date: string;
 }
 
 export interface WorkingHours {
@@ -39,16 +33,34 @@ export interface ServiceFormProps {
     clientForm: boolean;
     serviceForm: boolean;
     backdrop: boolean;
+    post: boolean;
   };
   setDisplayForm: React.Dispatch<
     React.SetStateAction<{
       clientForm: boolean;
       serviceForm: boolean;
       backdrop: boolean;
+      post: boolean;
     }>
   >;
-  selectedServices: string[];
-  setSelectedServices: React.Dispatch<React.SetStateAction<string[]>>;
+  newAppointment: {
+    id: string;
+    date: string;
+    day: string;
+    time: string;
+    client: string;
+    services: string[];
+  };
+  setNewAppointment: React.Dispatch<
+    React.SetStateAction<{
+      id: string;
+      date: string;
+      day: string;
+      time: string;
+      client: string;
+      services: string[];
+    }>
+  >;
 }
 
 export interface ServecesProps {
@@ -64,16 +76,34 @@ export interface ClientFormProps {
     clientForm: boolean;
     serviceForm: boolean;
     backdrop: boolean;
+    post: boolean;
   };
   setDisplayForm: React.Dispatch<
     React.SetStateAction<{
       clientForm: boolean;
       serviceForm: boolean;
       backdrop: boolean;
+      post: boolean;
     }>
   >;
-  selectedClient: string;
-  setSelectedClient: React.Dispatch<React.SetStateAction<string>>;
+  newAppointment: {
+    id: string;
+    date: string;
+    day: string;
+    time: string;
+    client: string;
+    services: string[];
+  };
+  setNewAppointment: React.Dispatch<
+    React.SetStateAction<{
+      id: string;
+      date: string;
+      day: string;
+      time: string;
+      client: string;
+      services: string[];
+    }>
+  >;
 }
 
 export interface ClientProps {

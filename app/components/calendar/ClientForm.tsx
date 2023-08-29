@@ -7,8 +7,8 @@ import CloseBtn from '../ui/buttons/CloseBtn';
 const ClientForm: React.FC<ClientFormProps> = ({
   displayForm,
   setDisplayForm,
-  selectedClient,
-  setSelectedClient,
+  newAppointment,
+  setNewAppointment,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [allClients, setAllClients] = useState<ClientProps[]>([]);
@@ -33,7 +33,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
   );
 
   const handleNameClick = (clientId: string) => {
-    setSelectedClient(clientId);
+    setNewAppointment({ ...newAppointment, client: clientId });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -75,7 +75,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
             <li
               key={client.id}
               className={`border-2 p-2 rounded-md cursor-pointer ${
-                selectedClient?.includes(client.id) ? 'bg-blue-100' : ''
+                newAppointment.client?.includes(client.id) ? 'bg-blue-100' : ''
               }`}
               onClick={() => handleNameClick(client.id)}
             >

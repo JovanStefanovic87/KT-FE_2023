@@ -9,8 +9,8 @@ import FormItemData from '../ui/text/FormItemData';
 const ServiceForm: React.FC<ServiceFormProps> = ({
   displayForm,
   setDisplayForm,
-  selectedServices,
-  setSelectedServices,
+  newAppointment,
+  setNewAppointment,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [allServices, setAllServices] = useState<ServecesProps[]>([]);
@@ -39,9 +39,9 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
     const serviceIndex = preSelectedServeces.indexOf(serviceId);
 
     if (serviceIndex === -1) {
-      setPreSelectedServeces([...selectedServices, serviceId]);
+      setPreSelectedServeces([...preSelectedServeces, serviceId]);
     } else {
-      const updatedSelectedServices = [...selectedServices];
+      const updatedSelectedServices = [...preSelectedServeces];
       updatedSelectedServices.splice(serviceIndex, 1);
       setPreSelectedServeces(updatedSelectedServices);
     }
@@ -49,8 +49,14 @@ const ServiceForm: React.FC<ServiceFormProps> = ({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setSelectedServices(preSelectedServeces);
-    handleFormClose(event);
+    setNewAppointment({ ...newAppointment, services: preSelectedServeces });
+    setDisplayForm(prevState => ({
+      ...prevState,
+      serviceForm: false,
+      backdrop: false,
+      post: true,
+    }));
+    setPreSelectedServeces([]);
   };
 
   const handleFormClose = (event: React.FormEvent) => {

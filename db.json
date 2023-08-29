@@ -1,14 +1,14 @@
 {
   "posts": [
     {
-      "id": 1,
+      "id": 111,
       "title": "json-server",
       "author": "typicode"
     }
   ],
   "comments": [
     {
-      "id": 1,
+      "id": 1111,
       "body": "some comment",
       "postId": 1
     }
@@ -25,19 +25,6 @@
       "genericName": "Alen Stefanović",
       "genericService": "Šišanje makazicama",
       "time": "09:00"
-    },
-    {
-      "id": "undefined-undefined",
-      "clientName": "",
-      "services": []
-    },
-    {
-      "id": "-",
-      "day": "",
-      "time": "",
-      "date": "",
-      "clientName": "",
-      "services": []
     }
   ],
   "services": [
