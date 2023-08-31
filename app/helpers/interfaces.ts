@@ -2,9 +2,9 @@ export interface Appointment {
   id: string;
   day: string;
   time: string;
-  duration: string;
-  clientName: string;
-  date: string; // Add the date property
+  client: string;
+  date: string;
+  services: String[];
 }
 
 export interface NewAppointment {
@@ -64,7 +64,7 @@ export interface ServiceFormProps {
 }
 
 export interface ServecesProps {
-  id: string;
+  id: any;
   name: string;
   description: string;
   duration: number;

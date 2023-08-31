@@ -5,7 +5,12 @@ import { format, addDays, addWeeks } from 'date-fns';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import { generateWeekOptions, generateTimeSlots } from '../../helpers/universalFunctions';
 import { workingHours, dayTranslations } from '../../helpers/mock';
-import { Appointment, NewAppointment, AppointmentLabelProps } from '../../helpers/interfaces';
+import {
+  Appointment,
+  NewAppointment,
+  AppointmentLabelProps,
+  ServecesProps,
+} from '../../helpers/interfaces';
 import ClientForm from './ClientForm';
 import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
 import WeekSelect from '../ui/select/WeekSelect';
@@ -46,6 +51,7 @@ const Calendar: React.FC = () => {
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
+  const [services, setServices] = useState<ServecesProps[]>([]);
   const [newAppointment, setNewAppointment] = useState<NewAppointment>({
     id: '',
     date: '',
@@ -71,7 +77,22 @@ const Calendar: React.FC = () => {
   const slotDuration = 60;
   const timeSlots = generateTimeSlots(slotDuration);
 
-  console.log(newAppointment);
+  useEffect(() => {
+    // Function to fetch appointments from the server
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/services');
+        if (response.data) {
+          setServices(response.data);
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching data:', error);
+      }
+    };
+
+    // Call the fetch function
+    fetchServices();
+  }, []);
 
   useEffect(() => {
     // Function to fetch appointments from the server
@@ -90,20 +111,27 @@ const Calendar: React.FC = () => {
     fetchAppointments();
   }, []);
 
-  const handleAddAppointment = useCallback(() => {
+  const handleAddAppointment = useCallback(async () => {
     try {
-      axios.post('http://localhost:8000/appointments', newAppointment);
+      await axios.post('http://localhost:8000/appointments', newAppointment);
+
+      // Fetch the appointments again to get the updated list
+      const response = await axios.get('http://localhost:8000/appointments');
+      if (response.data) {
+        setAppointments(response.data);
+      }
+
+      setNewAppointment({
+        id: '',
+        date: '',
+        day: '',
+        time: '',
+        client: '',
+        services: [],
+      });
     } catch (error) {
       console.error('An error occurred while pushing data:', error);
     }
-    setNewAppointment({
-      id: '',
-      date: '',
-      day: '',
-      time: '',
-      client: '',
-      services: [],
-    });
   }, [newAppointment]);
 
   useEffect(() => {
@@ -118,50 +146,53 @@ const Calendar: React.FC = () => {
     }));
   }, [displayForm.post, handleAddAppointment]);
 
-  const calculateSlotsForDuration = (duration: string): number => {
+  const calculateSlotsForDuration = (duration: number): number => {
     // Parse the duration (e.g., '30 minutes' -> 30)
-    const durationInMinutes = parseInt(duration.split(' ')[0], 10);
+    const durationInMinutes = duration;
     // Calculate the number of slots needed for the duration
     return Math.ceil(durationInMinutes / slotDuration);
   };
 
   const AppointmentLabel: React.FC<AppointmentLabelProps> = ({ appointment }) => {
-    const duartion = 60;
     const borderSize = 2;
     const rowsGap = 8;
 
     if (!appointment) return null;
 
-    const { time, duration, clientName, date } = appointment;
+    const appointmentServices = appointment.services.map(serviceId => {
+      const serviceData = services.find(s => s.id === serviceId);
+      return serviceData
+        ? serviceData
+        : { id: serviceId, name: 'Unknown Service', duration: 0, price: 0 };
+    });
 
-    // Parse the start time to extract hours and minutes
+    const totalDuration = appointmentServices.reduce(
+      (total, service) => total + (service.duration || 0),
+      0
+    );
+    const totalPrices = appointmentServices.reduce(
+      (total, service) => total + (service.price || 0),
+      0
+    );
+
+    const { id, time } = appointment;
     const [startHours, startMinutes] = time.split(':').map(Number);
-
-    // Parse the duration to get the duration in minutes
-    const durationInMinutes = parseInt(duration.split(' ')[0], 10);
-
-    // Calculate the total minutes of the end time
-    const totalMinutes = startHours * 60 + startMinutes + durationInMinutes;
-
-    // Format the total minutes as the end time
+    const totalMinutes = startHours * 60 + startMinutes + totalDuration;
     const endHours = Math.floor(totalMinutes / 60);
     const endMinutes = totalMinutes % 60;
     const formattedEndTime = `${endHours.toString().padStart(2, '0')}:${endMinutes
       .toString()
       .padStart(2, '0')}`;
 
-    // Calculate the number of slots needed for the appointment duration
-    const slotsNeeded = calculateSlotsForDuration(duration);
-
-    // Determine the height of the appointment label for a single slot
+    const slotsNeeded = calculateSlotsForDuration(totalDuration);
     const singleSlotHeight = 112;
+    const spaceBetweenSlots = (slotsNeeded - 1) * (borderSize * 2 + rowsGap / 2);
+    const totalHeight = singleSlotHeight * slotsNeeded + spaceBetweenSlots;
 
-    // calculate gap and border size between slots
-    const spaceBetweenSlots = (slotsNeeded - 1) * (borderSize * 2 + rowsGap);
+    const totalServicesNames = appointmentServices.map((service, index) => (
+      <div key={index}>{`${index + 1}: ${service.name}`}</div>
+    ));
 
-    // Calculate the total height needed for the appointment label when it spans multiple slots
-    const totalHeight = singleSlotHeight * slotsNeeded + spaceBetweenSlots; // 2px for the gap between slots
-    /* const appointmentServices = services?.map(s => s); */
     return (
       <div
         className="flex flex-col justify-center min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-10"
@@ -172,9 +203,9 @@ const Calendar: React.FC = () => {
           {time}h - {formattedEndTime}h
         </div>
         {/* <div>{date}</div> */}
-        <div>{clientName}</div>
-        {/* <div>{appointmentServices}</div> */}
-        <div>700 RSD</div>
+        {/*  <div>{clientName}</div> */}
+        <div>{totalServicesNames}</div>
+        <div>{`${totalPrices} RSD`}</div>
       </div>
     );
   };
