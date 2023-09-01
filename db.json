@@ -23,7 +23,80 @@
       "day": "Sat",
       "time": "09:00",
       "client": "client2",
-      "services": ["sisanje01", "sisanje02"]
+      "services": [
+        "sisanje01",
+        "sisanje02"
+      ]
+    },
+    {
+      "id": "Mon09:0028.08.23",
+      "date": "28.08.23",
+      "day": "Mon",
+      "time": "09:00",
+      "client": "client2",
+      "services": [
+        "sisanje02"
+      ]
+    },
+    {
+      "id": "Tue09:0029.08.23",
+      "date": "29.08.23",
+      "day": "Tue",
+      "time": "09:00",
+      "client": "client2",
+      "services": [
+        "sisanje02"
+      ]
+    },
+    {
+      "id": "Wed10:0030.08.23",
+      "date": "30.08.23",
+      "day": "Wed",
+      "time": "10:00",
+      "client": "client2",
+      "services": [
+        "sisanje02"
+      ]
+    },
+    {
+      "id": "Mon11:0028.08.23",
+      "date": "28.08.23",
+      "day": "Mon",
+      "time": "11:00",
+      "client": "client2",
+      "services": [
+        "sisanje02"
+      ]
+    },
+    {
+      "id": "Thu09:0031.08.23",
+      "date": "31.08.23",
+      "day": "Thu",
+      "time": "09:00",
+      "client": "client2",
+      "services": [
+        "sisanje02"
+      ]
+    },
+    {
+      "id": "Thu11:0031.08.23",
+      "date": "31.08.23",
+      "day": "Thu",
+      "time": "11:00",
+      "client": "client2",
+      "services": [
+        "sisanje02"
+      ]
+    },
+    {
+      "id": "Tue11:0029.08.23",
+      "date": "29.08.23",
+      "day": "Tue",
+      "time": "11:00",
+      "client": "client2",
+      "services": [
+        "sisanje02"
+      ]
     }
   ],
   "services": [

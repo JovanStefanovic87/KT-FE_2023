@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
+import 'animate.css';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import {
   generateWeekOptions,
@@ -8,9 +9,15 @@ import {
   generateWeekDays,
   isWorkingHour,
   hasWorkingHourInHour,
+  handleCloseModal,
 } from '../../helpers/universalFunctions';
 import { dayTranslations } from '../../helpers/mock';
-import { AppointmentProps, ServecesProps, CalendarFormsInitProps } from '../../helpers/interfaces';
+import {
+  AppointmentProps,
+  ServecesProps,
+  CalendarFormsInitProps,
+  ModalInfoType,
+} from '../../helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import ClientForm from './ClientForm';
 import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
@@ -25,6 +32,7 @@ import AppointmentContainer from './AppointmentContainer';
 import SelectContainer from './SelectContainer';
 import ServiceForm from './ServiceForm';
 import AppointmentLabel from './AppointmentLabel';
+import InfoModal from '../ui/modals/InfoModal';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
@@ -36,6 +44,7 @@ const Calendar: React.FC = () => {
   const weekOptions = generateWeekOptions();
   const [displayForm, setDisplayForm] = useState<CalendarFormsInitProps>(displayFormInit);
   const [appointments, setAppointments] = useState<AppointmentProps[]>([]);
+  const [modalInfo, setModalInfo] = useState<ModalInfoType>({ isVisible: false, message: '' });
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
@@ -74,10 +83,14 @@ const Calendar: React.FC = () => {
       const response = await axios.get('http://localhost:8000/appointments');
       if (response.data) {
         setAppointments(response.data);
+        setModalInfo({ isVisible: true, message: 'Appointment successfully made.' });
+      } else {
+        setModalInfo({ isVisible: true, message: 'Something went wrong.' });
       }
       setNewAppointment(newAppointmentInit);
     } catch (error) {
       console.error('An error occurred while pushing data:', error);
+      setModalInfo({ isVisible: true, message: 'An error occurred. Please try again.' });
     }
   }, [newAppointment]);
 
@@ -103,8 +116,15 @@ const Calendar: React.FC = () => {
     });
   };
 
+  const handleModalClose = handleCloseModal(setModalInfo);
+
   return (
     <>
+      <InfoModal
+        isVisible={modalInfo.isVisible}
+        message={modalInfo.message}
+        onClose={handleModalClose}
+      />
       <ClientForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}

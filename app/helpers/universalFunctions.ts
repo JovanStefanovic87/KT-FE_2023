@@ -123,3 +123,11 @@ export const hasWorkingHourInHour = (
     })
   );
 };
+
+type SetModalInfoType = React.Dispatch<
+  React.SetStateAction<{ isVisible: boolean; message: string }>
+>;
+
+export const handleCloseModal = (setModalInfo: SetModalInfoType) => () => {
+  setModalInfo({ isVisible: false, message: '' });
+};

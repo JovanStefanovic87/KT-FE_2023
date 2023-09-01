@@ -70,3 +70,8 @@ export interface WeekDay {
   day: string;
   date: string;
 }
+
+export interface ModalInfoType {
+  isVisible: boolean;
+  message: string;
+}
