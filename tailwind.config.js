@@ -19,6 +19,7 @@ module.exports = {
         ktAppointmentBg: '#555555',
         ktAppointmentTime: '#f8cc03',
         ktFormItemName: '#A05C03',
+        backdrop: 'rgba(0, 0, 0, 0.85)',
       },
       transitionDuration: {
         instant: '0ms',
