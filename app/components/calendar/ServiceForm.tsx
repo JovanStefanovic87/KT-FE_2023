@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ServecesProps, ServiceFormProps } from '../../helpers/interfaces';
+import { ServecesProps, CalendarFormsProps } from '../../helpers/interfaces';
 import Backdrop from '../ui/Backdrop';
 import CloseBtn from '../ui/buttons/CloseBtn';
 import FormItemName from '../ui/text/FormItemName';
 import FormItemData from '../ui/text/FormItemData';
 
-const ServiceForm: React.FC<ServiceFormProps> = ({
+const ServiceForm: React.FC<CalendarFormsProps> = ({
   displayForm,
   setDisplayForm,
   newAppointment,

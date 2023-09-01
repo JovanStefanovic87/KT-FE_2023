@@ -23,40 +23,7 @@
       "day": "Sat",
       "time": "09:00",
       "client": "client2",
-      "services": [
-        "sisanje01",
-        "sisanje02"
-      ]
-    },
-    {
-      "id": "Thu09:0031.08.23",
-      "date": "31.08.23",
-      "day": "Thu",
-      "time": "09:00",
-      "client": "client1",
-      "services": [
-        "sisanje01"
-      ]
-    },
-    {
-      "id": "Thu10:0031.08.23",
-      "date": "31.08.23",
-      "day": "Thu",
-      "time": "10:00",
-      "client": "client2",
-      "services": [
-        "sisanje02"
-      ]
-    },
-    {
-      "id": "Tue09:0029.08.23",
-      "date": "29.08.23",
-      "day": "Tue",
-      "time": "09:00",
-      "client": "client2",
-      "services": [
-        "sisanje02"
-      ]
+      "services": ["sisanje01", "sisanje02"]
     }
   ],
   "services": [

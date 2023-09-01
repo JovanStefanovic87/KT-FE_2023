@@ -1,13 +1,4 @@
-export interface Appointment {
-  id: string;
-  day: string;
-  time: string;
-  client: string;
-  date: string;
-  services: String[];
-}
-
-export interface NewAppointment {
+export interface AppointmentProps {
   id: string;
   day: string;
   time: string;
@@ -25,24 +16,21 @@ export interface DayTranslations {
 }
 
 export interface AppointmentLabelProps {
-  appointment?: Appointment;
+  appointment?: AppointmentProps;
+  services: any;
+  slotDuration: number;
 }
 
-export interface ServiceFormProps {
-  displayForm: {
-    clientForm: boolean;
-    serviceForm: boolean;
-    backdrop: boolean;
-    post: boolean;
-  };
-  setDisplayForm: React.Dispatch<
-    React.SetStateAction<{
-      clientForm: boolean;
-      serviceForm: boolean;
-      backdrop: boolean;
-      post: boolean;
-    }>
-  >;
+export interface CalendarFormsInitProps {
+  clientForm: boolean;
+  serviceForm: boolean;
+  backdrop: boolean;
+  post: boolean;
+}
+
+export interface CalendarFormsProps {
+  displayForm: CalendarFormsInitProps;
+  setDisplayForm: React.Dispatch<React.SetStateAction<CalendarFormsInitProps>>;
   newAppointment: {
     id: string;
     date: string;
@@ -64,46 +52,11 @@ export interface ServiceFormProps {
 }
 
 export interface ServecesProps {
-  id: any;
+  id: string;
   name: string;
   description: string;
   duration: number;
   price: number;
-}
-
-export interface ClientFormProps {
-  displayForm: {
-    clientForm: boolean;
-    serviceForm: boolean;
-    backdrop: boolean;
-    post: boolean;
-  };
-  setDisplayForm: React.Dispatch<
-    React.SetStateAction<{
-      clientForm: boolean;
-      serviceForm: boolean;
-      backdrop: boolean;
-      post: boolean;
-    }>
-  >;
-  newAppointment: {
-    id: string;
-    date: string;
-    day: string;
-    time: string;
-    client: string;
-    services: string[];
-  };
-  setNewAppointment: React.Dispatch<
-    React.SetStateAction<{
-      id: string;
-      date: string;
-      day: string;
-      time: string;
-      client: string;
-      services: string[];
-    }>
-  >;
 }
 
 export interface ClientProps {
@@ -111,4 +64,9 @@ export interface ClientProps {
   name: string;
   phoneNumber: string;
   email: string;
+}
+
+export interface WeekDay {
+  day: string;
+  date: string;
 }

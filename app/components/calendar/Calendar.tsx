@@ -1,16 +1,17 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
-import { format, addDays, addWeeks } from 'date-fns';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
-import { generateWeekOptions, generateTimeSlots } from '../../helpers/universalFunctions';
-import { workingHours, dayTranslations } from '../../helpers/mock';
 import {
-  Appointment,
-  NewAppointment,
-  AppointmentLabelProps,
-  ServecesProps,
-} from '../../helpers/interfaces';
+  generateWeekOptions,
+  generateTimeSlots,
+  generateWeekDays,
+  isWorkingHour,
+  hasWorkingHourInHour,
+} from '../../helpers/universalFunctions';
+import { dayTranslations } from '../../helpers/mock';
+import { AppointmentProps, ServecesProps, CalendarFormsInitProps } from '../../helpers/interfaces';
+import { displayFormInit, newAppointmentInit } from './initStates';
 import ClientForm from './ClientForm';
 import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
 import WeekSelect from '../ui/select/WeekSelect';
@@ -23,28 +24,7 @@ import DaysRow from './DaysRow';
 import AppointmentContainer from './AppointmentContainer';
 import SelectContainer from './SelectContainer';
 import ServiceForm from './ServiceForm';
-
-const generateWeekDays = (selectedWeekIndex: number): { day: string; date: string }[] => {
-  const weekDays: { day: string; date: string }[] = [];
-  const today = new Date();
-
-  // Calculate the day offset for Monday as the first day of the week
-  const dayOffset = today.getDay() === 0 ? 6 : today.getDay() - 1;
-  const startOfWeek = addDays(today, -dayOffset); // Adjust the offset here
-  const currentWeekStart = addWeeks(startOfWeek, selectedWeekIndex);
-
-  for (let i = 0; i < 7; i++) {
-    const currentDate = addDays(currentWeekStart, i);
-    const day = format(currentDate, 'EEE');
-    const date = format(currentDate, 'dd.MM.yy');
-
-    if (workingHours[day].start !== '--:--' && workingHours[day].end !== '--:--') {
-      weekDays.push({ day, date });
-    }
-  }
-
-  return weekDays;
-};
+import AppointmentLabel from './AppointmentLabel';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
@@ -52,33 +32,15 @@ const Calendar: React.FC = () => {
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
   const [services, setServices] = useState<ServecesProps[]>([]);
-  const [newAppointment, setNewAppointment] = useState<NewAppointment>({
-    id: '',
-    date: '',
-    day: '',
-    time: '',
-    client: '',
-    services: [],
-  });
+  const [newAppointment, setNewAppointment] = useState<AppointmentProps>(newAppointmentInit);
   const weekOptions = generateWeekOptions();
-  const [displayForm, setDisplayForm] = useState<{
-    clientForm: boolean;
-    serviceForm: boolean;
-    backdrop: boolean;
-    post: boolean;
-  }>({
-    clientForm: false,
-    serviceForm: false,
-    backdrop: false,
-    post: false,
-  });
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [displayForm, setDisplayForm] = useState<CalendarFormsInitProps>(displayFormInit);
+  const [appointments, setAppointments] = useState<AppointmentProps[]>([]);
   const weekDays = generateWeekDays(selectedWeek);
-  const slotDuration = 60;
+  const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
 
   useEffect(() => {
-    // Function to fetch appointments from the server
     const fetchServices = async () => {
       try {
         const response = await axios.get('http://localhost:8000/services');
@@ -89,13 +51,10 @@ const Calendar: React.FC = () => {
         console.error('An error occurred while fetching data:', error);
       }
     };
-
-    // Call the fetch function
     fetchServices();
   }, []);
 
   useEffect(() => {
-    // Function to fetch appointments from the server
     const fetchAppointments = async () => {
       try {
         const response = await axios.get('http://localhost:8000/appointments');
@@ -106,29 +65,17 @@ const Calendar: React.FC = () => {
         console.error('An error occurred while fetching data:', error);
       }
     };
-
-    // Call the fetch function
     fetchAppointments();
   }, []);
 
   const handleAddAppointment = useCallback(async () => {
     try {
       await axios.post('http://localhost:8000/appointments', newAppointment);
-
-      // Fetch the appointments again to get the updated list
       const response = await axios.get('http://localhost:8000/appointments');
       if (response.data) {
         setAppointments(response.data);
       }
-
-      setNewAppointment({
-        id: '',
-        date: '',
-        day: '',
-        time: '',
-        client: '',
-        services: [],
-      });
+      setNewAppointment(newAppointmentInit);
     } catch (error) {
       console.error('An error occurred while pushing data:', error);
     }
@@ -146,70 +93,6 @@ const Calendar: React.FC = () => {
     }));
   }, [displayForm.post, handleAddAppointment]);
 
-  const calculateSlotsForDuration = (duration: number): number => {
-    // Parse the duration (e.g., '30 minutes' -> 30)
-    const durationInMinutes = duration;
-    // Calculate the number of slots needed for the duration
-    return Math.ceil(durationInMinutes / slotDuration);
-  };
-
-  const AppointmentLabel: React.FC<AppointmentLabelProps> = ({ appointment }) => {
-    const borderSize = 2;
-    const rowsGap = 8;
-
-    if (!appointment) return null;
-
-    const appointmentServices = appointment.services.map(serviceId => {
-      const serviceData = services.find(s => s.id === serviceId);
-      return serviceData
-        ? serviceData
-        : { id: serviceId, name: 'Unknown Service', duration: 0, price: 0 };
-    });
-
-    const totalDuration = appointmentServices.reduce(
-      (total, service) => total + (service.duration || 0),
-      0
-    );
-    const totalPrices = appointmentServices.reduce(
-      (total, service) => total + (service.price || 0),
-      0
-    );
-
-    const { id, time } = appointment;
-    const [startHours, startMinutes] = time.split(':').map(Number);
-    const totalMinutes = startHours * 60 + startMinutes + totalDuration;
-    const endHours = Math.floor(totalMinutes / 60);
-    const endMinutes = totalMinutes % 60;
-    const formattedEndTime = `${endHours.toString().padStart(2, '0')}:${endMinutes
-      .toString()
-      .padStart(2, '0')}`;
-
-    const slotsNeeded = calculateSlotsForDuration(totalDuration);
-    const singleSlotHeight = 112;
-    const spaceBetweenSlots = (slotsNeeded - 1) * (borderSize * 2 + rowsGap / 2);
-    const totalHeight = singleSlotHeight * slotsNeeded + spaceBetweenSlots;
-
-    const totalServicesNames = appointmentServices.map((service, index) => (
-      <div key={index}>{`${index + 1}: ${service.name}`}</div>
-    ));
-
-    return (
-      <div
-        className="flex flex-col justify-center min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-10"
-        style={{ height: `${totalHeight}px` }}
-        data-slots-needed={slotsNeeded}
-      >
-        <div className="text-ktAppointmentTime text-xl font-bold">
-          {time}h - {formattedEndTime}h
-        </div>
-        {/* <div>{date}</div> */}
-        {/*  <div>{clientName}</div> */}
-        <div>{totalServicesNames}</div>
-        <div>{`${totalPrices} RSD`}</div>
-      </div>
-    );
-  };
-
   const handleAppointmentButton = (day: string, time: string, date: string) => {
     setNewAppointment({
       ...newAppointment,
@@ -218,25 +101,6 @@ const Calendar: React.FC = () => {
       time,
       date,
     });
-  };
-
-  const isWorkingHour = (day: string, time: string) => {
-    const dayWorkingHours = workingHours[day];
-
-    const appointmentTime = parseInt(time.replace(':', ''), 10);
-    const startTime = parseInt(dayWorkingHours.start.replace(':', ''), 10);
-    const endTime = parseInt(dayWorkingHours.end.replace(':', ''), 10);
-
-    return appointmentTime >= startTime && appointmentTime <= endTime;
-  };
-
-  const hasWorkingHourInHour = (hour: string) => {
-    return weekDays.some(dayInfo =>
-      timeSlots.some(time => {
-        const dayWorkingHours = workingHours[dayInfo.day];
-        return dayWorkingHours && isWorkingHour(dayInfo.day, time) && time.startsWith(hour);
-      })
-    );
   };
 
   return (
@@ -294,7 +158,7 @@ const Calendar: React.FC = () => {
 
             {timeSlots.map(time => {
               const hour = time.split(':')[0];
-              const showRow = hasWorkingHourInHour(hour);
+              const showRow = hasWorkingHourInHour(hour, weekDays, timeSlots);
 
               return (
                 showRow && (
@@ -316,6 +180,8 @@ const Calendar: React.FC = () => {
                                     appointment.time === time &&
                                     appointment.date === day.date
                                 )}
+                                services={services} // Pass the services prop
+                                slotDuration={slotDuration} // Pass the slotDuration prop
                               />
                             ) : (
                               <AppointmentButton

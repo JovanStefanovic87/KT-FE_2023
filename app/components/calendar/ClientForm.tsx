@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ClientProps, ClientFormProps } from '../../helpers/interfaces';
+import { ClientProps, CalendarFormsProps } from '../../helpers/interfaces';
 import Backdrop from '../ui/Backdrop';
 import CloseBtn from '../ui/buttons/CloseBtn';
 
-const ClientForm: React.FC<ClientFormProps> = ({
+const ClientForm: React.FC<CalendarFormsProps> = ({
   displayForm,
   setDisplayForm,
   newAppointment,

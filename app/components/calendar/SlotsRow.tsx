@@ -6,7 +6,7 @@ interface slotsRowProps {
 
 const SlotsRow: React.FC<slotsRowProps> = ({ children }) => {
   return (
-    <div className="grid grid-cols-9 gap-2 mt-1">
+    <div className="grid grid-cols-9 gap-2 mt-1 z-5">
       <div className="flex flex-row col-span-8">{children}</div>
     </div>
   );

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { format, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
+import { format, addDays, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
+import { workingHours } from './mock';
+import { WeekDay } from '../helpers/interfaces';
 
 export function useDeviceDetect() {
   const [isMobile, setMobile] = useState(false);
@@ -73,4 +75,51 @@ export const handleSelectChange = (
 ) => {
   const selectedValue = event.target.value;
   setState(selectedValue);
+};
+
+export const generateWeekDays = (selectedWeekIndex: number): WeekDay[] => {
+  const weekDays: WeekDay[] = [];
+  const today = new Date();
+  const dayOffset = today.getDay() === 0 ? 6 : today.getDay() - 1;
+  const startOfWeek = addDays(today, -dayOffset);
+  const currentWeekStart = addWeeks(startOfWeek, selectedWeekIndex);
+
+  for (let i = 0; i < 7; i++) {
+    const currentDate = addDays(currentWeekStart, i);
+    const day = format(currentDate, 'EEE');
+    const date = format(currentDate, 'dd.MM.yy');
+
+    if (workingHours[day].start !== '--:--' && workingHours[day].end !== '--:--') {
+      weekDays.push({ day, date });
+    }
+  }
+  return weekDays;
+};
+
+export const calculateSlotsForDuration = (
+  appointmentDuration: number,
+  slotDuration: number
+): number => Math.ceil(appointmentDuration / slotDuration);
+
+export const isWorkingHour = (day: string, time: string): boolean => {
+  const dayWorkingHours = workingHours[day];
+
+  const appointmentTime = parseInt(time.replace(':', ''), 10);
+  const startTime = parseInt(dayWorkingHours.start.replace(':', ''), 10);
+  const endTime = parseInt(dayWorkingHours.end.replace(':', ''), 10);
+
+  return appointmentTime >= startTime && appointmentTime <= endTime;
+};
+
+export const hasWorkingHourInHour = (
+  hour: string,
+  weekDays: WeekDay[],
+  timeSlots: string[]
+): boolean => {
+  return weekDays.some(dayInfo =>
+    timeSlots.some(time => {
+      const dayWorkingHours = workingHours[dayInfo.day];
+      return dayWorkingHours && isWorkingHour(dayInfo.day, time) && time.startsWith(hour);
+    })
+  );
 };
