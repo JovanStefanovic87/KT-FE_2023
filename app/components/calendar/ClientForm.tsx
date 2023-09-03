@@ -56,7 +56,7 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
       style={{ display: displayForm.clientForm ? 'flex' : 'none' }}
       id="clientForm"
     >
-      <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-10">
+      <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-30">
         <div className="bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1">
           <CloseBtn onClick={handleFormClose} />
           <h1 className="text-2xl font-bold mb-4 text-white">IZBOR KLIJENTA</h1>

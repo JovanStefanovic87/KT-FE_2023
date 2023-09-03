@@ -11,10 +11,11 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
   setDisplayForm,
   newAppointment,
   setNewAppointment,
+  selected,
+  setSelected,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [allServices, setAllServices] = useState<ServecesProps[]>([]);
-  const [preSelectedServeces, setPreSelectedServeces] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,27 +37,27 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
   );
 
   const handleNameClick = (serviceId: string) => {
-    const serviceIndex = preSelectedServeces.indexOf(serviceId);
+    const serviceIndex = selected.indexOf(serviceId);
 
     if (serviceIndex === -1) {
-      setPreSelectedServeces([...preSelectedServeces, serviceId]);
+      setSelected([...(selected as string[]), serviceId]);
     } else {
-      const updatedSelectedServices = [...preSelectedServeces];
+      const updatedSelectedServices = [...(selected as string[])];
       updatedSelectedServices.splice(serviceIndex, 1);
-      setPreSelectedServeces(updatedSelectedServices);
+      setSelected(updatedSelectedServices);
     }
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setNewAppointment({ ...newAppointment, services: preSelectedServeces });
+    setNewAppointment({ ...newAppointment, services: selected as string[] });
     setDisplayForm(prevState => ({
       ...prevState,
       serviceForm: false,
       backdrop: false,
       post: true,
     }));
-    setPreSelectedServeces([]);
+    setSelected([]);
   };
 
   const handleFormClose = (event: React.FormEvent) => {
@@ -70,7 +71,7 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
       style={{ display: displayForm.serviceForm ? 'flex' : 'none' }}
       id="derviceForm"
     >
-      <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-10">
+      <div className="flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-30">
         <div className="bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1">
           <CloseBtn onClick={handleFormClose} />
           <h1 className="text-2xl font-bold mb-4 text-white">IZBOR USLUGE</h1>
@@ -89,7 +90,7 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
             <li
               key={service.id}
               className={`border-2 p-2 rounded-md cursor-pointer ${
-                preSelectedServeces.includes(service.id) ? 'bg-blue-100' : ''
+                selected.includes(service.id) ? 'bg-blue-100' : ''
               }`}
               onClick={() => handleNameClick(service.id)}
             >

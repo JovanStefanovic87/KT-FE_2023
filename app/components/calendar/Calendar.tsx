@@ -10,6 +10,7 @@ import {
   isWorkingHour,
   hasWorkingHourInHour,
   handleCloseModal,
+  totalPrice,
 } from '../../helpers/universalFunctions';
 import { dayTranslations } from '../../helpers/mock';
 import {
@@ -41,10 +42,12 @@ const Calendar: React.FC = () => {
   const firstRun = useRef(true);
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
   const [employees, setEmployees] = useState<EmployeeProps[]>([]);
+  const [services, setServices] = useState<ServecesProps[]>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
+  const [selectedClient, setSelectedClient] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
-  const [services, setServices] = useState<ServecesProps[]>([]);
   const [clients, setClients] = useState<ClientProps[]>([]);
   const [newAppointment, setNewAppointment] = useState<AppointmentProps>(newAppointmentInit);
   const weekOptions = generateWeekOptions();
@@ -72,8 +75,6 @@ const Calendar: React.FC = () => {
         const serviceProvidersResponse = await axios.get('http://localhost:8000/service_providers');
         if (serviceProvidersResponse.data) {
           setServiceProviders(serviceProvidersResponse.data);
-
-          // Initialize selectedServiceProvider to the first service provider
           if (serviceProvidersResponse.data.length > 0) {
             setSelectedServiceProvider(serviceProvidersResponse.data[0].name);
           }
@@ -114,7 +115,6 @@ const Calendar: React.FC = () => {
     };
 
     fetchAppointments();
-    console.log('motherfucker');
   }, [selectedEmployee]);
 
   useEffect(() => {
@@ -197,11 +197,25 @@ const Calendar: React.FC = () => {
       <InfoModal isVisible={modalInfo.isVisible} onClose={handleModalClose}>
         {modalInfo.appointmentData && (
           <div>
-            <h2 className="text-lg mb-4">Uspešno ste zakazali termin</h2>
-            <p>Datum: {modalInfo.appointmentData.date}</p>
-            <p>Vreme: {modalInfo.appointmentData.time}</p>
-            <p>Date: {modalInfo.appointmentData.date}</p>
-            <p>Date: {modalInfo.appointmentData.date}</p>
+            <h2 className="text-xl md:text-3xl font-bold text-blue-600 mb-4">
+              {' '}
+              Uspešno ste zakazali termin
+            </h2>
+            <p className="text-sm md:text-base mb-2">
+              Termin: {`${modalInfo.appointmentData.date} u ${modalInfo.appointmentData.time}h`}
+            </p>{' '}
+            <p className="text-sm md:text-base mb-2">
+              Usluge: {modalInfo.appointmentData.services.join(', ')}
+            </p>{' '}
+            <p className="text-sm md:text-base mb-2">
+              Salon: {modalInfo.appointmentData.serviceProvider}
+            </p>{' '}
+            <p className="text-sm md:text-base mb-2">
+              Radnik: {modalInfo.appointmentData.employee}
+            </p>{' '}
+            <p className="text-lg md:text-xl font-bold text-green-600 mb-2">
+              Ukupna cena: {`${totalPrice(modalInfo.appointmentData.services, services)} RSD`}
+            </p>{' '}
           </div>
         )}
       </InfoModal>
@@ -210,12 +224,16 @@ const Calendar: React.FC = () => {
         setDisplayForm={setDisplayForm}
         newAppointment={newAppointment}
         setNewAppointment={setNewAppointment}
+        selected={selectedClient}
+        setSelected={setSelectedClient}
       />
       <ServiceForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}
         newAppointment={newAppointment}
         setNewAppointment={setNewAppointment}
+        selected={selectedServices}
+        setSelected={setSelectedServices}
       />
       <Container>
         <SelectContainer>
@@ -285,7 +303,7 @@ const Calendar: React.FC = () => {
                                 )}
                                 services={services}
                                 clients={clients}
-                                slotDuration={slotDuration} // Pass the slotDuration prop
+                                slotDuration={slotDuration}
                               />
                             ) : (
                               <AppointmentButton

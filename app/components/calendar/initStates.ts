@@ -12,6 +12,7 @@ export const newAppointmentInit = {
   time: '',
   client: '',
   services: [],
+  price: 0,
   employee: '',
   serviceProvider: '',
 };

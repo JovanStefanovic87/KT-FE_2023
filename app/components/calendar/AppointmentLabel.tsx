@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppointmentLabelProps, ClientProps } from '../../helpers/interfaces';
-import { calculateSlotsForDuration } from '../../helpers/universalFunctions';
+import { calculateSlotsForDuration, totalPrices } from '../../helpers/universalFunctions';
 
 const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
   appointment,
@@ -28,10 +28,6 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
 
   const totalDuration = appointmentServices.reduce(
     (total, service) => total + (service.duration || 0),
-    0
-  );
-  const totalPrices = appointmentServices.reduce(
-    (total, service) => total + (service.price || 0),
     0
   );
 
@@ -65,7 +61,7 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
       <div className="text-lg font-semibold text-blue-200">{clientName()}</div>
       <ul className="list-disc">{totalServicesNames}</ul>
       <hr className="border-t my-0.5 border-gray-300 w-2/3 mx-auto" />
-      <div className="text-base font-bold">{`${totalPrices} RSD`}</div>
+      <div className="text-base font-bold">{`${totalPrices(appointmentServices)} RSD`}</div>
     </div>
   );
 };

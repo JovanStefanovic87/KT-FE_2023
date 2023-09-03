@@ -131,3 +131,16 @@ type SetModalInfoType = React.Dispatch<
 export const handleCloseModal = (setModalInfo: SetModalInfoType) => () => {
   setModalInfo({ isVisible: false, message: '' });
 };
+
+export const totalPrice = (selectedServices: any[], allServices: any[] | undefined) => {
+  return selectedServices.reduce((sum, serviceId) => {
+    const service = allServices?.find(s => s.id === serviceId);
+    if (service) {
+      return sum + service.price;
+    }
+    return sum;
+  }, 0);
+};
+
+export const totalPrices = (state: any[]) =>
+  state.reduce((total: any, service: { price: any }) => total + (service.price || 0), 0);

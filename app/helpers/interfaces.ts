@@ -5,6 +5,7 @@ export interface AppointmentProps {
   client: string;
   date: string;
   services: string[];
+  price: number;
   employee: string;
   serviceProvider: string;
 }
@@ -31,31 +32,25 @@ export interface CalendarFormsInitProps {
   post: boolean;
 }
 
+type NewAppointment = {
+  id: string;
+  date: string;
+  day: string;
+  time: string;
+  client: string;
+  services: string[];
+  price: number;
+  employee: string;
+  serviceProvider: string;
+};
+
 export interface CalendarFormsProps {
   displayForm: CalendarFormsInitProps;
   setDisplayForm: React.Dispatch<React.SetStateAction<CalendarFormsInitProps>>;
-  newAppointment: {
-    id: string;
-    date: string;
-    day: string;
-    time: string;
-    client: string;
-    services: string[];
-    employee: string;
-    serviceProvider: string;
-  };
-  setNewAppointment: React.Dispatch<
-    React.SetStateAction<{
-      id: string;
-      date: string;
-      day: string;
-      time: string;
-      client: string;
-      services: string[];
-      employee: string;
-      serviceProvider: string;
-    }>
-  >;
+  newAppointment: NewAppointment;
+  setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointment>>;
+  selected: any;
+  setSelected: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export interface ServiceProviderProps {

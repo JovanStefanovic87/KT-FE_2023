@@ -14,7 +14,7 @@ const Backdrop: React.FC<BackdropProps> = ({ onClick, isVisible }) => {
     display: isVisible ? 'flex' : 'none',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 9,
+    zIndex: 20,
   };
 
   return <div style={backdropStyle} onClick={onClick}></div>;
