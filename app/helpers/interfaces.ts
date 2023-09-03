@@ -5,6 +5,8 @@ export interface AppointmentProps {
   client: string;
   date: string;
   services: string[];
+  employee: string;
+  serviceProvider: string;
 }
 
 export interface WorkingHours {
@@ -18,6 +20,7 @@ export interface DayTranslations {
 export interface AppointmentLabelProps {
   appointment?: AppointmentProps;
   services: any;
+  clients: any;
   slotDuration: number;
 }
 
@@ -38,6 +41,8 @@ export interface CalendarFormsProps {
     time: string;
     client: string;
     services: string[];
+    employee: string;
+    serviceProvider: string;
   };
   setNewAppointment: React.Dispatch<
     React.SetStateAction<{
@@ -47,8 +52,25 @@ export interface CalendarFormsProps {
       time: string;
       client: string;
       services: string[];
+      employee: string;
+      serviceProvider: string;
     }>
   >;
+}
+
+export interface ServiceProviderProps {
+  id: string;
+  name: string;
+  phoneNumber: string;
+  email: string;
+}
+
+export interface EmployeeProps {
+  id: string;
+  name: string;
+  phoneNumber: string;
+  email: string;
+  service_provider: String;
 }
 
 export interface ServecesProps {
@@ -74,4 +96,5 @@ export interface WeekDay {
 export interface ModalInfoType {
   isVisible: boolean;
   message: string;
+  appointmentData?: AppointmentProps; // Add the appointmentData property as optional
 }

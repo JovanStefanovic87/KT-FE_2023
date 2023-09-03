@@ -3,11 +3,11 @@ import Backdrop from '../Backdrop';
 
 type InfoModalProps = {
   isVisible: boolean;
-  message: string;
   onClose: () => void;
+  children?: React.ReactNode; // Add children prop
 };
 
-const InfoModal: React.FC<InfoModalProps> = ({ isVisible, message, onClose }) => {
+const InfoModal: React.FC<InfoModalProps> = ({ isVisible, onClose, children }) => {
   const animationClass = isVisible
     ? 'ease-out duration-300 opacity-100'
     : 'ease-in duration-200 opacity-0';
@@ -28,7 +28,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ isVisible, message, onClose }) =>
           className={`bg-white rounded-lg p-5 transition-all transform ${animationClass}`}
           onClick={handleModalClick} // stop event from bubbling up when modal content is clicked
         >
-          <h2 className="text-lg mb-4">{message}</h2>
+          {children} {/* Render children */}
           <button onClick={onClose} className="bg-blue-500 text-white py-1 px-4 rounded">
             Close
           </button>

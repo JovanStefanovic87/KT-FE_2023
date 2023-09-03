@@ -1,10 +1,11 @@
 import React from 'react';
-import { ServecesProps, AppointmentLabelProps } from '../../helpers/interfaces';
+import { AppointmentLabelProps, ClientProps } from '../../helpers/interfaces';
 import { calculateSlotsForDuration } from '../../helpers/universalFunctions';
 
 const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
   appointment,
   services,
+  clients,
   slotDuration,
 }) => {
   const borderSize = 2;
@@ -18,6 +19,12 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
       ? serviceData
       : { id: serviceId, name: 'Unknown Service', duration: 0, price: 0 };
   });
+
+  const clientName = () => {
+    const clientId = appointment.client;
+    const client = clients.find((client: ClientProps) => client.id === clientId);
+    return client?.name || 'Unknown Client';
+  };
 
   const totalDuration = appointmentServices.reduce(
     (total, service) => total + (service.duration || 0),
@@ -39,7 +46,7 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
 
   const slotsNeeded = calculateSlotsForDuration(totalDuration, slotDuration);
   const singleSlotHeight = 112;
-  const spaceBetweenSlots = (slotsNeeded - 1) * (borderSize * 2 + rowsGap / 2);
+  const spaceBetweenSlots = (slotsNeeded - 1) * (borderSize * 2);
   const totalHeight = singleSlotHeight * slotsNeeded + spaceBetweenSlots;
 
   const totalServicesNames = appointmentServices.map((service, index) => (
@@ -48,17 +55,17 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
 
   return (
     <div
-      className="flex flex-col justify-center min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3"
+      className="flex flex-col justify-start min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg"
       style={{ height: `${totalHeight}px` }}
       data-slots-needed={slotsNeeded}
     >
       <div className="text-ktAppointmentTime text-xl font-bold">
         {time}h - {formattedEndTime}h
       </div>
-      {/* <div>{date}</div> */}
-      {/*  <div>{clientName}</div> */}
-      <div>{totalServicesNames}</div>
-      <div>{`${totalPrices} RSD`}</div>
+      <div className="text-lg font-semibold text-blue-200">{clientName()}</div>
+      <ul className="list-disc">{totalServicesNames}</ul>
+      <hr className="border-t my-0.5 border-gray-300 w-2/3 mx-auto" />
+      <div className="text-base font-bold">{`${totalPrices} RSD`}</div>
     </div>
   );
 };

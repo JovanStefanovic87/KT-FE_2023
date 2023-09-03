@@ -17,6 +17,9 @@ import {
   ServecesProps,
   CalendarFormsInitProps,
   ModalInfoType,
+  ClientProps,
+  ServiceProviderProps,
+  EmployeeProps,
 } from '../../helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import ClientForm from './ClientForm';
@@ -36,54 +39,125 @@ import InfoModal from '../ui/modals/InfoModal';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
+  const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
+  const [employees, setEmployees] = useState<EmployeeProps[]>([]);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
   const [services, setServices] = useState<ServecesProps[]>([]);
+  const [clients, setClients] = useState<ClientProps[]>([]);
   const [newAppointment, setNewAppointment] = useState<AppointmentProps>(newAppointmentInit);
   const weekOptions = generateWeekOptions();
   const [displayForm, setDisplayForm] = useState<CalendarFormsInitProps>(displayFormInit);
   const [appointments, setAppointments] = useState<AppointmentProps[]>([]);
   const [modalInfo, setModalInfo] = useState<ModalInfoType>({ isVisible: false, message: '' });
+  const [isLoading, setIsLoading] = useState(false);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
 
   useEffect(() => {
-    const fetchServices = async () => {
+    let isMounted = true;
+    const fetchServicesAndClients = async () => {
+      setIsLoading(true);
       try {
-        const response = await axios.get('http://localhost:8000/services');
-        if (response.data) {
-          setServices(response.data);
+        const servicesResponse = await axios.get('http://localhost:8000/services');
+        if (servicesResponse.data) {
+          setServices(servicesResponse.data);
+        }
+        const clientsResponse = await axios.get('http://localhost:8000/clients');
+        if (clientsResponse.data) {
+          setClients(clientsResponse.data);
+        }
+        const serviceProvidersResponse = await axios.get('http://localhost:8000/service_providers');
+        if (serviceProvidersResponse.data) {
+          setServiceProviders(serviceProvidersResponse.data);
+
+          // Initialize selectedServiceProvider to the first service provider
+          if (serviceProvidersResponse.data.length > 0) {
+            setSelectedServiceProvider(serviceProvidersResponse.data[0].name);
+          }
         }
       } catch (error) {
         console.error('An error occurred while fetching data:', error);
+        return { error: true, message: 'Failed to fetch data' };
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
-    fetchServices();
+
+    fetchServicesAndClients();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/appointments');
-        if (response.data) {
-          setAppointments(response.data);
+        if (selectedEmployee) {
+          const response = await axios.get(
+            `http://localhost:8000/appointments?employee=${selectedEmployee}`
+          );
+          if (response.data) {
+            setAppointments(response.data);
+          }
+        } else {
+          setAppointments([]);
         }
       } catch (error) {
         console.error('An error occurred while fetching data:', error);
       }
     };
+
     fetchAppointments();
-  }, []);
+    console.log('motherfucker');
+  }, [selectedEmployee]);
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      setIsLoading(true);
+      try {
+        const employeesResponse = await axios.get(
+          `http://localhost:8000/employees?service_provider=${selectedServiceProvider}`
+        );
+        if (employeesResponse.data && employeesResponse.data.length > 0) {
+          setEmployees(employeesResponse.data);
+
+          // Set selectedEmployee to the first employee in the array
+          setSelectedEmployee(employeesResponse.data[0].name); // Assuming 'name' is the property containing employee names
+        }
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Only fetch employees when selectedServiceProvider changes
+    if (selectedServiceProvider) {
+      fetchEmployees();
+    }
+  }, [selectedServiceProvider]);
 
   const handleAddAppointment = useCallback(async () => {
     try {
+      newAppointment.employee = selectedEmployee;
+      newAppointment.serviceProvider = selectedServiceProvider;
+
       await axios.post('http://localhost:8000/appointments', newAppointment);
-      const response = await axios.get('http://localhost:8000/appointments');
+      const response = await axios.get(
+        `http://localhost:8000/appointments?employee=${selectedEmployee}`
+      );
       if (response.data) {
         setAppointments(response.data);
-        setModalInfo({ isVisible: true, message: 'Appointment successfully made.' });
+        setModalInfo({
+          isVisible: true,
+          message: 'Appointment successfully made.',
+          appointmentData: newAppointment,
+        });
       } else {
         setModalInfo({ isVisible: true, message: 'Something went wrong.' });
       }
@@ -92,7 +166,7 @@ const Calendar: React.FC = () => {
       console.error('An error occurred while pushing data:', error);
       setModalInfo({ isVisible: true, message: 'An error occurred. Please try again.' });
     }
-  }, [newAppointment]);
+  }, [newAppointment, selectedEmployee, selectedServiceProvider]);
 
   useEffect(() => {
     if (firstRun.current) {
@@ -109,7 +183,7 @@ const Calendar: React.FC = () => {
   const handleAppointmentButton = (day: string, time: string, date: string) => {
     setNewAppointment({
       ...newAppointment,
-      id: `${day}${time}${date}`,
+      id: `${day}${time}${date}${selectedEmployee}`,
       day,
       time,
       date,
@@ -120,11 +194,17 @@ const Calendar: React.FC = () => {
 
   return (
     <>
-      <InfoModal
-        isVisible={modalInfo.isVisible}
-        message={modalInfo.message}
-        onClose={handleModalClose}
-      />
+      <InfoModal isVisible={modalInfo.isVisible} onClose={handleModalClose}>
+        {modalInfo.appointmentData && (
+          <div>
+            <h2 className="text-lg mb-4">Uspešno ste zakazali termin</h2>
+            <p>Datum: {modalInfo.appointmentData.date}</p>
+            <p>Vreme: {modalInfo.appointmentData.time}</p>
+            <p>Date: {modalInfo.appointmentData.date}</p>
+            <p>Date: {modalInfo.appointmentData.date}</p>
+          </div>
+        )}
+      </InfoModal>
       <ClientForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}
@@ -169,7 +249,7 @@ const Calendar: React.FC = () => {
               {weekDays.map(dayInfo => (
                 <div
                   key={dayInfo.day}
-                  className="flex justify-center items-center h-slotDayHeight w-slotsWidth mx-0.5 mt-1 min-w-slotsWidth text-white font-bold border-2 border-white border-solid bg-gray-800"
+                  className="flex justify-center items-center h-slotDayHeight w-slotsWidth mx-0.5 mt-1 min-w-slotsWidth text-orange-200 font-bold border-2 border-stone-500 border-solid bg-gray-800"
                 >
                   {dayTranslations[dayInfo.day]} ({dayInfo.date})
                 </div>
@@ -184,7 +264,10 @@ const Calendar: React.FC = () => {
                 showRow && (
                   <SlotsRow key={time}>
                     {weekDays.map(day => (
-                      <div className="col-span-1 border-2 border-solid border-white" key={day.day}>
+                      <div
+                        className="col-span-1 border-2 border-solid border-transparent"
+                        key={day.day}
+                      >
                         {isWorkingHour(day.day, time) ? (
                           <AppointmentContainer>
                             {appointments.find(
@@ -200,7 +283,8 @@ const Calendar: React.FC = () => {
                                     appointment.time === time &&
                                     appointment.date === day.date
                                 )}
-                                services={services} // Pass the services prop
+                                services={services}
+                                clients={clients}
                                 slotDuration={slotDuration} // Pass the slotDuration prop
                               />
                             ) : (
@@ -232,11 +316,16 @@ const Calendar: React.FC = () => {
         <SelectContainer>
           <SelectUser
             selectedUser={selectedServiceProvider || ''}
-            onSelectUser={user => setSelectedServiceProvider(user)}
+            onSelectUser={user => {
+              setSelectedServiceProvider(user);
+            }}
             id="selectedServiceProvider"
           >
-            <option value="Šovljanski">Šovljanski</option>
-            <option value="Brica">Brica</option>
+            {serviceProviders.map(prov => (
+              <option key={prov.id} value={prov.name}>
+                {prov.name}
+              </option>
+            ))}
           </SelectUser>
 
           <SelectUser
@@ -244,8 +333,11 @@ const Calendar: React.FC = () => {
             onSelectUser={user => setSelectedEmployee(user)}
             id="selectedEmployee"
           >
-            <option value="Stevan Poljaković">Stevan Poljaković</option>
-            <option value="Milica">Milica</option>
+            {employees.map(employee => (
+              <option key={employee.id} value={employee.name}>
+                {employee.name}
+              </option>
+            ))}
           </SelectUser>
         </SelectContainer>
       </Container>
