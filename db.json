@@ -340,6 +340,31 @@
       "price": 0,
       "employee": "Slavko",
       "serviceProvider": "Sovljanski"
+    },
+    {
+      "id": "Wed10:0030.08.23Milica",
+      "date": "30.08.23",
+      "day": "Wed",
+      "time": "10:00",
+      "client": "client1",
+      "services": [
+        "sisanje01"
+      ],
+      "employee": "Milica",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Tue11:0029.08.23Milica",
+      "date": "29.08.23",
+      "day": "Tue",
+      "time": "11:00",
+      "client": "client1",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Milica",
+      "serviceProvider": "Brica"
     }
   ],
   "services": [

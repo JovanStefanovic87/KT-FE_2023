@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
@@ -64,15 +65,19 @@ const Calendar: React.FC = () => {
     const fetchServicesAndClients = async () => {
       setIsLoading(true);
       try {
-        const servicesResponse = await axios.get('http://localhost:8000/services');
+        const servicesResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_DATABASE_URL}/services`
+        );
         if (servicesResponse.data) {
           setServices(servicesResponse.data);
         }
-        const clientsResponse = await axios.get('http://localhost:8000/clients');
+        const clientsResponse = await axios.get(`${process.env.NEXT_PUBLIC_DATABASE_URL}/clients`);
         if (clientsResponse.data) {
           setClients(clientsResponse.data);
         }
-        const serviceProvidersResponse = await axios.get('http://localhost:8000/service_providers');
+        const serviceProvidersResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_DATABASE_URL}/service_providers`
+        );
         if (serviceProvidersResponse.data) {
           setServiceProviders(serviceProvidersResponse.data);
           if (serviceProvidersResponse.data.length > 0) {
@@ -95,13 +100,14 @@ const Calendar: React.FC = () => {
       isMounted = false;
     };
   }, []);
+  console.log(process.env.NEXT_PUBLIC_DATABASE_URL);
 
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         if (selectedEmployee) {
           const response = await axios.get(
-            `http://localhost:8000/appointments?employee=${selectedEmployee}`
+            `${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments?employee=${selectedEmployee}`
           );
           if (response.data) {
             setAppointments(response.data);
@@ -115,6 +121,7 @@ const Calendar: React.FC = () => {
     };
 
     fetchAppointments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee]);
 
   useEffect(() => {
@@ -122,7 +129,7 @@ const Calendar: React.FC = () => {
       setIsLoading(true);
       try {
         const employeesResponse = await axios.get(
-          `http://localhost:8000/employees?service_provider=${selectedServiceProvider}`
+          `${process.env.NEXT_PUBLIC_DATABASE_URL}/employees?service_provider=${selectedServiceProvider}`
         );
         if (employeesResponse.data && employeesResponse.data.length > 0) {
           setEmployees(employeesResponse.data);
@@ -147,9 +154,9 @@ const Calendar: React.FC = () => {
       newAppointment.employee = selectedEmployee;
       newAppointment.serviceProvider = selectedServiceProvider;
 
-      await axios.post('http://localhost:8000/appointments', newAppointment);
+      await axios.post(`${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments`, newAppointment);
       const response = await axios.get(
-        `http://localhost:8000/appointments?employee=${selectedEmployee}`
+        `${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments?employee=${selectedEmployee}`
       );
       if (response.data) {
         setAppointments(response.data);
