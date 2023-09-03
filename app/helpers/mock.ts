@@ -1,4 +1,4 @@
-import { Appointment, WorkingHours, DayTranslations } from './interfaces';
+import { AppointmentProps, WorkingHours, DayTranslations } from './interfaces';
 
 export const workingHours: WorkingHours = {
   Sun: { start: 'nn:nn', end: 'nn:nn' },
@@ -10,15 +10,18 @@ export const workingHours: WorkingHours = {
   Sat: { start: '09:00', end: '12:00' },
 };
 
-export const initialAppointmentsWeek32: Appointment[] = [
+export const initialAppointmentsWeek32: AppointmentProps[] = [
   {
-    id: 'Mon-09:00',
+    // Replace with actual date
+    id: 'sa',
     day: 'Mon',
     time: '09:00',
-    duration: '60 minutes',
-    genericName: 'John Doe',
-    genericService: 'Haircut',
-    date: '07.08.23', // Replace with actual date
+    client: 'John Doe',
+    date: '22.10.2023.',
+    services: ['Haircut'],
+    price: 200,
+    employee: 'adam',
+    serviceProvider: 'adamshe',
   },
 ];
 

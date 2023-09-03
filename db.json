@@ -365,6 +365,19 @@
       "price": 0,
       "employee": "Milica",
       "serviceProvider": "Brica"
+    },
+    {
+      "id": "Mon12:0028.08.23Stevan Poljakovic",
+      "date": "28.08.23",
+      "day": "Mon",
+      "time": "12:00",
+      "client": "client1",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
     }
   ],
   "services": [

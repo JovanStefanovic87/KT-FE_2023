@@ -38,6 +38,7 @@ import SelectContainer from './SelectContainer';
 import ServiceForm from './ServiceForm';
 import AppointmentLabel from './AppointmentLabel';
 import InfoModal from '../ui/modals/InfoModal';
+import Spinner from '../ui/Spinner';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
@@ -100,7 +101,6 @@ const Calendar: React.FC = () => {
       isMounted = false;
     };
   }, []);
-  console.log(process.env.NEXT_PUBLIC_DATABASE_URL);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -201,6 +201,7 @@ const Calendar: React.FC = () => {
 
   return (
     <>
+      {isLoading && <Spinner />}
       <InfoModal isVisible={modalInfo.isVisible} onClose={handleModalClose}>
         {modalInfo.appointmentData && (
           <div>
