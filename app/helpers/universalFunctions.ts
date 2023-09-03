@@ -136,7 +136,7 @@ export const totalPrice = (selectedServices: any[], allServices: any[] | undefin
   return selectedServices.reduce((sum, serviceId) => {
     const service = allServices?.find(s => s.id === serviceId);
     if (service) {
-      return sum + service.price;
+      return sum + (service.price || 0);
     }
     return sum;
   }, 0);

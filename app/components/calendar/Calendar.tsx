@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import 'animate.css';
-import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import {
   generateWeekOptions,
   generateTimeSlots,
@@ -25,7 +24,6 @@ import {
 } from '../../helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import ClientForm from './ClientForm';
-import CalendarArrowBtn from '../ui/buttons/CalendarArrowBtn';
 import WeekSelect from '../ui/select/WeekSelect';
 import AppointmentButton from '../ui/buttons/AppointmentBtn';
 import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
@@ -39,6 +37,9 @@ import ServiceForm from './ServiceForm';
 import AppointmentLabel from './AppointmentLabel';
 import InfoModal from '../ui/modals/InfoModal';
 import Spinner from '../ui/Spinner';
+import ArrowButtonLeft from '../ui/buttons/ArrowButtonLeft';
+import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
+import AppointmentModal from './AppointmentModal';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
@@ -143,7 +144,6 @@ const Calendar: React.FC = () => {
       }
     };
 
-    // Only fetch employees when selectedServiceProvider changes
     if (selectedServiceProvider) {
       fetchEmployees();
     }
@@ -204,27 +204,7 @@ const Calendar: React.FC = () => {
       {isLoading && <Spinner />}
       <InfoModal isVisible={modalInfo.isVisible} onClose={handleModalClose}>
         {modalInfo.appointmentData && (
-          <div>
-            <h2 className="text-xl md:text-3xl font-bold text-blue-600 mb-4">
-              {' '}
-              Uspešno ste zakazali termin
-            </h2>
-            <p className="text-sm md:text-base mb-2">
-              Termin: {`${modalInfo.appointmentData.date} u ${modalInfo.appointmentData.time}h`}
-            </p>{' '}
-            <p className="text-sm md:text-base mb-2">
-              Usluge: {modalInfo.appointmentData.services.join(', ')}
-            </p>{' '}
-            <p className="text-sm md:text-base mb-2">
-              Salon: {modalInfo.appointmentData.serviceProvider}
-            </p>{' '}
-            <p className="text-sm md:text-base mb-2">
-              Radnik: {modalInfo.appointmentData.employee}
-            </p>{' '}
-            <p className="text-lg md:text-xl font-bold text-green-600 mb-2">
-              Ukupna cena: {`${totalPrice(modalInfo.appointmentData.services, services)} RSD`}
-            </p>{' '}
-          </div>
+          <AppointmentModal modalInfo={modalInfo} totalPrice={totalPrice} services={services} />
         )}
       </InfoModal>
       <ClientForm
@@ -245,29 +225,22 @@ const Calendar: React.FC = () => {
       />
       <Container>
         <SelectContainer>
-          <CalendarArrowBtn
+          <ArrowButtonLeft
             onClick={() => setSelectedWeek(selectedWeek - 1)}
             disabled={selectedWeek === 0}
-          >
-            <BsArrowLeft className="arrow-icon" />
-            <span className="hidden lg:inline">Prethodna</span>
-          </CalendarArrowBtn>
+          />
+          <WeekSelect
+            value={selectedWeek}
+            onChange={value => setSelectedWeek(value)}
+            selectedWeek={selectedWeek}
+            setSelectedWeek={setSelectedWeek}
+            weekOptions={weekOptions}
+          />
 
-          <WeekSelect value={selectedWeek} onChange={value => setSelectedWeek(value)}>
-            {weekOptions.map((week, index) => (
-              <option key={index} value={index}>
-                {week.label}
-              </option>
-            ))}
-          </WeekSelect>
-
-          <CalendarArrowBtn
+          <ArrowButtonRight
             onClick={() => setSelectedWeek(selectedWeek + 1)}
             disabled={selectedWeek === weekOptions.length - 1}
-          >
-            <span className="hidden lg:inline">Naredna</span>
-            <BsArrowRight className="arrow-icon" />
-          </CalendarArrowBtn>
+          />
         </SelectContainer>
         <div className="flex px-2">
           <div className="h-calHeight w-calendarSlots overflow-auto border-2 bg-ktBg border-solid border-white mt-3 mb-3 mx-auto">
