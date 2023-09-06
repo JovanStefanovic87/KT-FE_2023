@@ -40,6 +40,7 @@ import Spinner from '../ui/Spinner';
 import ArrowButtonLeft from '../ui/buttons/ArrowButtonLeft';
 import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
 import AppointmentModal from './AppointmentModal';
+import SpinnerSmall from '../ui/SpinnerSmall';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
@@ -58,6 +59,7 @@ const Calendar: React.FC = () => {
   const [appointments, setAppointments] = useState<AppointmentProps[]>([]);
   const [modalInfo, setModalInfo] = useState<ModalInfoType>({ isVisible: false, message: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
@@ -85,6 +87,7 @@ const Calendar: React.FC = () => {
           if (serviceProvidersResponse.data.length > 0) {
             setSelectedServiceProvider(serviceProvidersResponse.data[0].name);
           }
+          setDataLoaded(true);
         }
       } catch (error) {
         console.error('An error occurred while fetching data:', error);
@@ -201,7 +204,6 @@ const Calendar: React.FC = () => {
 
   return (
     <>
-      {isLoading && <Spinner />}
       <InfoModal isVisible={modalInfo.isVisible} onClose={handleModalClose}>
         {modalInfo.appointmentData && (
           <AppointmentModal modalInfo={modalInfo} totalPrice={totalPrice} services={services} />
@@ -267,42 +269,46 @@ const Calendar: React.FC = () => {
                         className="col-span-1 border-2 border-solid border-transparent"
                         key={day.day}
                       >
-                        {isWorkingHour(day.day, time) ? (
-                          <AppointmentContainer>
-                            {appointments.find(
-                              appointment =>
-                                appointment.day === day.day &&
-                                appointment.time === time &&
-                                appointment.date === day.date
-                            ) ? (
-                              <AppointmentLabel
-                                appointment={appointments.find(
-                                  appointment =>
-                                    appointment.day === day.day &&
-                                    appointment.time === time &&
-                                    appointment.date === day.date
-                                )}
-                                services={services}
-                                clients={clients}
-                                slotDuration={slotDuration}
-                              />
-                            ) : (
-                              <AppointmentButton
-                                onClick={() => {
-                                  setDisplayForm({
-                                    clientForm: true,
-                                    serviceForm: false,
-                                    backdrop: true,
-                                    post: false,
-                                  });
-                                  handleAppointmentButton(day.day, time, day.date);
-                                }}
-                                time={time}
-                              />
-                            )}
-                          </AppointmentContainer>
+                        {dataLoaded ? (
+                          isWorkingHour(day.day, time) ? (
+                            <AppointmentContainer>
+                              {appointments.find(
+                                appointment =>
+                                  appointment.day === day.day &&
+                                  appointment.time === time &&
+                                  appointment.date === day.date
+                              ) ? (
+                                <AppointmentLabel
+                                  appointment={appointments.find(
+                                    appointment =>
+                                      appointment.day === day.day &&
+                                      appointment.time === time &&
+                                      appointment.date === day.date
+                                  )}
+                                  services={services}
+                                  clients={clients}
+                                  slotDuration={slotDuration}
+                                />
+                              ) : (
+                                <AppointmentButton
+                                  onClick={() => {
+                                    setDisplayForm({
+                                      clientForm: true,
+                                      serviceForm: false,
+                                      backdrop: true,
+                                      post: false,
+                                    });
+                                    handleAppointmentButton(day.day, time, day.date);
+                                  }}
+                                  time={time}
+                                />
+                              )}
+                            </AppointmentContainer>
+                          ) : (
+                            <UnworkingHoursLabel />
+                          )
                         ) : (
-                          <UnworkingHoursLabel />
+                          <SpinnerSmall />
                         )}
                       </div>
                     ))}

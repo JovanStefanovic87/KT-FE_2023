@@ -73,6 +73,112 @@
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
+    },
+    {
+      "id": "Tue10:0029.08.23Milica",
+      "date": "29.08.23",
+      "day": "Tue",
+      "time": "10:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01",
+        "sisanje02"
+      ],
+      "price": 0,
+      "employee": "Milica",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Wed09:0006.09.23Stevan Poljakovic",
+      "date": "06.09.23",
+      "day": "Wed",
+      "time": "09:00",
+      "client": "Alen Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Tue10:0005.09.23",
+      "date": "05.09.23",
+      "day": "Tue",
+      "time": "10:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "",
+      "serviceProvider": ""
+    },
+    {
+      "id": "Wed11:0006.09.23",
+      "date": "06.09.23",
+      "day": "Wed",
+      "time": "11:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "",
+      "serviceProvider": ""
+    },
+    {
+      "id": "Thu11:0007.09.23Stevan Poljakovic",
+      "date": "07.09.23",
+      "day": "Thu",
+      "time": "11:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Wed15:0006.09.23Stevan Poljakovic",
+      "date": "06.09.23",
+      "day": "Wed",
+      "time": "15:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Sat09:0009.09.23Stevan Poljakovic",
+      "date": "09.09.23",
+      "day": "Sat",
+      "time": "09:00",
+      "client": "Alen Stefanovic",
+      "services": [
+        "sisanje01",
+        "sisanje02"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Mon09:0004.09.23Stevan Poljakovic",
+      "date": "04.09.23",
+      "day": "Mon",
+      "time": "09:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
     }
   ],
   "services": [
@@ -94,7 +200,7 @@
   "clients": [
     {
       "id": "Jovan Stefanovic",
-      "name": "Alen Stefanovic",
+      "name": "Jovan Stefanovic",
       "phoneNumber": "123-456-7890",
       "email": "john@example.com"
     },
