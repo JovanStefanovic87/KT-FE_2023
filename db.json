@@ -179,6 +179,19 @@
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
+    },
+    {
+      "id": "Tue10:0005.09.23Stevan Poljakovic",
+      "date": "05.09.23",
+      "day": "Tue",
+      "time": "10:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
     }
   ],
   "services": [

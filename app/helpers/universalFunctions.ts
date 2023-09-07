@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { format, addDays, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
 import { workingHours } from './mock';
-import { WeekDay } from '../helpers/interfaces';
+import { WeekDay, AppointmentProps } from '../helpers/interfaces';
 
 export function useDeviceDetect() {
   const [isMobile, setMobile] = useState(false);

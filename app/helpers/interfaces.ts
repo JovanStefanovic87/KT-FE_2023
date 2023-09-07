@@ -93,3 +93,18 @@ export interface ModalInfoType {
   message: string;
   appointmentData?: AppointmentProps; // Add the appointmentData property as optional
 }
+
+export interface GenerateSlotsRowProps {
+  weekDays: any[]; // Adjust the types as needed
+  dataLoaded: boolean;
+  isWorkingHour: Function;
+  appointments: any[]; // Adjust the types as needed
+  time: string;
+  handleAppointmentButton: Function;
+  setDisplayForm: Function;
+  services: any[]; // Adjust the types as needed
+  clients: any[]; // Adjust the types as needed
+  slotDuration: number;
+  showRow: any;
+  index: number;
+}

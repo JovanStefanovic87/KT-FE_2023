@@ -8,9 +8,9 @@ import {
   generateTimeSlots,
   generateWeekDays,
   isWorkingHour,
-  hasWorkingHourInHour,
   handleCloseModal,
   totalPrice,
+  hasWorkingHourInHour,
 } from '../../helpers/universalFunctions';
 import { dayTranslations } from '../../helpers/mock';
 import {
@@ -23,24 +23,19 @@ import {
   EmployeeProps,
 } from '../../helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
+import { fetchCalendarInitData } from '../../helpers/apiHandlers';
+import GenerateSlotsRow from './GenerateSlotsRow';
 import ClientForm from './ClientForm';
 import WeekSelect from '../ui/select/WeekSelect';
-import AppointmentButton from '../ui/buttons/AppointmentBtn';
-import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
 import SelectUser from '../ui/select/SelectUser';
-import SlotsRow from './SlotsRow';
 import Container from './Container';
 import DaysRow from './DaysRow';
-import AppointmentContainer from './AppointmentContainer';
 import SelectContainer from './SelectContainer';
 import ServiceForm from './ServiceForm';
-import AppointmentLabel from './AppointmentLabel';
 import InfoModal from '../ui/modals/InfoModal';
-import Spinner from '../ui/Spinner';
 import ArrowButtonLeft from '../ui/buttons/ArrowButtonLeft';
 import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
 import AppointmentModal from './AppointmentModal';
-import SpinnerSmall from '../ui/SpinnerSmall';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
@@ -58,7 +53,6 @@ const Calendar: React.FC = () => {
   const [displayForm, setDisplayForm] = useState<CalendarFormsInitProps>(displayFormInit);
   const [appointments, setAppointments] = useState<AppointmentProps[]>([]);
   const [modalInfo, setModalInfo] = useState<ModalInfoType>({ isVisible: false, message: '' });
-  const [isLoading, setIsLoading] = useState(false);
   const [dataLoaded, setDataLoaded] = useState(false);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60; //Will come from server
@@ -66,41 +60,13 @@ const Calendar: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
-    const fetchServicesAndClients = async () => {
-      setIsLoading(true);
-      try {
-        const servicesResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_DATABASE_URL}/services`
-        );
-        if (servicesResponse.data) {
-          setServices(servicesResponse.data);
-        }
-        const clientsResponse = await axios.get(`${process.env.NEXT_PUBLIC_DATABASE_URL}/clients`);
-        if (clientsResponse.data) {
-          setClients(clientsResponse.data);
-        }
-        const serviceProvidersResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_DATABASE_URL}/service_providers`
-        );
-        if (serviceProvidersResponse.data) {
-          setServiceProviders(serviceProvidersResponse.data);
-          if (serviceProvidersResponse.data.length > 0) {
-            setSelectedServiceProvider(serviceProvidersResponse.data[0].name);
-          }
-          setDataLoaded(true);
-        }
-      } catch (error) {
-        console.error('An error occurred while fetching data:', error);
-        return { error: true, message: 'Failed to fetch data' };
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchServicesAndClients();
-
+    fetchCalendarInitData(
+      setServices,
+      setClients,
+      setServiceProviders,
+      setSelectedServiceProvider,
+      setDataLoaded
+    );
     return () => {
       isMounted = false;
     };
@@ -130,7 +96,6 @@ const Calendar: React.FC = () => {
 
   useEffect(() => {
     const fetchEmployees = async () => {
-      setIsLoading(true);
       try {
         const employeesResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_DATABASE_URL}/employees?service_provider=${selectedServiceProvider}`
@@ -141,10 +106,7 @@ const Calendar: React.FC = () => {
           // Set selectedEmployee to the first employee in the array
           setSelectedEmployee(employeesResponse.data[0].name); // Assuming 'name' is the property containing employee names
         }
-      } catch (error) {
-      } finally {
-        setIsLoading(false);
-      }
+      } catch (error) {}
     };
 
     if (selectedServiceProvider) {
@@ -257,64 +219,23 @@ const Calendar: React.FC = () => {
               ))}
             </DaysRow>
 
-            {timeSlots.map(time => {
+            {timeSlots.map((time, index) => {
               const hour = time.split(':')[0];
               const showRow = hasWorkingHourInHour(hour, weekDays, timeSlots);
-
-              return (
-                showRow && (
-                  <SlotsRow key={time}>
-                    {weekDays.map(day => (
-                      <div
-                        className="col-span-1 border-2 border-solid border-transparent"
-                        key={day.day}
-                      >
-                        {dataLoaded ? (
-                          isWorkingHour(day.day, time) ? (
-                            <AppointmentContainer>
-                              {appointments.find(
-                                appointment =>
-                                  appointment.day === day.day &&
-                                  appointment.time === time &&
-                                  appointment.date === day.date
-                              ) ? (
-                                <AppointmentLabel
-                                  appointment={appointments.find(
-                                    appointment =>
-                                      appointment.day === day.day &&
-                                      appointment.time === time &&
-                                      appointment.date === day.date
-                                  )}
-                                  services={services}
-                                  clients={clients}
-                                  slotDuration={slotDuration}
-                                />
-                              ) : (
-                                <AppointmentButton
-                                  onClick={() => {
-                                    setDisplayForm({
-                                      clientForm: true,
-                                      serviceForm: false,
-                                      backdrop: true,
-                                      post: false,
-                                    });
-                                    handleAppointmentButton(day.day, time, day.date);
-                                  }}
-                                  time={time}
-                                />
-                              )}
-                            </AppointmentContainer>
-                          ) : (
-                            <UnworkingHoursLabel />
-                          )
-                        ) : (
-                          <SpinnerSmall />
-                        )}
-                      </div>
-                    ))}
-                  </SlotsRow>
-                )
-              );
+              return GenerateSlotsRow({
+                weekDays,
+                dataLoaded,
+                isWorkingHour,
+                appointments,
+                time,
+                handleAppointmentButton,
+                setDisplayForm,
+                services,
+                clients,
+                slotDuration,
+                showRow,
+                index,
+              });
             })}
           </div>
         </div>
