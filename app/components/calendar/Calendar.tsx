@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import axios from 'axios';
 import 'animate.css';
 import {
   generateWeekOptions,
@@ -23,7 +22,12 @@ import {
   EmployeeProps,
 } from '../../helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
-import { fetchCalendarInitData } from '../../helpers/apiHandlers';
+import {
+  fetchCalendarInitData,
+  fetchEmployeesData,
+  addNewAppointment,
+  fetchAppointments,
+} from '../../helpers/apiHandlers';
 import GenerateSlotsRow from './GenerateSlotsRow';
 import ClientForm from './ClientForm';
 import WeekSelect from '../ui/select/WeekSelect';
@@ -73,71 +77,26 @@ const Calendar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        if (selectedEmployee) {
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments?employee=${selectedEmployee}`
-          );
-          if (response.data) {
-            setAppointments(response.data);
-          }
-        } else {
-          setAppointments([]);
-        }
-      } catch (error) {
-        console.error('An error occurred while fetching data:', error);
-      }
-    };
-
-    fetchAppointments();
+    fetchAppointments(setAppointments, selectedEmployee);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee]);
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const employeesResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_DATABASE_URL}/employees?service_provider=${selectedServiceProvider}`
-        );
-        if (employeesResponse.data && employeesResponse.data.length > 0) {
-          setEmployees(employeesResponse.data);
-
-          // Set selectedEmployee to the first employee in the array
-          setSelectedEmployee(employeesResponse.data[0].name); // Assuming 'name' is the property containing employee names
-        }
-      } catch (error) {}
-    };
-
     if (selectedServiceProvider) {
-      fetchEmployees();
+      fetchEmployeesData(setEmployees, setSelectedEmployee, selectedServiceProvider);
     }
   }, [selectedServiceProvider]);
 
   const handleAddAppointment = useCallback(async () => {
-    try {
-      newAppointment.employee = selectedEmployee;
-      newAppointment.serviceProvider = selectedServiceProvider;
-
-      await axios.post(`${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments`, newAppointment);
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments?employee=${selectedEmployee}`
-      );
-      if (response.data) {
-        setAppointments(response.data);
-        setModalInfo({
-          isVisible: true,
-          message: 'Appointment successfully made.',
-          appointmentData: newAppointment,
-        });
-      } else {
-        setModalInfo({ isVisible: true, message: 'Something went wrong.' });
-      }
-      setNewAppointment(newAppointmentInit);
-    } catch (error) {
-      console.error('An error occurred while pushing data:', error);
-      setModalInfo({ isVisible: true, message: 'An error occurred. Please try again.' });
-    }
+    addNewAppointment(
+      newAppointment,
+      selectedEmployee,
+      selectedServiceProvider,
+      setAppointments,
+      setModalInfo,
+      setNewAppointment,
+      newAppointmentInit
+    );
   }, [newAppointment, selectedEmployee, selectedServiceProvider]);
 
   useEffect(() => {

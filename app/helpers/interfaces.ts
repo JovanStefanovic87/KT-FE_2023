@@ -32,7 +32,7 @@ export interface CalendarFormsInitProps {
   post: boolean;
 }
 
-type NewAppointment = {
+type NewAppointmentProps = {
   id: string;
   date: string;
   day: string;
@@ -47,8 +47,8 @@ type NewAppointment = {
 export interface CalendarFormsProps {
   displayForm: CalendarFormsInitProps;
   setDisplayForm: React.Dispatch<React.SetStateAction<CalendarFormsInitProps>>;
-  newAppointment: NewAppointment;
-  setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointment>>;
+  newAppointment: NewAppointmentProps;
+  setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointmentProps>>;
   selected: any;
   setSelected: React.Dispatch<React.SetStateAction<any>>;
 }
@@ -91,7 +91,7 @@ export interface WeekDay {
 export interface ModalInfoType {
   isVisible: boolean;
   message: string;
-  appointmentData?: AppointmentProps; // Add the appointmentData property as optional
+  appointmentData?: AppointmentProps;
 }
 
 export interface GenerateSlotsRowProps {
