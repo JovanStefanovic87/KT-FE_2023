@@ -6,7 +6,7 @@ type InfoModalProps = {
   children?: React.ReactNode;
 };
 
-const InfoModal: React.FC<InfoModalProps> = ({ isVisible, onClose, children }) => {
+const InfoModalContainer: React.FC<InfoModalProps> = ({ isVisible, onClose, children }) => {
   const animationClass = isVisible
     ? 'ease-out duration-300 opacity-100'
     : 'ease-in duration-200 opacity-0';
@@ -43,4 +43,4 @@ const InfoModal: React.FC<InfoModalProps> = ({ isVisible, onClose, children }) =
   );
 };
 
-export default InfoModal;
+export default InfoModalContainer;

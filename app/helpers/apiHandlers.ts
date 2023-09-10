@@ -6,6 +6,7 @@ import {
   EmployeeProps,
   AppointmentProps,
   AppointmentInfoType,
+  ErrorModalType,
 } from '../helpers/interfaces';
 
 import axios from 'axios';
@@ -68,7 +69,7 @@ export const addNewAppointment = async (
   setAppontmentInfo: Dispatch<SetStateAction<AppointmentInfoType>>,
   setNewAppointment: Dispatch<SetStateAction<AppointmentProps>>,
   newAppointmentInit: AppointmentProps,
-  setErrorModal: Dispatch<SetStateAction<any>>
+  setErrorModal: Dispatch<SetStateAction<ErrorModalType>>
 ) => {
   try {
     newAppointment.employee = selectedEmployee;

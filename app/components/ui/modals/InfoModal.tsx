@@ -1,13 +1,13 @@
 import Backdrop from '../Backdrop';
-import { ErrorModalType } from '@/app/helpers/interfaces';
+import { InfoModalType } from '@/app/helpers/interfaces';
 
-type ErrorModalProps = {
-  errorModal: ErrorModalType;
-  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>;
+type InfoModalProps = {
+  showInfoModal: InfoModalType;
+  setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>;
 };
 
-const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) => {
-  const isVisible = errorModal.isVisible;
+const InfoModal: React.FC<InfoModalProps> = ({ showInfoModal, setShowInfoModal }) => {
+  const isVisible = showInfoModal.isVisible;
   const animationClass = isVisible
     ? 'ease-out duration-300 opacity-100'
     : 'ease-in duration-200 opacity-0';
@@ -16,7 +16,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) =>
     e.stopPropagation();
   };
 
-  const onClose = () => setErrorModal({ ...errorModal, isVisible: false });
+  const onClose = () => setShowInfoModal({ ...showInfoModal, isVisible: false });
 
   return (
     <>
@@ -31,8 +31,8 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) =>
           onClick={handleModalClick}
         >
           <div className="font-sans text-sm md:text-base text-gray-700 leading-6 tracking-wide mb-4">
-            <h2 className="text-xl md:text-3xl font-bold text-blue-600 mb-4">Greška</h2>
-            <p className="text-sm md:text-base mb-2">{errorModal.text}</p>
+            <h2 className="text-xl md:text-3xl font-bold text-blue-600 mb-4">Obaveštenje</h2>
+            <p className="text-sm md:text-base mb-2">{showInfoModal.text}</p>
           </div>
           <button
             onClick={onClose}
@@ -47,4 +47,4 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) =>
   );
 };
 
-export default ErrorModal;
+export default InfoModal;

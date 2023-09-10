@@ -6,8 +6,9 @@ import AppointmentLabel from './AppointmentLabel';
 import AppointmentButton from '../ui/buttons/AppointmentBtn';
 import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
 import SpinnerSmall from '../ui/SpinnerSmall';
-import { GenerateSlotsRowProps } from '../../helpers/interfaces';
+import { GenerateSlotsRowProps, InfoModalType } from '../../helpers/interfaces';
 import ConfirmationModal from '../ui/modals/ConfirmationModal';
+import InfoModal from '../ui/modals/InfoModal';
 
 const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   weekDays,
@@ -30,6 +31,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
     delete: false,
     appointmentId: '',
   });
+  const [showInfoModal, setShowInfoModal] = useState<InfoModalType>({ isVisible: false, text: '' });
   const handleAppointmentDelete = useCallback(
     async (appointmentId: string) => {
       try {
@@ -42,8 +44,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
         );
 
         // Show a success message or perform any other desired actions
-        setErrorModal({ isVisible: true, text: 'Termin je uspešno obrisan.' });
-        console.log('ok');
+        setShowInfoModal({ isVisible: true, text: 'Termin je uspešno obrisan.' });
       } catch (error) {
         console.error('An error occurred while deleting the appointment:', error);
         setErrorModal({ isVisible: true, text: 'Došlo je do greške, termin nije obrisan.' });
@@ -65,6 +66,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
         setShowConfirmation={setShowConfirmation}
         text="Da li ste sigurni da želite obrisati termin?"
       />
+      <InfoModal showInfoModal={showInfoModal} setShowInfoModal={setShowInfoModal} />
       {showRow && (
         <SlotsRowContainer>
           {weekDays.map(day => (
@@ -96,7 +98,6 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
                               appointment.date === day.date
                           );
                           if (appointment) {
-                            // Call the function to handle appointment deletion
                             setShowConfirmation({
                               ...showConfirmation,
                               isVisible: true,

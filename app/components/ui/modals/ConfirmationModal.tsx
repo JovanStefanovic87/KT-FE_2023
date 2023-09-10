@@ -35,20 +35,23 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <div className="font-sans text-sm md:text-base text-gray-700 leading-6 tracking-wide mb-4">
             {text}
           </div>
-          <button
-            onClick={() =>
-              setShowConfirmation({ ...showConfirmation, delete: true, isVisible: false })
-            }
-            className="bg-blue-500 text-white py-2 px-4 rounded mt-4 uppercase font-semibold float-right"
-          >
-            Obriši
-          </button>
-          <button
-            onClick={() => setShowConfirmation({ ...showConfirmation, isVisible: false })}
-            className="bg-blue-500 text-white py-2 px-4 rounded mt-4 uppercase font-semibold float-right"
-          >
-            Zatvori
-          </button>
+          <div className="flex justify-end">
+            <button
+              onClick={() =>
+                setShowConfirmation({ ...showConfirmation, delete: true, isVisible: false })
+              }
+              className="bg-blue-500 text-white py-2 px-4 rounded mt-4 uppercase font-semibold"
+              style={{ marginRight: '10px' }} // Add margin between buttons
+            >
+              Obriši
+            </button>
+            <button
+              onClick={() => setShowConfirmation({ ...showConfirmation, isVisible: false })}
+              className="bg-blue-500 text-white py-2 px-4 rounded mt-4 uppercase font-semibold"
+            >
+              Zatvori
+            </button>
+          </div>
         </div>
       </div>
       <Backdrop onClick={() => {}} isVisible={showConfirmation.isVisible} />

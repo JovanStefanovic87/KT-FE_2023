@@ -105,6 +105,11 @@ export interface ErrorModalType {
   text: string;
 }
 
+export interface InfoModalType {
+  isVisible: boolean;
+  text: string;
+}
+
 export interface GenerateSlotsRowProps {
   weekDays: any[]; // Adjust the types as needed
   dataLoaded: boolean;
@@ -120,5 +125,5 @@ export interface GenerateSlotsRowProps {
   showRow: any;
   index: number;
   selectedEmployee: string;
-  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>;
+  setErrorModal: React.Dispatch<React.SetStateAction<any>>;
 }

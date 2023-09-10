@@ -1,10 +1,10 @@
 import { AppointmentInfoType } from '../../../helpers/interfaces';
+import InfoModalContainer from './InfoModalContainer';
 import InfoModal from './InfoModalContainer';
 
 interface Props {
   totalPrice: (services: string[], servicesList: any[]) => number;
   services: any[];
-  onClose: () => void;
   setAppontmentInfo: React.Dispatch<React.SetStateAction<AppointmentInfoType>>;
   appontmentInfo: AppointmentInfoType;
 }
@@ -12,24 +12,16 @@ interface Props {
 export const AppointmentModal: React.FC<Props> = ({
   totalPrice,
   services,
-  onClose,
   setAppontmentInfo,
   appontmentInfo,
 }) => {
   const appointmentServices = appontmentInfo.appointmentData?.services || [];
   const isVisible = appontmentInfo.isVisible;
+  const onClose = () => setAppontmentInfo({ ...appontmentInfo, isVisible: false });
 
   return (
-    <InfoModal
-      isVisible={isVisible}
-      onClose={() => setAppontmentInfo({ ...appontmentInfo, isVisible: false })}
-    >
-      <div
-        className={`fixed inset-0 flex items-center justify-center z-50 ${
-          isVisible ? 'visible' : 'invisible'
-        }`}
-        onClick={onClose}
-      >
+    <InfoModalContainer isVisible={isVisible} onClose={onClose}>
+      <div>
         <h2 className="text-xl md:text-3xl font-bold text-blue-600 mb-4">
           Uspešno ste zakazali termin
         </h2>
@@ -51,7 +43,7 @@ export const AppointmentModal: React.FC<Props> = ({
           Ukupna cena: {`${totalPrice(appointmentServices, services)} RSD`}{' '}
         </p>
       </div>
-    </InfoModal>
+    </InfoModalContainer>
   );
 };
 

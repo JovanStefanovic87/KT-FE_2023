@@ -20,6 +20,7 @@ import {
   ClientProps,
   ServiceProviderProps,
   EmployeeProps,
+  ErrorModalType,
 } from '../../helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import {
@@ -36,7 +37,6 @@ import Container from './Container';
 import DaysRow from './DaysRow';
 import SelectContainer from './SelectContainer';
 import ServiceForm from './ServiceForm';
-import InfoModal from '../ui/modals/InfoModalContainer';
 import ArrowButtonLeft from '../ui/buttons/ArrowButtonLeft';
 import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
 import AppointmentModal from '../ui/modals/AppointmentModal';
@@ -57,7 +57,7 @@ const Calendar: React.FC = () => {
   const weekOptions = generateWeekOptions();
   const [displayForm, setDisplayForm] = useState<CalendarFormsInitProps>(displayFormInit);
   const [appointments, setAppointments] = useState<AppointmentProps[]>([]);
-  const [errorModal, setErrorModal] = useState<any>({ isVisible: false, text: '' });
+  const [errorModal, setErrorModal] = useState<ErrorModalType>({ isVisible: false, text: '' });
   const [appontmentInfo, setAppontmentInfo] = useState<AppointmentInfoType>({
     isVisible: false,
     appointmentData: '',
@@ -100,8 +100,8 @@ const Calendar: React.FC = () => {
       setAppointments,
       setAppontmentInfo,
       setNewAppointment,
-      setErrorModal,
-      newAppointmentInit
+      newAppointmentInit,
+      setErrorModal
     );
   }, [newAppointment, selectedEmployee, selectedServiceProvider]);
 
