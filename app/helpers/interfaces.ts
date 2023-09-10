@@ -23,6 +23,7 @@ export interface AppointmentLabelProps {
   services: any;
   clients: any;
   slotDuration: number;
+  onDoubleClick: any;
 }
 
 export interface CalendarFormsInitProps {
@@ -51,6 +52,12 @@ export interface CalendarFormsProps {
   setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointmentProps>>;
   selected: any;
   setSelected: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export interface SubmitBtnProps {
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  isDisabled: boolean;
+  buttonText: string;
 }
 
 export interface ServiceProviderProps {
@@ -88,17 +95,22 @@ export interface WeekDay {
   date: string;
 }
 
-export interface ModalInfoType {
+export interface AppointmentInfoType {
   isVisible: boolean;
-  message: string;
-  appointmentData?: AppointmentProps;
+  appointmentData?: any;
+}
+
+export interface ErrorModalType {
+  isVisible: boolean;
+  text: string;
 }
 
 export interface GenerateSlotsRowProps {
   weekDays: any[]; // Adjust the types as needed
   dataLoaded: boolean;
   isWorkingHour: Function;
-  appointments: any[]; // Adjust the types as needed
+  appointments: any[];
+  setAppointments: React.Dispatch<React.SetStateAction<AppointmentProps[]>>;
   time: string;
   handleAppointmentButton: Function;
   setDisplayForm: Function;
@@ -107,4 +119,6 @@ export interface GenerateSlotsRowProps {
   slotDuration: number;
   showRow: any;
   index: number;
+  selectedEmployee: string;
+  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>;
 }

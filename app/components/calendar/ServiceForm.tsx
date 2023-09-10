@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ServecesProps, CalendarFormsProps } from '../../helpers/interfaces';
+import { newAppointmentInit } from './initStates';
 import Backdrop from '../ui/Backdrop';
 import CloseBtn from '../ui/buttons/CloseBtn';
 import FormItemName from '../ui/text/FormItemName';
 import FormItemData from '../ui/text/FormItemData';
+import SubmitBtn from '../ui/buttons/SubmitBtn';
 
 const ServiceForm: React.FC<CalendarFormsProps> = ({
   displayForm,
@@ -16,6 +18,7 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [allServices, setAllServices] = useState<ServecesProps[]>([]);
+  const isServiceSelected = selected.length !== 0;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +66,8 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
   const handleFormClose = (event: React.FormEvent) => {
     event.preventDefault();
     setDisplayForm({ ...displayForm, serviceForm: false, backdrop: false });
+    setNewAppointment(newAppointmentInit);
+    setSelected([]);
   };
 
   return (
@@ -101,9 +106,11 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
             </li>
           ))}
         </ul>
-        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={handleSubmit}>
-          {`Rezerviši termin`}
-        </button>
+        <SubmitBtn
+          onClick={handleSubmit}
+          isDisabled={!isServiceSelected}
+          buttonText="Rezerviši termin >>"
+        />
       </div>
       <Backdrop onClick={handleFormClose} isVisible={displayForm.backdrop} />
     </form>

@@ -16,7 +16,7 @@ import {
   AppointmentProps,
   ServecesProps,
   CalendarFormsInitProps,
-  ModalInfoType,
+  AppointmentInfoType,
   ClientProps,
   ServiceProviderProps,
   EmployeeProps,
@@ -36,10 +36,11 @@ import Container from './Container';
 import DaysRow from './DaysRow';
 import SelectContainer from './SelectContainer';
 import ServiceForm from './ServiceForm';
-import InfoModal from '../ui/modals/InfoModal';
+import InfoModal from '../ui/modals/InfoModalContainer';
 import ArrowButtonLeft from '../ui/buttons/ArrowButtonLeft';
 import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
-import AppointmentModal from './AppointmentModal';
+import AppointmentModal from '../ui/modals/AppointmentModal';
+import ErrorModal from '../ui/modals/ErrorModal';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
@@ -56,7 +57,11 @@ const Calendar: React.FC = () => {
   const weekOptions = generateWeekOptions();
   const [displayForm, setDisplayForm] = useState<CalendarFormsInitProps>(displayFormInit);
   const [appointments, setAppointments] = useState<AppointmentProps[]>([]);
-  const [modalInfo, setModalInfo] = useState<ModalInfoType>({ isVisible: false, message: '' });
+  const [errorModal, setErrorModal] = useState<any>({ isVisible: false, text: '' });
+  const [appontmentInfo, setAppontmentInfo] = useState<AppointmentInfoType>({
+    isVisible: false,
+    appointmentData: '',
+  });
   const [dataLoaded, setDataLoaded] = useState(false);
   const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60; //Will come from server
@@ -93,8 +98,9 @@ const Calendar: React.FC = () => {
       selectedEmployee,
       selectedServiceProvider,
       setAppointments,
-      setModalInfo,
+      setAppontmentInfo,
       setNewAppointment,
+      setErrorModal,
       newAppointmentInit
     );
   }, [newAppointment, selectedEmployee, selectedServiceProvider]);
@@ -121,15 +127,17 @@ const Calendar: React.FC = () => {
     });
   };
 
-  const handleModalClose = handleCloseModal(setModalInfo);
-
   return (
     <>
-      <InfoModal isVisible={modalInfo.isVisible} onClose={handleModalClose}>
-        {modalInfo.appointmentData && (
-          <AppointmentModal modalInfo={modalInfo} totalPrice={totalPrice} services={services} />
-        )}
-      </InfoModal>
+      {appontmentInfo.appointmentData && (
+        <AppointmentModal
+          appontmentInfo={appontmentInfo}
+          setAppontmentInfo={setAppontmentInfo}
+          totalPrice={totalPrice}
+          services={services}
+        />
+      )}
+      <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />
       <ClientForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}
@@ -186,6 +194,7 @@ const Calendar: React.FC = () => {
                 dataLoaded,
                 isWorkingHour,
                 appointments,
+                setAppointments,
                 time,
                 handleAppointmentButton,
                 setDisplayForm,
@@ -194,6 +203,8 @@ const Calendar: React.FC = () => {
                 slotDuration,
                 showRow,
                 index,
+                selectedEmployee,
+                setErrorModal,
               });
             })}
           </div>

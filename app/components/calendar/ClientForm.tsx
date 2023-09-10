@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ClientProps, CalendarFormsProps } from '../../helpers/interfaces';
+import { newAppointmentInit } from './initStates';
 import Backdrop from '../ui/Backdrop';
 import CloseBtn from '../ui/buttons/CloseBtn';
+import SubmitBtn from '../ui/buttons/SubmitBtn';
 
 const ClientForm: React.FC<CalendarFormsProps> = ({
   displayForm,
@@ -12,6 +14,7 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [allClients, setAllClients] = useState<ClientProps[]>([]);
+  const isClientSelected = newAppointment.client !== '';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +51,7 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
   const handleFormClose = (event: React.FormEvent) => {
     event.preventDefault();
     setDisplayForm({ ...displayForm, clientForm: false, backdrop: false });
+    setNewAppointment(newAppointmentInit);
   };
 
   return (
@@ -97,9 +101,7 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
             </li>
           ))}
         </ul>
-        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md" onClick={handleSubmit}>
-          {`Dalje >>`}
-        </button>
+        <SubmitBtn onClick={handleSubmit} isDisabled={!isClientSelected} buttonText="Dalje >>" />
       </div>
       <Backdrop onClick={event => handleFormClose(event)} isVisible={displayForm.backdrop} />
     </form>

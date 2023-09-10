@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react';
 import Backdrop from '../Backdrop';
 
-type InfoModalProps = {
-  isVisible: boolean;
-  onClose: () => void;
-  children?: React.ReactNode;
+type ErrorModalProps = {
+  errorModal: { isVisible: boolean; text: string };
+  setErrorModal: React.Dispatch<React.SetStateAction<{ isVisible: boolean; text: string }>>;
 };
 
-const InfoModal: React.FC<InfoModalProps> = ({ isVisible, onClose, children }) => {
+const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) => {
+  const isVisible = errorModal.isVisible;
   const animationClass = isVisible
     ? 'ease-out duration-300 opacity-100'
     : 'ease-in duration-200 opacity-0';
@@ -15,6 +14,8 @@ const InfoModal: React.FC<InfoModalProps> = ({ isVisible, onClose, children }) =
   const handleModalClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
+  const onClose = () => setErrorModal({ ...errorModal, isVisible: false });
 
   return (
     <>
@@ -29,7 +30,8 @@ const InfoModal: React.FC<InfoModalProps> = ({ isVisible, onClose, children }) =
           onClick={handleModalClick}
         >
           <div className="font-sans text-sm md:text-base text-gray-700 leading-6 tracking-wide mb-4">
-            {children}
+            <h2 className="text-xl md:text-3xl font-bold text-blue-600 mb-4">Greška</h2>
+            <p className="text-sm md:text-base mb-2">{errorModal.text}</p>
           </div>
           <button
             onClick={onClose}
@@ -44,4 +46,4 @@ const InfoModal: React.FC<InfoModalProps> = ({ isVisible, onClose, children }) =
   );
 };
 
-export default InfoModal;
+export default ErrorModal;

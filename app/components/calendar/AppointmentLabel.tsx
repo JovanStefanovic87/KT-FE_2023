@@ -1,4 +1,3 @@
-import React from 'react';
 import { AppointmentLabelProps, ClientProps } from '../../helpers/interfaces';
 import { calculateSlotsForDuration, totalPrices } from '../../helpers/universalFunctions';
 
@@ -7,9 +6,9 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
   services,
   clients,
   slotDuration,
+  onDoubleClick,
 }) => {
   const borderSize = 2;
-  const rowsGap = 8;
 
   if (!appointment) return null;
 
@@ -54,6 +53,7 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
       className="flex flex-col justify-start min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg"
       style={{ height: `${totalHeight}px` }}
       data-slots-needed={slotsNeeded}
+      onDoubleClick={onDoubleClick}
     >
       <div className="text-ktAppointmentTime text-xl font-bold">
         {time}h - {formattedEndTime}h

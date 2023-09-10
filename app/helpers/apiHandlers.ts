@@ -5,7 +5,7 @@ import {
   ServiceProviderProps,
   EmployeeProps,
   AppointmentProps,
-  ModalInfoType,
+  AppointmentInfoType,
 } from '../helpers/interfaces';
 
 import axios from 'axios';
@@ -65,9 +65,10 @@ export const addNewAppointment = async (
   selectedEmployee: string,
   selectedServiceProvider: string,
   setAppointments: Dispatch<SetStateAction<AppointmentProps[]>>,
-  setModalInfo: Dispatch<SetStateAction<ModalInfoType>>,
+  setAppontmentInfo: Dispatch<SetStateAction<AppointmentInfoType>>,
   setNewAppointment: Dispatch<SetStateAction<AppointmentProps>>,
-  newAppointmentInit: AppointmentProps
+  newAppointmentInit: AppointmentProps,
+  setErrorModal: Dispatch<SetStateAction<any>>
 ) => {
   try {
     newAppointment.employee = selectedEmployee;
@@ -79,18 +80,17 @@ export const addNewAppointment = async (
     );
     if (response.data) {
       setAppointments(response.data);
-      setModalInfo({
+      setAppontmentInfo({
         isVisible: true,
-        message: 'Appointment successfully made.',
         appointmentData: newAppointment,
       });
     } else {
-      setModalInfo({ isVisible: true, message: 'Something went wrong.' });
+      setErrorModal({ isVisible: true, text: 'Something went wrong.' });
     }
     setNewAppointment(newAppointmentInit);
   } catch (error) {
     console.error('An error occurred while pushing data:', error);
-    setModalInfo({ isVisible: true, message: 'An error occurred. Please try again.' });
+    setErrorModal({ isVisible: true, text: 'An error occurred. Please try again.' });
   }
 };
 
