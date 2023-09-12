@@ -27,7 +27,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) =>
         onClick={onClose}
       >
         <div
-          className={`bg-white rounded-lg p-4 md:p-8 transition-all transform ${animationClass} shadow-lg`}
+          className={`bg-white border-solid border-red-700 rounded-lg p-4 md:p-8 transition-all transform ${animationClass} shadow-lg`}
           onClick={handleModalClick}
         >
           <div className="font-sans text-sm md:text-base text-gray-700 leading-6 tracking-wide mb-4">

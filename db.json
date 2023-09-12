@@ -81,6 +81,33 @@
       "price": 0,
       "employee": "Milica",
       "serviceProvider": "Brica"
+    },
+    {
+      "id": "Tue10:0012.09.23Milica",
+      "date": "12.09.23",
+      "day": "Tue",
+      "time": "10:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01",
+        "sisanje02"
+      ],
+      "price": 0,
+      "employee": "Milica",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Wed11:0013.09.23Stevan Poljakovic",
+      "date": "13.09.23",
+      "day": "Wed",
+      "time": "11:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
     }
   ],
   "services": [
