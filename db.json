@@ -97,12 +97,13 @@
       "serviceProvider": "Brica"
     },
     {
-      "id": "Wed11:0013.09.23Stevan Poljakovic",
-      "date": "13.09.23",
-      "day": "Wed",
-      "time": "11:00",
+      "id": "Thu10:0014.09.23Stevan Poljakovic",
+      "date": "14.09.23",
+      "day": "Thu",
+      "time": "10:00",
       "client": "Jovan Stefanovic",
       "services": [
+        "sisanje02",
         "sisanje01"
       ],
       "price": 0,
