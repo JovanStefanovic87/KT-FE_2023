@@ -18,8 +18,8 @@ const Dashboard = () => {
   return (
     <Container>
       <button onClick={handleOpenWorkingHoursForm}>Set Working Hours</button>
-      <WorkingHoursModal onClose={handleCloseWorkingHoursForm} isOpen={isWorkingHoursFormOpen}>
-        <WorkingHoursForm />
+      <WorkingHoursModal isOpen={isWorkingHoursFormOpen}>
+        <WorkingHoursForm handleCloseWorkingHoursForm={handleCloseWorkingHoursForm} />
       </WorkingHoursModal>
     </Container>
   );

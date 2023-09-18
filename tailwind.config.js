@@ -42,11 +42,14 @@ module.exports = {
         form: '850px',
         '98dvw': '98dvw',
         logo: 225,
+        workingHoursSlotXl: '32%',
+        workingHoursSlotLg: '49%',
       },
       minWidth: {
         label: 140,
         slotsWidth: 200,
         form: '95dvw',
+        time: 100,
       },
       maxWidth: {
         95: '95dvw',
