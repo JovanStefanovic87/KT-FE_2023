@@ -34,6 +34,8 @@ module.exports = {
         header: 68,
         main: 'calc(100dvh - 75px)',
         logo: 55,
+        workingHoursModal: '96vh',
+        workingHoursModalContent: '50vh',
       },
       width: {
         slotsWidth: 200,
