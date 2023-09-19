@@ -114,10 +114,9 @@ export const calculateSlotsForDuration = (
 ): number => Math.ceil(appointmentDuration / slotDuration);
 
 export const isWorkingHour = (day: string, time: string, workingHours: any): boolean => {
-  const dayWorkingHours = workingHours[day];
+  const dayWorkingHours = workingHours.find((wh: any) => wh.day === day);
 
   if (!dayWorkingHours) {
-    console.log('No working hours information for the given day');
     return false; // No working hours information for the given day
   }
 
@@ -133,12 +132,9 @@ export const isWorkingHour = (day: string, time: string, workingHours: any): boo
     (appointmentTime >= morningFrom && appointmentTime <= morningTo) ||
     (appointmentTime >= afternoonFrom && appointmentTime <= afternoonTo)
   ) {
-    console.log(true);
-    return true; // It's a working hour
+    return true;
   }
-
-  console.log(false);
-  return false; // It's not a working hour
+  return false;
 };
 
 export const hasWorkingHourInHour = (
@@ -149,10 +145,9 @@ export const hasWorkingHourInHour = (
 ): boolean => {
   return weekDays.some(dayInfo =>
     timeSlots.some(time => {
-      const dayWorkingHours = workingHours[dayInfo.day];
-      return (
-        dayWorkingHours && isWorkingHour(dayInfo.day, time, workingHours) && time.startsWith(hour)
-      );
+      const isWorking = isWorkingHour(dayInfo.day, time, workingHours);
+      const startsWithHour = time.startsWith(hour);
+      return isWorking && startsWithHour;
     })
   );
 };

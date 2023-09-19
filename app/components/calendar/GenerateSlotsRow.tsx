@@ -7,13 +7,13 @@ import AppointmentButton from '../ui/buttons/AppointmentBtn';
 import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
 import SpinnerSmall from '../ui/SpinnerSmall';
 import { GenerateSlotsRowProps, InfoModalType } from '../../helpers/interfaces';
+import { isWorkingHour } from '../../helpers/universalFunctions';
 import ConfirmationModal from '../ui/modals/ConfirmationModal';
 import InfoModal from '../ui/modals/InfoModal';
 
 const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   weekDays,
   dataLoaded,
-  isWorkingHour,
   workingHours,
   appointments,
   time,
@@ -70,66 +70,68 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
       <InfoModal showInfoModal={showInfoModal} setShowInfoModal={setShowInfoModal} />
       {showRow && (
         <SlotsRowContainer>
-          {weekDays.map(day => (
-            <div className="col-span-1 border-2 border-solid border-transparent" key={day.day}>
-              {dataLoaded ? (
-                isWorkingHour(day.day, time, workingHours) ? (
-                  <AppointmentContainer>
-                    {appointments.find(
-                      appointment =>
-                        appointment.day === day.day &&
-                        appointment.time === time &&
-                        appointment.date === day.date
-                    ) ? (
-                      <AppointmentLabel
-                        appointment={appointments.find(
-                          appointment =>
-                            appointment.day === day.day &&
-                            appointment.time === time &&
-                            appointment.date === day.date
-                        )}
-                        services={services}
-                        clients={clients}
-                        slotDuration={slotDuration}
-                        onDoubleClick={() => {
-                          const appointment = appointments.find(
+          {weekDays.map(day => {
+            return (
+              <div className="col-span-1 border-2 border-solid border-transparent" key={day.day}>
+                {dataLoaded ? (
+                  isWorkingHour(day.day, time, workingHours) ? (
+                    <AppointmentContainer>
+                      {appointments.find(
+                        appointment =>
+                          appointment.day === day.day &&
+                          appointment.time === time &&
+                          appointment.date === day.date
+                      ) ? (
+                        <AppointmentLabel
+                          appointment={appointments.find(
                             appointment =>
                               appointment.day === day.day &&
                               appointment.time === time &&
                               appointment.date === day.date
-                          );
-                          if (appointment) {
-                            setShowConfirmation({
-                              ...showConfirmation,
-                              isVisible: true,
-                              appointmentId: appointment.id,
+                          )}
+                          services={services}
+                          clients={clients}
+                          slotDuration={slotDuration}
+                          onDoubleClick={() => {
+                            const appointment = appointments.find(
+                              appointment =>
+                                appointment.day === day.day &&
+                                appointment.time === time &&
+                                appointment.date === day.date
+                            );
+                            if (appointment) {
+                              setShowConfirmation({
+                                ...showConfirmation,
+                                isVisible: true,
+                                appointmentId: appointment.id,
+                              });
+                            }
+                          }}
+                        />
+                      ) : (
+                        <AppointmentButton
+                          onClick={() => {
+                            setDisplayForm({
+                              clientForm: true,
+                              serviceForm: false,
+                              backdrop: true,
+                              post: false,
                             });
-                          }
-                        }}
-                      />
-                    ) : (
-                      <AppointmentButton
-                        onClick={() => {
-                          setDisplayForm({
-                            clientForm: true,
-                            serviceForm: false,
-                            backdrop: true,
-                            post: false,
-                          });
-                          handleAppointmentButton(day.day, time, day.date);
-                        }}
-                        time={time}
-                      />
-                    )}
-                  </AppointmentContainer>
+                            handleAppointmentButton(day.day, time, day.date);
+                          }}
+                          time={time}
+                        />
+                      )}
+                    </AppointmentContainer>
+                  ) : (
+                    <UnworkingHoursLabel />
+                  )
                 ) : (
-                  <UnworkingHoursLabel />
-                )
-              ) : (
-                <SpinnerSmall />
-              )}
-            </div>
-          ))}
+                  <SpinnerSmall />
+                )}
+              </div>
+            );
+          })}
         </SlotsRowContainer>
       )}
     </div>

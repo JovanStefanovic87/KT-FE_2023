@@ -113,7 +113,6 @@ export interface InfoModalType {
 export interface GenerateSlotsRowProps {
   weekDays: any[]; // Adjust the types as needed
   dataLoaded: boolean;
-  isWorkingHour: Function;
   workingHours: any;
   appointments: any[];
   setAppointments: React.Dispatch<React.SetStateAction<AppointmentProps[]>>;

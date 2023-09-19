@@ -6,7 +6,6 @@ import {
   generateWeekOptions,
   generateTimeSlots,
   generateWeekDays,
-  isWorkingHour,
   handleCloseModal,
   totalPrice,
   hasWorkingHourInHour,
@@ -92,6 +91,8 @@ const Calendar: React.FC = () => {
     fetchEmployeeWorkingHours(setWorkingHours, selectedEmployee);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee]);
+
+  console.log(selectedEmployee);
 
   useEffect(() => {
     if (selectedServiceProvider) {
@@ -199,7 +200,6 @@ const Calendar: React.FC = () => {
               return GenerateSlotsRow({
                 weekDays,
                 dataLoaded,
-                isWorkingHour,
                 workingHours,
                 appointments,
                 setAppointments,
