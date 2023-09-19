@@ -54,6 +54,71 @@
       "service_provider": "Sovljanski"
     }
   ],
+  "workingHours": [
+    {
+      "employeeId": "Stevan Poljakovic",
+      "date": "18.09.23",
+      "day": "Mon",
+      "morning_from": "08:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Stevan Poljakovic",
+      "date": "19.09.23",
+      "day": "Tue",
+      "morning_from": "08:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Stevan Poljakovic",
+      "date": "20.09.23",
+      "day": "Wed",
+      "morning_from": "08:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Stevan Poljakovic",
+      "date": "21.09.23",
+      "day": "Wed",
+      "morning_from": "08:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Stevan Poljakovic",
+      "date": "22.09.23",
+      "day": "Fri",
+      "morning_from": "08:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Stevan Poljakovic",
+      "date": "23.09.23",
+      "day": "Sut",
+      "morning_from": "08:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Stevan Poljakovic",
+      "date": "24.09.23",
+      "day": "Sun",
+      "morning_from": "08:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    }
+  ],
   "appointments": [
     {
       "id": "Mon09:0028.08.23Stevan Poljakovic",

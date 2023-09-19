@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format, addDays, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
-import { workingHours } from './mock';
+/* import { workingHours } from './mock'; */
 import { WeekDay } from '../helpers/interfaces';
 
 export function useDeviceDetect() {
@@ -77,7 +77,11 @@ export const handleSelectChange = (
   setState(selectedValue);
 };
 
-export const generateWeekDays = (selectedWeekIndex: number): WeekDay[] => {
+export const generateWeekDays = (
+  selectedWeekIndex: number,
+  workingHours: any[], // Pass your working hours array as a parameter
+  selectedEmployee: string // Pass the selected employee
+): WeekDay[] => {
   const weekDays: WeekDay[] = [];
   const today = new Date();
   const dayOffset = today.getDay() === 0 ? 6 : today.getDay() - 1;
@@ -88,8 +92,16 @@ export const generateWeekDays = (selectedWeekIndex: number): WeekDay[] => {
     const currentDate = addDays(currentWeekStart, i);
     const day = format(currentDate, 'EEE');
     const date = format(currentDate, 'dd.MM.yy');
+    const workingHour = workingHours.find(
+      wh => wh.date === format(currentDate, 'dd.MM.yy') && wh.employeeId === selectedEmployee
+    );
 
-    if (workingHours[day].start !== '--:--' && workingHours[day].end !== '--:--') {
+    if (
+      (workingHour &&
+        workingHour?.morning_from !== '--:--' &&
+        workingHour?.morning_to !== '--:--') ||
+      (workingHour?.afternoon_from !== '--:--' && workingHour?.afternoon_to !== '--:--')
+    ) {
       weekDays.push({ day, date });
     }
   }
@@ -101,25 +113,46 @@ export const calculateSlotsForDuration = (
   slotDuration: number
 ): number => Math.ceil(appointmentDuration / slotDuration);
 
-export const isWorkingHour = (day: string, time: string): boolean => {
+export const isWorkingHour = (day: string, time: string, workingHours: any): boolean => {
   const dayWorkingHours = workingHours[day];
 
-  const appointmentTime = parseInt(time.replace(':', ''), 10);
-  const startTime = parseInt(dayWorkingHours.start.replace(':', ''), 10);
-  const endTime = parseInt(dayWorkingHours.end.replace(':', ''), 10);
+  if (!dayWorkingHours) {
+    console.log('No working hours information for the given day');
+    return false; // No working hours information for the given day
+  }
 
-  return appointmentTime >= startTime && appointmentTime <= endTime;
+  const appointmentTime = parseInt(time.replace(':', ''), 10);
+
+  const morningFrom = parseInt(dayWorkingHours.morning_from.replace(':', ''), 10);
+  const morningTo = parseInt(dayWorkingHours.morning_to.replace(':', ''), 10);
+  const afternoonFrom = parseInt(dayWorkingHours.afternoon_from.replace(':', ''), 10);
+  const afternoonTo = parseInt(dayWorkingHours.afternoon_to.replace(':', ''), 10);
+
+  // Check if the appointment time falls within the morning or afternoon working hours
+  if (
+    (appointmentTime >= morningFrom && appointmentTime <= morningTo) ||
+    (appointmentTime >= afternoonFrom && appointmentTime <= afternoonTo)
+  ) {
+    console.log(true);
+    return true; // It's a working hour
+  }
+
+  console.log(false);
+  return false; // It's not a working hour
 };
 
 export const hasWorkingHourInHour = (
   hour: string,
   weekDays: WeekDay[],
-  timeSlots: string[]
+  timeSlots: string[],
+  workingHours: any
 ): boolean => {
   return weekDays.some(dayInfo =>
     timeSlots.some(time => {
       const dayWorkingHours = workingHours[dayInfo.day];
-      return dayWorkingHours && isWorkingHour(dayInfo.day, time) && time.startsWith(hour);
+      return (
+        dayWorkingHours && isWorkingHour(dayInfo.day, time, workingHours) && time.startsWith(hour)
+      );
     })
   );
 };

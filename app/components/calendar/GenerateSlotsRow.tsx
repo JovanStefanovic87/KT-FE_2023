@@ -14,6 +14,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   weekDays,
   dataLoaded,
   isWorkingHour,
+  workingHours,
   appointments,
   time,
   handleAppointmentButton,
@@ -72,7 +73,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
           {weekDays.map(day => (
             <div className="col-span-1 border-2 border-solid border-transparent" key={day.day}>
               {dataLoaded ? (
-                isWorkingHour(day.day, time) ? (
+                isWorkingHour(day.day, time, workingHours) ? (
                   <AppointmentContainer>
                     {appointments.find(
                       appointment =>

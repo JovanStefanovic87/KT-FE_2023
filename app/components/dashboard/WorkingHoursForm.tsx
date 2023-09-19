@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { startOfWeek, endOfWeek, format, addWeeks, getDay, addDays } from 'date-fns';
-import { srLatn } from 'date-fns/locale'; // Import the Serbian Latin locale
+import { format, addDays } from 'date-fns';
+import { generateWeekOptions } from '../../helpers/universalFunctions';
 import CloseBtn from '../ui/buttons/CloseBtn';
 import SubmitBtn from '../ui/buttons/SubmitBtn';
 import Backdrop from '../ui/Backdrop';
 
 const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
   const [employeeId, setEmployeeId] = useState('Stevan Poljakovic'); // Replace with the actual employee ID
-  const [weeks, setWeeks] = useState([]);
+  const weekOptions = generateWeekOptions();
   const [selectedWeek, setSelectedWeek] = useState(0);
 
   const [workingHours, setWorkingHours] = useState({
@@ -70,42 +70,9 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
   });
 
   useEffect(() => {
-    const generateWeekOptions = () => {
-      const today = new Date();
-      const currentYear = today.getFullYear();
-      const nextYear = currentYear + 1;
-
-      const weeks = [];
-      let currentDate = startOfWeek(today, { weekStartsOn: 1, locale: srLatn }); // Start from the current week, with Monday as the starting day
-
-      while (currentDate.getFullYear() <= nextYear) {
-        const endOfWeekDate = endOfWeek(currentDate);
-
-        weeks.push({
-          label: `Nedelja ${format(currentDate, 'w', { locale: srLatn })} (${format(
-            currentDate,
-            'dd.MM.yy.'
-          )} - ${format(endOfWeekDate, 'dd.MM.yy.')})`,
-          start: currentDate,
-          end: endOfWeekDate,
-        });
-
-        currentDate = addWeeks(currentDate, 1);
-      }
-      return weeks;
-    };
-
-    const weeksArray = generateWeekOptions();
-    setWeeks(weeksArray);
-
-    // Select the current week by default
-    setSelectedWeek(0);
-  }, []);
-
-  useEffect(() => {
     // Update dates for each day when the selected week changes
-    if (weeks[selectedWeek]) {
-      const startOfWeekDate = weeks[selectedWeek].start;
+    if (weekOptions[selectedWeek]) {
+      const startOfWeekDate = weekOptions[selectedWeek].start;
       Object.keys(workingHours).forEach((day, index) => {
         const currentDate = addDays(startOfWeekDate, index);
         setWorkingHours(prevWorkingHours => ({
@@ -130,15 +97,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
     }));
   };
 
-  // Function to handle form submission
   const handleSubmit = () => {
-    // You can save the workingHours data to your database here.
-    // The data structure is updated to include specific dates for each day.
-    // You can access the workingHours data using the `employeeId` state.
-
-    // Clear the form or perform any other necessary actions.
-
-    // Close the form
     handleCloseWorkingHoursForm();
   };
 
@@ -153,7 +112,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
             onChange={e => setSelectedWeek(e.target.value)}
             className="border border-gray-300 rounded p-2 w-full"
           >
-            {weeks.map((week, index) => (
+            {weekOptions.map((week, index) => (
               <option key={index} value={index}>
                 {week.label}
               </option>

@@ -50,13 +50,27 @@ export const fetchEmployeesData = async (
 ) => {
   try {
     const employeesResponse = await axios.get(
-      `${process.env.NEXT_PUBLIC_DATABASE_URL}/employees?service_provider=${selectedServiceProvider}`
+      `${API_URL}/employees?service_provider=${selectedServiceProvider}`
     );
     if (employeesResponse.data && employeesResponse.data.length > 0) {
       setEmployees(employeesResponse.data);
 
       // Set selectedEmployee to the first employee in the array
       setSelectedEmployee(employeesResponse.data[0].name); // Assuming 'name' is the property containing employee names
+    }
+  } catch (error) {}
+};
+
+export const fetchEmployeeWorkingHours = async (
+  setWorkingHours: Dispatch<SetStateAction<any>>,
+  selectedEmployee: string
+) => {
+  try {
+    const workingHoursResponse = await axios.get(
+      `${API_URL}/workingHours?employeeId=${selectedEmployee}`
+    );
+    if (workingHoursResponse.data && workingHoursResponse.data.length > 0) {
+      setWorkingHours(workingHoursResponse.data);
     }
   } catch (error) {}
 };
@@ -75,10 +89,8 @@ export const addNewAppointment = async (
     newAppointment.employee = selectedEmployee;
     newAppointment.serviceProvider = selectedServiceProvider;
 
-    await axios.post(`${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments`, newAppointment);
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments?employee=${selectedEmployee}`
-    );
+    await axios.post(`${API_URL}/appointments`, newAppointment);
+    const response = await axios.get(`${API_URL}/appointments?employee=${selectedEmployee}`);
     if (response.data) {
       setAppointments(response.data);
       setAppontmentInfo({
@@ -101,9 +113,7 @@ export const fetchAppointments = async (
 ) => {
   try {
     if (selectedEmployee) {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments?employee=${selectedEmployee}`
-      );
+      const response = await axios.get(`${API_URL}/appointments?employee=${selectedEmployee}`);
       if (response.data) {
         setAppointments(response.data);
       }

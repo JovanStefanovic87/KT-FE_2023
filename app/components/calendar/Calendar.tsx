@@ -28,6 +28,7 @@ import {
   fetchEmployeesData,
   addNewAppointment,
   fetchAppointments,
+  fetchEmployeeWorkingHours,
 } from '../../helpers/apiHandlers';
 import GenerateSlotsRow from './GenerateSlotsRow';
 import ClientForm from './ClientForm';
@@ -46,6 +47,7 @@ const Calendar: React.FC = () => {
   const firstRun = useRef(true);
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
   const [employees, setEmployees] = useState<EmployeeProps[]>([]);
+  const [workingHours, setWorkingHours] = useState([]);
   const [services, setServices] = useState<ServecesProps[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
@@ -63,7 +65,7 @@ const Calendar: React.FC = () => {
     appointmentData: '',
   });
   const [dataLoaded, setDataLoaded] = useState(false);
-  const weekDays = generateWeekDays(selectedWeek);
+  const weekDays = generateWeekDays(selectedWeek, workingHours, selectedEmployee);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
 
@@ -83,6 +85,11 @@ const Calendar: React.FC = () => {
 
   useEffect(() => {
     fetchAppointments(setAppointments, selectedEmployee);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEmployee]);
+
+  useEffect(() => {
+    fetchEmployeeWorkingHours(setWorkingHours, selectedEmployee);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee]);
 
@@ -188,11 +195,12 @@ const Calendar: React.FC = () => {
 
             {timeSlots.map((time, index) => {
               const hour = time.split(':')[0];
-              const showRow = hasWorkingHourInHour(hour, weekDays, timeSlots);
+              const showRow = hasWorkingHourInHour(hour, weekDays, timeSlots, workingHours);
               return GenerateSlotsRow({
                 weekDays,
                 dataLoaded,
                 isWorkingHour,
+                workingHours,
                 appointments,
                 setAppointments,
                 time,
