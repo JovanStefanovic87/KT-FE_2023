@@ -143,13 +143,26 @@ export const hasWorkingHourInHour = (
   timeSlots: string[],
   workingHours: any
 ): boolean => {
-  return weekDays.some(dayInfo =>
-    timeSlots.some(time => {
-      const isWorking = isWorkingHour(dayInfo.day, time, workingHours);
+  return weekDays.some(dayInfo => {
+    const dayWorkingHours = workingHours.find((wh: any) => wh.day === dayInfo.day);
+    if (!dayWorkingHours) {
+      return false; // No working hours information for the given day
+    }
+
+    return timeSlots.some(time => {
       const startsWithHour = time.startsWith(hour);
-      return isWorking && startsWithHour;
-    })
-  );
+      if (startsWithHour) {
+        const appointmentTime = parseInt(time.replace(':', ''), 10);
+        const morningFrom = parseInt(dayWorkingHours.morning_from.replace(':', ''), 10);
+        const afternoonTo = parseInt(dayWorkingHours.afternoon_to.replace(':', ''), 10);
+
+        // Check if the appointment time is within the working hours range
+        return appointmentTime >= morningFrom && appointmentTime <= afternoonTo;
+      }
+
+      return false;
+    });
+  });
 };
 
 type SetModalInfoType = React.Dispatch<

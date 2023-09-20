@@ -124,7 +124,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
                       )}
                     </AppointmentContainer>
                   ) : (
-                    <UnworkingHoursLabel />
+                    <UnworkingHoursLabel time={time} />
                   )
                 ) : (
                   <SpinnerSmall />
