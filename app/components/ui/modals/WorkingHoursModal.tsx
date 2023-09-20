@@ -1,6 +1,9 @@
-import React from 'react';
+interface WorkingHoursModalProps {
+  isOpen: boolean;
+  children: React.ReactNode;
+}
 
-const WorkingHoursModal = ({ isOpen, children }) => {
+const WorkingHoursModal: React.FC<WorkingHoursModalProps> = ({ isOpen, children }) => {
   if (!isOpen) return null;
 
   return (

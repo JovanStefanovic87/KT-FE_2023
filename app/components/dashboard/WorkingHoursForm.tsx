@@ -5,12 +5,22 @@ import CloseBtn from '../ui/buttons/CloseBtn';
 import SubmitBtn from '../ui/buttons/SubmitBtn';
 import Backdrop from '../ui/Backdrop';
 
-const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
-  const [employeeId, setEmployeeId] = useState('Stevan Poljakovic'); // Replace with the actual employee ID
-  const weekOptions = generateWeekOptions();
-  const [selectedWeek, setSelectedWeek] = useState(0);
+// Define the type for the workingHours object
+interface WorkingHoursState {
+  date: string;
+  morningFrom: string;
+  morningTo: string;
+  afternoonFrom: string;
+  afternoonTo: string;
+  status: string;
+}
 
-  const [workingHours, setWorkingHours] = useState({
+const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
+  const [employeeId, setEmployeeId] = useState('Stevan Poljakovic');
+  const weekOptions = generateWeekOptions();
+  const [selectedWeek, setSelectedWeek] = useState<number>(0);
+
+  const [workingHours, setWorkingHours] = useState<Record<string, WorkingHoursState>>({
     Ponedeljak: {
       date: '',
       morningFrom: '',
@@ -70,7 +80,6 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
   });
 
   useEffect(() => {
-    // Update dates for each day when the selected week changes
     if (weekOptions[selectedWeek]) {
       const startOfWeekDate = weekOptions[selectedWeek].start;
       Object.keys(workingHours).forEach((day, index) => {
@@ -86,8 +95,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
     }
   }, [selectedWeek]);
 
-  const handleInputChange = (day, field, value) => {
-    // Update the workingHours state when input values change
+  const handleInputChange = (day: string, field: keyof WorkingHoursState, value: string) => {
     setWorkingHours(prevWorkingHours => ({
       ...prevWorkingHours,
       [day]: {
@@ -109,7 +117,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
           <label className="block text-lg font-semibold">Izaberite Nedelju:</label>
           <select
             value={selectedWeek}
-            onChange={e => setSelectedWeek(e.target.value)}
+            onChange={e => setSelectedWeek(Number(e.target.value))}
             className="border border-gray-300 rounded p-2 w-full"
           >
             {weekOptions.map((week, index) => (
@@ -194,7 +202,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }) => {
           </div>
         </div>
         <div className="mt-4 flex justify-end">
-          <div className="flex-grow"></div> {/* This will push the SubmitBtn to the bottom */}
+          <div className="flex-grow"></div>
           <SubmitBtn onClick={handleSubmit} isDisabled={false} buttonText="Sačuvaj" />
           <CloseBtn onClick={() => handleCloseWorkingHoursForm()} />
         </div>
