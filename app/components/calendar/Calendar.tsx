@@ -92,8 +92,6 @@ const Calendar: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee]);
 
-  console.log(selectedEmployee);
-
   useEffect(() => {
     if (selectedServiceProvider) {
       fetchEmployeesData(setEmployees, setSelectedEmployee, selectedServiceProvider);

@@ -117,6 +117,69 @@
       "morning_to": "nn:nn",
       "afternoon_from": "nn:nn",
       "afternoon_to": "nn:nn"
+    },
+    {
+      "employeeId": "Milica",
+      "date": "18.09.23",
+      "day": "Mon",
+      "morning_from": "09:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Milica",
+      "date": "19.09.23",
+      "day": "Tue",
+      "morning_from": "09:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Milica",
+      "date": "20.09.23",
+      "day": "Wed",
+      "morning_from": "09:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Milica",
+      "date": "21.09.23",
+      "day": "Thr",
+      "morning_from": "09:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Milica",
+      "date": "22.09.23",
+      "day": "Fri",
+      "morning_from": "09:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Milica",
+      "date": "23.09.23",
+      "day": "Sat",
+      "morning_from": "09:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
+      "employeeId": "Milica",
+      "date": "24.09.23",
+      "day": "Sun",
+      "morning_from": "nn:nn",
+      "morning_to": "nn:nn",
+      "afternoon_from": "nn:nn",
+      "afternoon_to": "nn:nn"
     }
   ],
   "appointments": [
@@ -126,7 +189,9 @@
       "day": "Mon",
       "time": "09:00",
       "client": "Jovan Stefanovic",
-      "services": ["sisanje01"],
+      "services": [
+        "sisanje01"
+      ],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -137,7 +202,10 @@
       "day": "Tue",
       "time": "10:00",
       "client": "Jovan Stefanovic",
-      "services": ["sisanje01", "sisanje02"],
+      "services": [
+        "sisanje01",
+        "sisanje02"
+      ],
       "price": 0,
       "employee": "Milica",
       "serviceProvider": "Brica"
@@ -148,7 +216,10 @@
       "day": "Tue",
       "time": "10:00",
       "client": "Jovan Stefanovic",
-      "services": ["sisanje01", "sisanje02"],
+      "services": [
+        "sisanje01",
+        "sisanje02"
+      ],
       "price": 0,
       "employee": "Milica",
       "serviceProvider": "Brica"
@@ -159,7 +230,10 @@
       "day": "Thu",
       "time": "10:00",
       "client": "Jovan Stefanovic",
-      "services": ["sisanje02", "sisanje01"],
+      "services": [
+        "sisanje02",
+        "sisanje01"
+      ],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -170,7 +244,22 @@
       "day": "Tue",
       "time": "09:00",
       "client": "Jovan Stefanovic",
-      "services": ["sisanje01"],
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Mon10:0018.09.23Stevan Poljakovic",
+      "date": "18.09.23",
+      "day": "Mon",
+      "time": "10:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
