@@ -69,9 +69,7 @@ export const fetchEmployeeWorkingHours = async (
     const workingHoursResponse = await axios.get(
       `${API_URL}/workingHours?employeeId=${selectedEmployee}`
     );
-    if (workingHoursResponse.data && workingHoursResponse.data.length > 0) {
-      setWorkingHours(workingHoursResponse.data);
-    }
+    setWorkingHours(workingHoursResponse.data);
   } catch (error) {}
 };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import SlotsRowContainer from './SlotsRowContainer';
 import AppointmentContainer from './AppointmentContainer';
@@ -74,6 +74,8 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
             return (
               <div className="col-span-1 border-2 border-solid border-transparent" key={day.day}>
                 {dataLoaded ? (
+                  workingHours &&
+                  workingHours.length > 0 &&
                   isWorkingHour(day.day, time, workingHours) ? (
                     <AppointmentContainer>
                       {appointments.find(

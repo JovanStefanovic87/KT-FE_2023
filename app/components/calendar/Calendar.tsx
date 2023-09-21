@@ -92,6 +92,8 @@ const Calendar: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee]);
 
+  console.log(workingHours);
+
   useEffect(() => {
     if (selectedServiceProvider) {
       fetchEmployeesData(setEmployees, setSelectedEmployee, selectedServiceProvider);
@@ -179,7 +181,7 @@ const Calendar: React.FC = () => {
             disabled={selectedWeek === weekOptions.length - 1}
           />
         </SelectContainer>
-        <div className="flex px-2">
+        <div className="flex px-2 relative">
           <div className="h-calHeight w-calendarSlots overflow-auto border-2 bg-ktBg border-solid border-white mt-3 mb-3 mx-auto">
             <DaysRow>
               {weekDays.map(dayInfo => (
@@ -195,6 +197,7 @@ const Calendar: React.FC = () => {
             {timeSlots.map((time, index) => {
               const hour = time.split(':')[0];
               const showRow = hasWorkingHourInHour(hour, weekDays, timeSlots, workingHours);
+
               return GenerateSlotsRow({
                 weekDays,
                 dataLoaded,
@@ -213,6 +216,13 @@ const Calendar: React.FC = () => {
                 setErrorModal,
               });
             })}
+            {dataLoaded && workingHours && (
+              <div className="w-full h-2/4 flex justify-center items-end absolute">
+                <p className="text-red-500 font-bold text-lg md:text-xl lg:text-2xl xl:text-3xl p-2 md:p-4 lg:p-6 xl:p-8">
+                  Radno vreme nije podeseno
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <SelectContainer>
