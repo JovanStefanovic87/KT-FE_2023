@@ -119,6 +119,15 @@
       "afternoon_to": "nn:nn"
     },
     {
+      "employeeId": "Stevan Poljakovic",
+      "date": "02.10.23",
+      "day": "Mon",
+      "morning_from": "08:00",
+      "morning_to": "12:00",
+      "afternoon_from": "14:00",
+      "afternoon_to": "18:00"
+    },
+    {
       "employeeId": "Milica",
       "date": "18.09.23",
       "day": "Mon",
@@ -189,9 +198,7 @@
       "day": "Mon",
       "time": "09:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -202,10 +209,7 @@
       "day": "Tue",
       "time": "10:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01",
-        "sisanje02"
-      ],
+      "services": ["sisanje01", "sisanje02"],
       "price": 0,
       "employee": "Milica",
       "serviceProvider": "Brica"
@@ -216,10 +220,7 @@
       "day": "Tue",
       "time": "10:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01",
-        "sisanje02"
-      ],
+      "services": ["sisanje01", "sisanje02"],
       "price": 0,
       "employee": "Milica",
       "serviceProvider": "Brica"
@@ -230,10 +231,7 @@
       "day": "Thu",
       "time": "10:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje02",
-        "sisanje01"
-      ],
+      "services": ["sisanje02", "sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -244,9 +242,7 @@
       "day": "Tue",
       "time": "09:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -257,9 +253,7 @@
       "day": "Mon",
       "time": "10:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"

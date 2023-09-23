@@ -41,6 +41,7 @@ import ArrowButtonLeft from '../ui/buttons/ArrowButtonLeft';
 import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
 import AppointmentModal from '../ui/modals/AppointmentModal';
 import ErrorModal from '../ui/modals/ErrorModal';
+import Spinner from '../ui/Spinner';
 
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
@@ -88,11 +89,10 @@ const Calendar: React.FC = () => {
   }, [selectedEmployee]);
 
   useEffect(() => {
-    fetchEmployeeWorkingHours(setWorkingHours, selectedEmployee);
+    const weekDates = weekDays.map(day => day.date);
+    fetchEmployeeWorkingHours(setWorkingHours, selectedEmployee, weekDates);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedEmployee]);
-
-  console.log(workingHours);
+  }, [selectedEmployee, selectedWeek]);
 
   useEffect(() => {
     if (selectedServiceProvider) {
@@ -223,6 +223,7 @@ const Calendar: React.FC = () => {
                 </p>
               </div>
             )}
+            {dataLoaded || <Spinner />}
           </div>
         </div>
         <SelectContainer>

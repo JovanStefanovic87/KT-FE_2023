@@ -10,6 +10,7 @@ import {
 } from '../helpers/interfaces';
 
 import axios from 'axios';
+import { workingHours } from './mock';
 
 const API_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
@@ -63,14 +64,35 @@ export const fetchEmployeesData = async (
 
 export const fetchEmployeeWorkingHours = async (
   setWorkingHours: Dispatch<SetStateAction<any>>,
-  selectedEmployee: string
+  selectedEmployee: string,
+  calendarDates: string[]
 ) => {
   try {
-    const workingHoursResponse = await axios.get(
-      `${API_URL}/workingHours?employeeId=${selectedEmployee}`
-    );
-    setWorkingHours(workingHoursResponse.data);
-  } catch (error) {}
+    // Initialize an empty array to store the working hours data for all dates.
+    const allWorkingHoursData = [];
+
+    // Loop through the calendarDates array and make a request for each date.
+    for (const date of calendarDates) {
+      const workingHoursResponse = await axios.get(`${API_URL}/workingHours`, {
+        params: {
+          employeeId: selectedEmployee,
+          date, // Use the current date in the loop iteration
+        },
+      });
+
+      // Add the working hours data for the current date to the array.
+      allWorkingHoursData.push(workingHoursResponse);
+    }
+
+    // Set the combined working hours data in the state.
+    setWorkingHours(Object.values(allWorkingHoursData).map((item, i) => item.data));
+
+    // Optionally, you can log the combined data for debugging.
+    console.log(Object.values(allWorkingHoursData).map((item, i) => item.data[0]));
+  } catch (error) {
+    // Handle errors
+    console.error('Error fetching working hours:', error);
+  }
 };
 
 export const addNewAppointment = async (
