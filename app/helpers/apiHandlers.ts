@@ -69,26 +69,31 @@ export const fetchEmployeeWorkingHours = async (
 ) => {
   try {
     // Initialize an empty array to store the working hours data for all dates.
-    const allWorkingHoursData = [];
+    const allWorkingHoursDataPromises = [];
 
-    // Loop through the calendarDates array and make a request for each date.
+    // Loop through the calendarDates array and create a promise for each date.
     for (const date of calendarDates) {
-      const workingHoursResponse = await axios.get(`${API_URL}/workingHours`, {
+      const workingHoursPromise = axios.get(`${API_URL}/workingHours`, {
         params: {
           employeeId: selectedEmployee,
           date, // Use the current date in the loop iteration
         },
       });
 
-      // Add the working hours data for the current date to the array.
-      allWorkingHoursData.push(workingHoursResponse);
+      allWorkingHoursDataPromises.push(workingHoursPromise);
     }
 
+    // Use Promise.all to wait for all promises to resolve.
+    const allWorkingHoursDataResponses = await Promise.all(allWorkingHoursDataPromises);
+
+    // Extract the data from the resolved promises.
+    const allWorkingHoursData = allWorkingHoursDataResponses.map(response => response.data);
+
     // Set the combined working hours data in the state.
-    setWorkingHours(Object.values(allWorkingHoursData).map((item, i) => item.data));
+    setWorkingHours(allWorkingHoursData);
 
     // Optionally, you can log the combined data for debugging.
-    console.log(Object.values(allWorkingHoursData).map((item, i) => item.data[0]));
+    /* console.log(allWorkingHoursData); */
   } catch (error) {
     // Handle errors
     console.error('Error fetching working hours:', error);

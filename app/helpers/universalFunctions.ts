@@ -77,22 +77,33 @@ export const handleSelectChange = (
   setState(selectedValue);
 };
 
-export const generateWeekDays = (
+export const generateWeekDays = async (
   selectedWeekIndex: number,
   workingHours: any[], // Pass your working hours array as a parameter
   selectedEmployee: string // Pass the selected employee
-): WeekDay[] => {
-  const weekDays: WeekDay[] = [];
+): Promise<WeekDay[]> => {
   const today = new Date();
   const dayOffset = today.getDay() === 0 ? 6 : today.getDay() - 1;
   const startOfWeek = addDays(today, -dayOffset);
   const currentWeekStart = addWeeks(startOfWeek, selectedWeekIndex);
 
+  while (workingHours.length === 0) {
+    // Wait for workingHours data to be available
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
+  }
+
+  // Flatten the nested array structure
+  const flattenedWorkingHours = workingHours.flat();
+
+  const weekDays: WeekDay[] = [];
+
   for (let i = 0; i < 7; i++) {
     const currentDate = addDays(currentWeekStart, i);
     const day = format(currentDate, 'EEE');
     const date = format(currentDate, 'dd.MM.yy');
-    const workingHour = workingHours.find(
+
+    // Find the working hours for the current date in the flattened array
+    const workingHour = flattenedWorkingHours.find(
       wh => wh.date === format(currentDate, 'dd.MM.yy') && wh.employeeId === selectedEmployee
     );
 
