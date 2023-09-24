@@ -41,6 +41,7 @@ module.exports = {
         slotsWidth: 200,
         calendarSlots: 200 * 7.22,
         'calendar-lg': 'calc(100dvw - 24rem)',
+        'calendar-sm': 'calc(100dvw - 3.5rem)',
         form: '850px',
         '98dvw': '98dvw',
         logo: 225,
