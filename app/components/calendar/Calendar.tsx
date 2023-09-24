@@ -43,11 +43,21 @@ import AppointmentModal from '../ui/modals/AppointmentModal';
 import ErrorModal from '../ui/modals/ErrorModal';
 import Spinner from '../ui/Spinner';
 
+interface WorkingHour {
+  employeeId: string;
+  date: string;
+  day: string;
+  morning_from: string;
+  morning_to: string;
+  afternoon_from: string;
+  afternoon_to: string;
+}
+
 const Calendar: React.FC = () => {
   const firstRun = useRef(true);
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
   const [employees, setEmployees] = useState<EmployeeProps[]>([]);
-  const [workingHours, setWorkingHours] = useState([]);
+  const [workingHours, setWorkingHours] = useState<WorkingHour[]>([]);
   const [services, setServices] = useState<ServecesProps[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
@@ -91,6 +101,7 @@ const Calendar: React.FC = () => {
   useEffect(() => {
     const weekDates = weekDays.map(day => day.date);
     fetchEmployeeWorkingHours(setWorkingHours, selectedEmployee, weekDates);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee, selectedWeek]);
 
@@ -99,7 +110,7 @@ const Calendar: React.FC = () => {
       fetchEmployeesData(setEmployees, setSelectedEmployee, selectedServiceProvider);
     }
   }, [selectedServiceProvider]);
-
+  console.log(workingHours);
   const handleAddAppointment = useCallback(async () => {
     addNewAppointment(
       newAppointment,

@@ -86,14 +86,13 @@ export const fetchEmployeeWorkingHours = async (
     // Use Promise.all to wait for all promises to resolve.
     const allWorkingHoursDataResponses = await Promise.all(allWorkingHoursDataPromises);
 
-    // Extract the data from the resolved promises.
-    const allWorkingHoursData = allWorkingHoursDataResponses.map(response => response.data);
+    // Extract the data from the resolved promises and filter out undefined values.
+    const allWorkingHoursData = allWorkingHoursDataResponses
+      .map(response => response.data)
+      .filter(data => data); // Filter out undefined values
 
     // Set the combined working hours data in the state.
-    setWorkingHours(allWorkingHoursData);
-
-    // Optionally, you can log the combined data for debugging.
-    /* console.log(allWorkingHoursData); */
+    setWorkingHours(allWorkingHoursData.flatMap(innerArray => innerArray));
   } catch (error) {
     // Handle errors
     console.error('Error fetching working hours:', error);
