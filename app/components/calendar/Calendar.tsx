@@ -6,7 +6,6 @@ import {
   generateWeekOptions,
   generateTimeSlots,
   generateWeekDays,
-  handleCloseModal,
   totalPrice,
   hasWorkingHourInHour,
 } from '../../helpers/universalFunctions';
@@ -204,7 +203,6 @@ const Calendar: React.FC = () => {
                 </div>
               ))}
             </DaysRow>
-
             {timeSlots.map((time, index) => {
               const hour = time.split(':')[0];
               const showRow = hasWorkingHourInHour(hour, weekDays, timeSlots, workingHours);
@@ -227,14 +225,16 @@ const Calendar: React.FC = () => {
                 setErrorModal,
               });
             })}
-            {dataLoaded && workingHours && (
+
+            {!dataLoaded && <Spinner />}
+
+            {dataLoaded && workingHours.length === 0 && (
               <div className="w-full h-2/4 flex justify-center items-end absolute">
                 <p className="text-red-500 font-bold text-lg md:text-xl lg:text-2xl xl:text-3xl p-2 md:p-4 lg:p-6 xl:p-8">
                   Radno vreme nije podeseno
                 </p>
               </div>
             )}
-            {dataLoaded || <Spinner />}
           </div>
         </div>
         <SelectContainer>

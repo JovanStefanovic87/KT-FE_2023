@@ -17,7 +17,12 @@ const Dashboard = () => {
 
   return (
     <Container>
-      <button onClick={handleOpenWorkingHoursForm}>Set Working Hours</button>
+      <button
+        onClick={handleOpenWorkingHoursForm}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Radno vreme
+      </button>
       <WorkingHoursModal isOpen={isWorkingHoursFormOpen}>
         <WorkingHoursForm handleCloseWorkingHoursForm={handleCloseWorkingHoursForm} />
       </WorkingHoursModal>
