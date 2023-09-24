@@ -110,7 +110,7 @@ const Calendar: React.FC = () => {
       fetchEmployeesData(setEmployees, setSelectedEmployee, selectedServiceProvider);
     }
   }, [selectedServiceProvider]);
-  console.log(workingHours);
+
   const handleAddAppointment = useCallback(async () => {
     addNewAppointment(
       newAppointment,
