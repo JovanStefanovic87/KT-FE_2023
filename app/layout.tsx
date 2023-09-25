@@ -1,5 +1,5 @@
+'use client';
 import '../styles/globals.css';
-import React from 'react';
 import Header from './components/layout/Header';
 
 import { Providers } from './globalRedux/provider';
