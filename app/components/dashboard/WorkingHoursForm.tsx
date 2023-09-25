@@ -4,6 +4,7 @@ import { generateWeekOptions } from '../../helpers/universalFunctions';
 import CloseBtn from '../ui/buttons/CloseBtn';
 import SubmitBtn from '../ui/buttons/SubmitBtn';
 import Backdrop from '../ui/Backdrop';
+import CustomTimeInput from '../ui/input/CustomTimeInput';
 
 // Define the type for the workingHours object
 interface WorkingHoursState {
@@ -143,20 +144,16 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
                   <div className="flex flex-wrap -mx-2">
                     <div className="w-1/2 px-2 mb-2">
                       <label className="block text-xs font-medium">Od:</label>
-                      <input
-                        type="time"
+                      <CustomTimeInput
                         value={workingHours[day].morningFrom}
-                        onChange={e => handleInputChange(day, 'morningFrom', e.target.value)}
-                        className="border border-gray-300 rounded p-2 w-full min-w-time"
+                        onChange={value => handleInputChange(day, 'morningFrom', value)}
                       />
                     </div>
                     <div className="w-1/2 px-2 mb-2">
                       <label className="block text-xs font-medium">Do:</label>
-                      <input
-                        type="time"
+                      <CustomTimeInput
                         value={workingHours[day].morningTo}
-                        onChange={e => handleInputChange(day, 'morningTo', e.target.value)}
-                        className="border border-gray-300 rounded p-2 w-full min-w-time"
+                        onChange={value => handleInputChange(day, 'morningTo', value)}
                       />
                     </div>
                   </div>
@@ -166,20 +163,16 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
                   <div className="flex flex-wrap -mx-2">
                     <div className="w-1/2 px-2 mb-2">
                       <label className="block text-xs font-medium">Od:</label>
-                      <input
-                        type="time"
+                      <CustomTimeInput
                         value={workingHours[day].afternoonFrom}
-                        onChange={e => handleInputChange(day, 'afternoonFrom', e.target.value)}
-                        className="border border-gray-300 rounded p-2 w-full min-w-time"
+                        onChange={value => handleInputChange(day, 'afternoonFrom', value)}
                       />
                     </div>
                     <div className="w-1/2 px-2 mb-2">
                       <label className="block text-xs font-medium">Do:</label>
-                      <input
-                        type="time"
+                      <CustomTimeInput
                         value={workingHours[day].afternoonTo}
-                        onChange={e => handleInputChange(day, 'afternoonTo', e.target.value)}
-                        className="border border-gray-300 rounded p-2 w-full min-w-time"
+                        onChange={value => handleInputChange(day, 'afternoonTo', value)}
                       />
                     </div>
                   </div>
