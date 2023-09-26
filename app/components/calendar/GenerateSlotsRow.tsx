@@ -10,6 +10,7 @@ import { GenerateSlotsRowProps, InfoModalType } from '../../helpers/interfaces';
 import { isWorkingHour } from '../../helpers/universalFunctions';
 import ConfirmationModal from '../ui/modals/ConfirmationModal';
 import InfoModal from '../ui/modals/InfoModal';
+import AbsenceHoursLabel from '../ui/labels/AbsenceHoursLabel';
 
 const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   weekDays,
@@ -71,6 +72,9 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
       {showRow && (
         <SlotsRowContainer>
           {weekDays.map(day => {
+            const workingHour = workingHours.find((wh: any) => wh.date === day.date); // Update this line
+            const isAbsence = workingHour?.absence !== 'nema odsustva';
+            console.log(isAbsence);
             return (
               <div className="col-span-1 border-2 border-solid border-transparent" key={day.day}>
                 {dataLoaded ? (
@@ -110,6 +114,8 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
                             }
                           }}
                         />
+                      ) : isAbsence ? (
+                        <AbsenceHoursLabel time={time} absence={workingHour?.absence} />
                       ) : (
                         <AppointmentButton
                           onClick={() => {

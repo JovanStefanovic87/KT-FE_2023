@@ -99,10 +99,8 @@ export const generateWeekDays = (
     );
 
     if (
-      (workingHour &&
-        workingHour?.morning_from !== '--:--' &&
-        workingHour?.morning_to !== '--:--') ||
-      (workingHour?.afternoon_from !== '--:--' && workingHour?.afternoon_to !== '--:--')
+      (workingHour && workingHour?.morningFrom !== '--:--' && workingHour?.morningTo !== '--:--') ||
+      (workingHour?.afternoonFrom !== '--:--' && workingHour?.afternoonTo !== '--:--')
     ) {
       weekDays.push({ day, date });
     }
@@ -124,16 +122,19 @@ export const isWorkingHour = (day: string, time: string, workingHours: any): boo
 
   const appointmentTime = parseInt(time.replace(':', ''), 10);
 
-  const morningFrom = parseInt(dayWorkingHours.morning_from.replace(':', ''), 10);
-  const morningTo = parseInt(dayWorkingHours.morning_to.replace(':', ''), 10);
-  const afternoonFrom = parseInt(dayWorkingHours.afternoon_from.replace(':', ''), 10);
-  const afternoonTo = parseInt(dayWorkingHours.afternoon_to.replace(':', ''), 10);
+  const morningFrom = parseInt(dayWorkingHours.morningFrom.replace(':', ''), 10);
+  const morningTo = parseInt(dayWorkingHours.morningTo.replace(':', ''), 10);
+  const afternoonFrom = parseInt(dayWorkingHours.afternoonFrom.replace(':', ''), 10);
+  const afternoonTo = parseInt(dayWorkingHours.afternoonTo.replace(':', ''), 10);
 
   // Check if the appointment time falls within the morning or afternoon working hours
   if (
     (appointmentTime >= morningFrom && appointmentTime <= morningTo) ||
     (appointmentTime >= afternoonFrom && appointmentTime <= afternoonTo)
   ) {
+    return true;
+  }
+  if (dayWorkingHours.absence !== 'nema odsustva') {
     return true;
   }
   return false;
@@ -155,8 +156,8 @@ export const hasWorkingHourInHour = (
       const startsWithHour = time.startsWith(hour);
       if (startsWithHour) {
         const appointmentTime = parseInt(time.replace(':', ''), 10);
-        const morningFrom = parseInt(dayWorkingHours.morning_from.replace(':', ''), 10);
-        const afternoonTo = parseInt(dayWorkingHours.afternoon_to.replace(':', ''), 10);
+        const morningFrom = parseInt(dayWorkingHours.morningFrom.replace(':', ''), 10);
+        const afternoonTo = parseInt(dayWorkingHours.afternoonTo.replace(':', ''), 10);
 
         // Check if the appointment time is within the working hours range
         return appointmentTime >= morningFrom && appointmentTime <= afternoonTo;

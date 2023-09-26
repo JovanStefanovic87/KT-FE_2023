@@ -43,13 +43,15 @@ import ErrorModal from '../ui/modals/ErrorModal';
 import Spinner from '../ui/Spinner';
 
 interface WorkingHour {
+  id: string;
   employeeId: string;
   date: string;
   day: string;
-  morning_from: string;
-  morning_to: string;
-  afternoon_from: string;
-  afternoon_to: string;
+  morningFrom: string;
+  morningTo: string;
+  afternoonFrom: string;
+  afternoonTo: string;
+  status: string;
 }
 
 const Calendar: React.FC = () => {

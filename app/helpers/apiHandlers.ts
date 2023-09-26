@@ -10,7 +10,6 @@ import {
 } from '../helpers/interfaces';
 
 import axios from 'axios';
-import { workingHours } from './mock';
 
 const API_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
@@ -133,10 +132,12 @@ export const addNewAppointment = async (
 
 interface WorkingHoursData {
   date: string;
-  morning_from: string;
-  morning_to: string;
-  afternoon_from: string;
-  afternoon_to: string;
+  day: string;
+  morningFrom: string;
+  morningTo: string;
+  afternoonFrom: string;
+  afternoonTo: string;
+  absence: string;
 }
 
 export const postEmployeeWorkingHours = async (

@@ -15,7 +15,7 @@ interface WorkingHoursState {
   morningTo: string;
   afternoonFrom: string;
   afternoonTo: string;
-  status: string;
+  absence: string;
 }
 
 const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
@@ -31,7 +31,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
       morningTo: 'nn:nn',
       afternoonFrom: 'nn:nn',
       afternoonTo: 'nn:nn',
-      status: 'Nema odsustva',
+      absence: 'nema odsustva',
     },
     Utorak: {
       date: '',
@@ -40,7 +40,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
       morningTo: 'nn:nn',
       afternoonFrom: 'nn:nn',
       afternoonTo: 'nn:nn',
-      status: 'Nema odsustva',
+      absence: 'nema odsustva',
     },
     Sreda: {
       date: '',
@@ -49,16 +49,16 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
       morningTo: 'nn:nn',
       afternoonFrom: 'nn:nn',
       afternoonTo: 'nn:nn',
-      status: 'Nema odsustva',
+      absence: 'nema odsustva',
     },
     Četvrtak: {
       date: '',
-      day: 'Thr',
+      day: 'Thu',
       morningFrom: 'nn:nn',
       morningTo: 'nn:nn',
       afternoonFrom: 'nn:nn',
       afternoonTo: 'nn:nn',
-      status: 'Nema odsustva',
+      absence: 'nema odsustva',
     },
     Petak: {
       date: '',
@@ -67,7 +67,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
       morningTo: 'nn:nn',
       afternoonFrom: 'nn:nn',
       afternoonTo: 'nn:nn',
-      status: 'Nema odsustva',
+      absence: 'nema odsustva',
     },
     Subota: {
       date: '',
@@ -76,7 +76,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
       morningTo: 'nn:nn',
       afternoonFrom: 'nn:nn',
       afternoonTo: 'nn:nn',
-      status: 'Nema odsustva',
+      absence: 'nema odsustva',
     },
     Nedelja: {
       date: '',
@@ -85,7 +85,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
       morningTo: 'nn:nn',
       afternoonFrom: 'nn:nn',
       afternoonTo: 'nn:nn',
-      status: 'Nema odsustva',
+      absence: 'nema odsustva',
     },
   });
 
@@ -201,14 +201,14 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
                 <div>
                   <label className="block text-sm font-semibold mb-2">Odsustvo</label>
                   <select
-                    value={workingHours[day].status}
-                    onChange={e => handleInputChange(day, 'status', e.target.value)}
+                    value={workingHours[day].absence}
+                    onChange={e => handleInputChange(day, 'absence', e.target.value)}
                     className="border border-gray-300 rounded p-2 w-full"
                   >
-                    <option value="Nema odsustva">Nema odsustva</option>
-                    <option value="Godišnji odmor">Godišnji odmor</option>
-                    <option value="Praznik">Praznik</option>
-                    <option value="Bolovanje">Bolovanje</option>
+                    <option value="nema odsustva">Nema odsustva</option>
+                    <option value="godišnji odmor">Godišnji odmor</option>
+                    <option value="praznik">Praznik</option>
+                    <option value="bolovanje">Bolovanje</option>
                   </select>
                 </div>
               </div>
