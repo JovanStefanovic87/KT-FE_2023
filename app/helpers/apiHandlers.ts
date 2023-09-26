@@ -131,6 +131,37 @@ export const addNewAppointment = async (
   }
 };
 
+interface WorkingHoursData {
+  date: string;
+  morning_from: string;
+  morning_to: string;
+  afternoon_from: string;
+  afternoon_to: string;
+}
+
+export const postEmployeeWorkingHours = async (
+  employeeId: string,
+  workingHoursData: WorkingHoursData[]
+) => {
+  try {
+    // Create an array of promises to post working hours for each day
+    const postPromises = workingHoursData.map(data => {
+      return axios.post(`${API_URL}/workingHours`, {
+        employeeId,
+        ...data,
+      });
+    });
+
+    // Wait for all promises to resolve
+    await Promise.all(postPromises);
+
+    console.log('Working hours posted successfully');
+  } catch (error) {
+    console.error('Error posting working hours:', error);
+    throw error;
+  }
+};
+
 export const fetchAppointments = async (
   setAppointments: Dispatch<SetStateAction<AppointmentProps[]>>,
   selectedEmployee: string

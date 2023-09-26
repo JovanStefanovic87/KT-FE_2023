@@ -5,10 +5,12 @@ import CloseBtn from '../ui/buttons/CloseBtn';
 import SubmitBtn from '../ui/buttons/SubmitBtn';
 import Backdrop from '../ui/Backdrop';
 import CustomTimeInput from '../ui/input/CustomTimeInput';
+import { postEmployeeWorkingHours } from '../../helpers/apiHandlers';
 
 // Define the type for the workingHours object
 interface WorkingHoursState {
   date: string;
+  day: string;
   morningFrom: string;
   morningTo: string;
   afternoonFrom: string;
@@ -24,58 +26,65 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   const [workingHours, setWorkingHours] = useState<Record<string, WorkingHoursState>>({
     Ponedeljak: {
       date: '',
-      morningFrom: '',
-      morningTo: '',
-      afternoonFrom: '',
-      afternoonTo: '',
+      day: 'Mon',
+      morningFrom: 'nn:nn',
+      morningTo: 'nn:nn',
+      afternoonFrom: 'nn:nn',
+      afternoonTo: 'nn:nn',
       status: 'Nema odsustva',
     },
     Utorak: {
       date: '',
-      morningFrom: '',
-      morningTo: '',
-      afternoonFrom: '',
-      afternoonTo: '',
+      day: 'Tue',
+      morningFrom: 'nn:nn',
+      morningTo: 'nn:nn',
+      afternoonFrom: 'nn:nn',
+      afternoonTo: 'nn:nn',
       status: 'Nema odsustva',
     },
     Sreda: {
       date: '',
-      morningFrom: '',
-      morningTo: '',
-      afternoonFrom: '',
-      afternoonTo: '',
+      day: 'Wed',
+      morningFrom: 'nn:nn',
+      morningTo: 'nn:nn',
+      afternoonFrom: 'nn:nn',
+      afternoonTo: 'nn:nn',
       status: 'Nema odsustva',
     },
     Četvrtak: {
       date: '',
-      morningFrom: '',
-      morningTo: '',
-      afternoonFrom: '',
-      afternoonTo: '',
+      day: 'Thr',
+      morningFrom: 'nn:nn',
+      morningTo: 'nn:nn',
+      afternoonFrom: 'nn:nn',
+      afternoonTo: 'nn:nn',
       status: 'Nema odsustva',
     },
     Petak: {
       date: '',
-      morningFrom: '',
-      morningTo: '',
-      afternoonFrom: '',
-      afternoonTo: '',
+      day: 'Fri',
+      morningFrom: 'nn:nn',
+      morningTo: 'nn:nn',
+      afternoonFrom: 'nn:nn',
+      afternoonTo: 'nn:nn',
       status: 'Nema odsustva',
     },
     Subota: {
       date: '',
-      morningFrom: '',
-      morningTo: '',
-      afternoonFrom: '',
-      afternoonTo: '',
+      day: 'Sat',
+      morningFrom: 'nn:nn',
+      morningTo: 'nn:nn',
+      afternoonFrom: 'nn:nn',
+      afternoonTo: 'nn:nn',
       status: 'Nema odsustva',
     },
     Nedelja: {
       date: '',
-      morningFrom: '',
-      morningTo: '',
-      afternoonFrom: '',
-      afternoonTo: '',
+      day: 'Sun',
+      morningFrom: 'nn:nn',
+      morningTo: 'nn:nn',
+      afternoonFrom: 'nn:nn',
+      afternoonTo: 'nn:nn',
       status: 'Nema odsustva',
     },
   });
@@ -106,8 +115,20 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
     }));
   };
 
-  const handleSubmit = () => {
-    handleCloseWorkingHoursForm();
+  const handleSubmit = async () => {
+    try {
+      // Get the array of working hours data for the selected week
+      const workingHoursDataForWeek = Object.values(workingHours);
+
+      // Send a POST request to save the working hours for the employee
+      await postEmployeeWorkingHours(employeeId, workingHoursDataForWeek);
+
+      // Close the working hours form or perform any other necessary actions
+      handleCloseWorkingHoursForm();
+    } catch (error) {
+      // Handle any errors that may occur during the POST request
+      console.error('Error posting working hours:', error);
+    }
   };
 
   return (
