@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { setEmployeeId } from '../../globalRedux/features/employee/employeeSlice';
 import 'animate.css';
 import {
   generateWeekOptions,
@@ -55,6 +57,7 @@ interface WorkingHour {
 }
 
 const Calendar: React.FC = () => {
+  const dispatch = useDispatch();
   const firstRun = useRef(true);
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
   const [employees, setEmployees] = useState<EmployeeProps[]>([]);
@@ -87,7 +90,7 @@ const Calendar: React.FC = () => {
       setClients,
       setServiceProviders,
       setSelectedServiceProvider,
-      setDataLoaded
+      setDataLoaded,
     );
     return () => {
       isMounted = false;
@@ -96,11 +99,13 @@ const Calendar: React.FC = () => {
 
   useEffect(() => {
     fetchAppointments(setAppointments, selectedEmployee);
+    const employeeId = selectedEmployee;
+    dispatch(setEmployeeId(employeeId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee]);
 
   useEffect(() => {
-    const weekDates = weekDays.map(day => day.date);
+    const weekDates = weekDays.map((day) => day.date);
     fetchEmployeeWorkingHours(setWorkingHours, selectedEmployee, weekDates);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,7 +126,7 @@ const Calendar: React.FC = () => {
       setAppontmentInfo,
       setNewAppointment,
       newAppointmentInit,
-      setErrorModal
+      setErrorModal,
     );
   }, [newAppointment, selectedEmployee, selectedServiceProvider]);
 
@@ -131,7 +136,7 @@ const Calendar: React.FC = () => {
       return;
     }
     displayForm.post && handleAddAppointment();
-    setDisplayForm(prevState => ({
+    setDisplayForm((prevState) => ({
       ...prevState,
       post: false,
     }));
@@ -182,7 +187,7 @@ const Calendar: React.FC = () => {
           />
           <WeekSelect
             value={selectedWeek}
-            onChange={value => setSelectedWeek(value)}
+            onChange={(value) => setSelectedWeek(value)}
             selectedWeek={selectedWeek}
             setSelectedWeek={setSelectedWeek}
             weekOptions={weekOptions}
@@ -193,13 +198,13 @@ const Calendar: React.FC = () => {
             disabled={selectedWeek === weekOptions.length - 1}
           />
         </SelectContainer>
-        <div className="flex px-2 relative">
-          <div className="h-calHeight w-calendarSlots overflow-auto border-2 bg-ktBg border-solid border-white mt-3 mb-3 mx-auto relative">
+        <div className='flex px-2 relative'>
+          <div className='h-calHeight w-calendarSlots overflow-auto border-2 bg-ktBg border-solid border-white mt-3 mb-3 mx-auto relative'>
             <DaysRow>
-              {weekDays.map(dayInfo => (
+              {weekDays.map((dayInfo) => (
                 <div
                   key={dayInfo.day}
-                  className="flex justify-center items-center h-slotDayHeight w-slotsWidth mx-0.5 mt-1 min-w-slotsWidth text-orange-200 font-bold border-2 border-stone-500 border-solid bg-gray-800"
+                  className='flex justify-center items-center h-slotDayHeight w-slotsWidth mx-0.5 mt-1 min-w-slotsWidth text-orange-200 font-bold border-2 border-stone-500 border-solid bg-gray-800'
                 >
                   {dayTranslations[dayInfo.day]} ({dayInfo.date})
                 </div>
@@ -231,8 +236,8 @@ const Calendar: React.FC = () => {
             {!dataLoaded && <Spinner />}
 
             {dataLoaded && workingHours.length === 0 && (
-              <div className="w-full h-2/4 flex justify-center items-end absolute">
-                <p className="text-red-500 font-bold text-lg md:text-xl lg:text-2xl xl:text-3xl p-2 md:p-4 lg:p-6 xl:p-8">
+              <div className='w-full h-2/4 flex justify-center items-end absolute'>
+                <p className='text-red-500 font-bold text-lg md:text-xl lg:text-2xl xl:text-3xl p-2 md:p-4 lg:p-6 xl:p-8'>
                   Radno vreme nije podeseno
                 </p>
               </div>
@@ -242,12 +247,12 @@ const Calendar: React.FC = () => {
         <SelectContainer>
           <SelectUser
             selectedUser={selectedServiceProvider || ''}
-            onSelectUser={user => {
+            onSelectUser={(user) => {
               setSelectedServiceProvider(user);
             }}
-            id="selectedServiceProvider"
+            id='selectedServiceProvider'
           >
-            {serviceProviders.map(prov => (
+            {serviceProviders.map((prov) => (
               <option key={prov.id} value={prov.name}>
                 {prov.name}
               </option>
@@ -256,10 +261,10 @@ const Calendar: React.FC = () => {
 
           <SelectUser
             selectedUser={selectedEmployee || ''}
-            onSelectUser={user => setSelectedEmployee(user)}
-            id="selectedEmployee"
+            onSelectUser={(user) => setSelectedEmployee(user)}
+            id='selectedEmployee'
           >
-            {employees.map(employee => (
+            {employees.map((employee) => (
               <option key={employee.id} value={employee.name}>
                 {employee.name}
               </option>

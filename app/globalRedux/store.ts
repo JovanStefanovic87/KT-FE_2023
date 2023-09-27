@@ -5,6 +5,7 @@ import counterReducer from './features/counter/counterSlice';
 import activePageReducer from './features/nav/activePageSlice';
 import nameReducer from './features/name/nameSlice';
 import formReducer from './features/form/formSlice';
+import employeeReducer from './features/employee/employeeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     counter: counterReducer,
     name: nameReducer,
     form: formReducer,
+    employee: employeeReducer,
   },
 });
 

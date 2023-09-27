@@ -6,8 +6,8 @@ import { GiHamburgerMenu } from 'react-icons/gi'; // Install this package if not
 import SideBarBtn from '../ui/buttons/SideBarBtn';
 import Image from 'next/image';
 import logo from '../../../public/images/logo.png';
-import WorkingHoursModal from '../ui/modals/WorkingHoursModal';
-import WorkingHoursForm from '../dashboard/WorkingHoursForm';
+import WorkingHoursModal from '../dashboard/workingHours/WhContainer';
+import WorkingHoursForm from '../dashboard/workingHours/WhForm';
 import Backdrop from '../ui/Backdrop';
 
 const Header: React.FC = () => {

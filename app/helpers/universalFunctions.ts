@@ -9,7 +9,7 @@ export function useDeviceDetect() {
   useEffect(() => {
     const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent : '';
     const mobile = Boolean(
-      userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i)
+      userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i),
     );
     setMobile(mobile);
   }, []);
@@ -31,7 +31,7 @@ export const generateWeekOptions = () => {
     weeks.push({
       label: `Nedelja ${format(currentDate, 'w')} (${format(currentDate, 'dd.MM.yy.')} - ${format(
         endOfWeekDate,
-        'dd.MM.yy.'
+        'dd.MM.yy.',
       )})`,
       start: currentDate,
       end: endOfWeekDate,
@@ -71,7 +71,7 @@ export const getCurrentYear = (): string => {
 
 export const handleSelectChange = (
   event: React.ChangeEvent<HTMLSelectElement>,
-  setState: React.Dispatch<React.SetStateAction<string | number | null>>
+  setState: React.Dispatch<React.SetStateAction<string | number | null>>,
 ) => {
   const selectedValue = event.target.value;
   setState(selectedValue);
@@ -80,7 +80,7 @@ export const handleSelectChange = (
 export const generateWeekDays = (
   selectedWeekIndex: number,
   workingHours: any[], // Pass your working hours array as a parameter
-  selectedEmployee: string // Pass the selected employee
+  selectedEmployee: string, // Pass the selected employee
 ): WeekDay[] => {
   const weekDays: WeekDay[] = [];
   const today = new Date();
@@ -95,7 +95,7 @@ export const generateWeekDays = (
 
     // Find the working hours for the current date and selected employee
     const workingHour = workingHours.find(
-      wh => wh.date === format(currentDate, 'dd.MM.yy') && wh.employeeId === selectedEmployee
+      (wh) => wh.date === format(currentDate, 'dd.MM.yy') && wh.employeeId === selectedEmployee,
     );
 
     if (
@@ -110,7 +110,7 @@ export const generateWeekDays = (
 
 export const calculateSlotsForDuration = (
   appointmentDuration: number,
-  slotDuration: number
+  slotDuration: number,
 ): number => Math.ceil(appointmentDuration / slotDuration);
 
 export const isWorkingHour = (day: string, time: string, workingHours: any): boolean => {
@@ -144,16 +144,23 @@ export const hasWorkingHourInHour = (
   hour: string,
   weekDays: WeekDay[],
   timeSlots: string[],
-  workingHours: any
+  workingHours: any,
 ): boolean => {
-  return weekDays.some(dayInfo => {
+  return weekDays.some((dayInfo) => {
     const dayWorkingHours = workingHours.find((wh: any) => wh.day === dayInfo.day);
     if (!dayWorkingHours) {
       return false; // No working hours information for the given day
     }
 
-    return timeSlots.some(time => {
-      const startsWithHour = time.startsWith(hour);
+    return timeSlots.some((time) => {
+      // Check for "HH:mm" format or "nn:nn" format
+      const isValidTime = (timeStr: string) => {
+        return (
+          /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(timeStr) || /^\d{1,2}:\d{1,2}$/.test(timeStr)
+        );
+      };
+
+      const startsWithHour = isValidTime(time) && time.startsWith(hour);
       if (startsWithHour) {
         const appointmentTime = parseInt(time.replace(':', ''), 10);
         const morningFrom = parseInt(dayWorkingHours.morningFrom.replace(':', ''), 10);
@@ -178,7 +185,7 @@ export const handleCloseModal = (setModalInfo: SetModalInfoType) => () => {
 
 export const totalPrice = (selectedServices: any[], allServices: any[] | undefined) => {
   return selectedServices.reduce((sum, serviceId) => {
-    const service = allServices?.find(s => s.id === serviceId);
+    const service = allServices?.find((s) => s.id === serviceId);
     if (service) {
       return sum + (service.price || 0);
     }
@@ -188,3 +195,8 @@ export const totalPrice = (selectedServices: any[], allServices: any[] | undefin
 
 export const totalPrices = (state: any[]) =>
   state.reduce((total: any, service: { price: any }) => total + (service.price || 0), 0);
+
+export const capitalizeFirstLetter = (str: string) => {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};

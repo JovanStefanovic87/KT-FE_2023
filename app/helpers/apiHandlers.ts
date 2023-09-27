@@ -18,7 +18,7 @@ export const fetchCalendarInitData = async (
   setClients: Dispatch<SetStateAction<ClientProps[]>>,
   setServiceProviders: Dispatch<SetStateAction<ServiceProviderProps[]>>,
   setSelectedServiceProvider: Dispatch<SetStateAction<string>>,
-  setDataLoaded: Dispatch<SetStateAction<boolean>>
+  setDataLoaded: Dispatch<SetStateAction<boolean>>,
 ) => {
   try {
     const servicesResponse = await axios.get(`${API_URL}/services`);
@@ -46,17 +46,15 @@ export const fetchCalendarInitData = async (
 export const fetchEmployeesData = async (
   setEmployees: Dispatch<SetStateAction<EmployeeProps[]>>,
   setSelectedEmployee: Dispatch<SetStateAction<string>>,
-  selectedServiceProvider: string
+  selectedServiceProvider: string,
 ) => {
   try {
     const employeesResponse = await axios.get(
-      `${API_URL}/employees?service_provider=${selectedServiceProvider}`
+      `${API_URL}/employees?service_provider=${selectedServiceProvider}`,
     );
     if (employeesResponse.data && employeesResponse.data.length > 0) {
       setEmployees(employeesResponse.data);
-
-      // Set selectedEmployee to the first employee in the array
-      setSelectedEmployee(employeesResponse.data[0].name); // Assuming 'name' is the property containing employee names
+      setSelectedEmployee(employeesResponse.data[0].name);
     }
   } catch (error) {}
 };
@@ -64,7 +62,7 @@ export const fetchEmployeesData = async (
 export const fetchEmployeeWorkingHours = async (
   setWorkingHours: Dispatch<SetStateAction<any>>,
   selectedEmployee: string,
-  calendarDates: string[]
+  calendarDates: string[],
 ) => {
   try {
     // Initialize an empty array to store the working hours data for all dates.
@@ -87,11 +85,11 @@ export const fetchEmployeeWorkingHours = async (
 
     // Extract the data from the resolved promises and filter out undefined values.
     const allWorkingHoursData = allWorkingHoursDataResponses
-      .map(response => response.data)
-      .filter(data => data); // Filter out undefined values
+      .map((response) => response.data)
+      .filter((data) => data); // Filter out undefined values
 
     // Set the combined working hours data in the state.
-    setWorkingHours(allWorkingHoursData.flatMap(innerArray => innerArray));
+    setWorkingHours(allWorkingHoursData.flatMap((innerArray) => innerArray));
   } catch (error) {
     // Handle errors
     console.error('Error fetching working hours:', error);
@@ -106,7 +104,7 @@ export const addNewAppointment = async (
   setAppontmentInfo: Dispatch<SetStateAction<AppointmentInfoType>>,
   setNewAppointment: Dispatch<SetStateAction<AppointmentProps>>,
   newAppointmentInit: AppointmentProps,
-  setErrorModal: Dispatch<SetStateAction<ErrorModalType>>
+  setErrorModal: Dispatch<SetStateAction<ErrorModalType>>,
 ) => {
   try {
     newAppointment.employee = selectedEmployee;
@@ -142,11 +140,11 @@ interface WorkingHoursData {
 
 export const postEmployeeWorkingHours = async (
   employeeId: string,
-  workingHoursData: WorkingHoursData[]
+  workingHoursData: WorkingHoursData[],
 ) => {
   try {
     // Create an array of promises to post working hours for each day
-    const postPromises = workingHoursData.map(data => {
+    const postPromises = workingHoursData.map((data) => {
       return axios.post(`${API_URL}/workingHours`, {
         employeeId,
         ...data,
@@ -165,7 +163,7 @@ export const postEmployeeWorkingHours = async (
 
 export const fetchAppointments = async (
   setAppointments: Dispatch<SetStateAction<AppointmentProps[]>>,
-  selectedEmployee: string
+  selectedEmployee: string,
 ) => {
   try {
     if (selectedEmployee) {
