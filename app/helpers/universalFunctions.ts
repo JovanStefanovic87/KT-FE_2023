@@ -93,7 +93,6 @@ export const generateWeekDays = (
     const day = format(currentDate, 'EEE');
     const date = format(currentDate, 'dd.MM.yy');
 
-    // Find the working hours for the current date and selected employee
     const workingHour = workingHours.find(
       (wh) => wh.date === format(currentDate, 'dd.MM.yy') && wh.employeeId === selectedEmployee,
     );
@@ -164,10 +163,18 @@ export const hasWorkingHourInHour = (
       if (startsWithHour) {
         const appointmentTime = parseInt(time.replace(':', ''), 10);
         const morningFrom = parseInt(dayWorkingHours.morningFrom.replace(':', ''), 10);
+        const morningTo = parseInt(dayWorkingHours.morningTo.replace(':', ''), 10);
+        const afternoonFrom = parseInt(dayWorkingHours.afternoonFrom.replace(':', ''), 10);
         const afternoonTo = parseInt(dayWorkingHours.afternoonTo.replace(':', ''), 10);
 
         // Check if the appointment time is within the working hours range
-        return appointmentTime >= morningFrom && appointmentTime <= afternoonTo;
+        if (morningFrom & afternoonTo) {
+          return appointmentTime >= morningFrom && appointmentTime <= afternoonTo;
+        } else if (morningFrom) {
+          return appointmentTime >= morningFrom && appointmentTime <= morningTo;
+        } else if (afternoonFrom) {
+          return appointmentTime >= afternoonFrom && appointmentTime <= afternoonTo;
+        }
       }
 
       return false;
