@@ -21,6 +21,7 @@ import {
   ServiceProviderProps,
   EmployeeProps,
   ErrorModalType,
+  WorkingHoursStateProps,
 } from '../../helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import {
@@ -44,24 +45,12 @@ import AppointmentModal from '../ui/modals/AppointmentModal';
 import ErrorModal from '../ui/modals/ErrorModal';
 import Spinner from '../ui/Spinner';
 
-interface WorkingHour {
-  id: string;
-  employeeId: string;
-  date: string;
-  day: string;
-  morningFrom: string;
-  morningTo: string;
-  afternoonFrom: string;
-  afternoonTo: string;
-  status: string;
-}
-
 const Calendar: React.FC = () => {
   const dispatch = useDispatch();
   const firstRun = useRef(true);
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
   const [employees, setEmployees] = useState<EmployeeProps[]>([]);
-  const [workingHours, setWorkingHours] = useState<WorkingHour[]>([]);
+  const [workingHours, setWorkingHours] = useState<WorkingHoursStateProps[]>([]);
   const [services, setServices] = useState<ServecesProps[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');

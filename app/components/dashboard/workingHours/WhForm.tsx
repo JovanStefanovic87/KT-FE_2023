@@ -8,7 +8,7 @@ import CloseBtn from '../../ui/buttons/CloseBtn';
 import SubmitBtn from '../../ui/buttons/SubmitBtn';
 import Backdrop from '../../ui/Backdrop';
 import CustomTimeInput from '../../ui/input/CustomTimeInput';
-import { postEmployeeWorkingHours } from '../../../helpers/apiHandlers';
+import { postEmployeeWorkingHours, fetchEmployeeWorkingHours } from '../../../helpers/apiHandlers';
 
 const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   const employeeId = useSelector(
@@ -17,6 +17,8 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   const weekOptions = generateWeekOptions();
   const [selectedWeek, setSelectedWeek] = useState<number>(0);
   const [workingHours, setWorkingHours] = useState<Record<string, WorkingHoursStateProps>>(whInit);
+  const dayNames = ['Ponedeljak', 'Utorak', 'Sreda', 'Četvrtak', 'Petak', 'Subota', 'Nedelja'];
+  const dateRange: string[] = [];
 
   useEffect(() => {
     if (weekOptions[selectedWeek]) {
@@ -32,6 +34,46 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
         }));
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWeek]);
+
+  const generateDateRange = (startDate: Date, endDate: Date) => {
+    const currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      dateRange.push(format(currentDate, 'dd.MM.yy'));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Push the endDate after the loop exits
+    dateRange.push(format(endDate, 'dd.MM.yy'));
+
+    return dateRange;
+  };
+
+  const startOfWeekDate = new Date(weekOptions[selectedWeek].start);
+  const endOfWeekDate = new Date(weekOptions[selectedWeek].end);
+
+  const weekDates = generateDateRange(startOfWeekDate, endOfWeekDate);
+
+  const fetchWorkingHours = async () => {
+    try {
+      const workingHoursData = await fetchEmployeeWorkingHours(
+        setWorkingHours,
+        employeeId,
+        weekDates,
+      );
+      workingHoursData;
+    } catch (error) {
+      console.error('Error fetching working hours:', error);
+    }
+  };
+
+  console.log(workingHours);
+
+  useEffect(() => {
+    workingHours.length ? fetchWorkingHours() : setWorkingHours(whInit);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedWeek]);
 
@@ -75,68 +117,70 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
         </div>
         <div className='h-workingHoursModalContent overflow-y-auto overflow-x-hidden rounded-lg flex-grow py-5 bg-zinc-50'>
           <div className='flex flex-wrap -mx-4 px-8 gap-1'>
-            {Object.keys(workingHours).map((day) => (
-              <div
-                key={day}
-                className='w-full xl:w-workingHoursSlotXl lg:w-workingHoursSlotLg p-4 border border-gray-300 rounded shadow-inner'
-              >
-                <div className='flex items-center justify-between mb-2'>
-                  <h3 className='text-lg font-semibold'>{day}</h3>
-                  <p className='text-sm font-semibold'>{workingHours[day].date}</p>
-                </div>
-                <div className='mb-4'>
-                  <label className='block text-sm font-semibold mb-2'>Prva Smena</label>
-                  <div className='flex flex-wrap -mx-2'>
-                    <div className='w-1/2 px-2 mb-2'>
-                      <label className='block text-xs font-medium'>Od:</label>
-                      <CustomTimeInput
-                        value={workingHours[day].morningFrom}
-                        onChange={(value) => handleInputChange(day, 'morningFrom', value)}
-                      />
-                    </div>
-                    <div className='w-1/2 px-2 mb-2'>
-                      <label className='block text-xs font-medium'>Do:</label>
-                      <CustomTimeInput
-                        value={workingHours[day].morningTo}
-                        onChange={(value) => handleInputChange(day, 'morningTo', value)}
-                      />
+            {Object.keys(workingHours).map((day, i) => {
+              return (
+                <div
+                  key={day}
+                  className='w-full xl:w-workingHoursSlotXl lg:w-workingHoursSlotLg p-4 border border-gray-300 rounded shadow-inner'
+                >
+                  <div className='flex items-center justify-between mb-2'>
+                    <h3 className='text-lg font-semibold'>{dayNames[i]}</h3>
+                    <p className='text-sm font-semibold'>{workingHours[day].date}</p>
+                  </div>
+                  <div className='mb-4'>
+                    <label className='block text-sm font-semibold mb-2'>Prva Smena</label>
+                    <div className='flex flex-wrap -mx-2'>
+                      <div className='w-1/2 px-2 mb-2'>
+                        <label className='block text-xs font-medium'>Od:</label>
+                        <CustomTimeInput
+                          value={workingHours[day].morningFrom}
+                          onChange={(value) => handleInputChange(day, 'morningFrom', value)}
+                        />
+                      </div>
+                      <div className='w-1/2 px-2 mb-2'>
+                        <label className='block text-xs font-medium'>Do:</label>
+                        <CustomTimeInput
+                          value={workingHours[day].morningTo}
+                          onChange={(value) => handleInputChange(day, 'morningTo', value)}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className='mb-4'>
-                  <label className='block text-sm font-semibold mb-2'>Druga Smena</label>
-                  <div className='flex flex-wrap -mx-2'>
-                    <div className='w-1/2 px-2 mb-2'>
-                      <label className='block text-xs font-medium'>Od:</label>
-                      <CustomTimeInput
-                        value={workingHours[day].afternoonFrom}
-                        onChange={(value) => handleInputChange(day, 'afternoonFrom', value)}
-                      />
-                    </div>
-                    <div className='w-1/2 px-2 mb-2'>
-                      <label className='block text-xs font-medium'>Do:</label>
-                      <CustomTimeInput
-                        value={workingHours[day].afternoonTo}
-                        onChange={(value) => handleInputChange(day, 'afternoonTo', value)}
-                      />
+                  <div className='mb-4'>
+                    <label className='block text-sm font-semibold mb-2'>Druga Smena</label>
+                    <div className='flex flex-wrap -mx-2'>
+                      <div className='w-1/2 px-2 mb-2'>
+                        <label className='block text-xs font-medium'>Od:</label>
+                        <CustomTimeInput
+                          value={workingHours[day].afternoonFrom}
+                          onChange={(value) => handleInputChange(day, 'afternoonFrom', value)}
+                        />
+                      </div>
+                      <div className='w-1/2 px-2 mb-2'>
+                        <label className='block text-xs font-medium'>Do:</label>
+                        <CustomTimeInput
+                          value={workingHours[day].afternoonTo}
+                          onChange={(value) => handleInputChange(day, 'afternoonTo', value)}
+                        />
+                      </div>
                     </div>
                   </div>
+                  <div>
+                    <label className='block text-sm font-semibold mb-2'>Odsustvo</label>
+                    <select
+                      value={workingHours[day].absence}
+                      onChange={(e) => handleInputChange(day, 'absence', e.target.value)}
+                      className='border border-gray-300 rounded p-2 w-full'
+                    >
+                      <option value='nema odsustva'>Nema odsustva</option>
+                      <option value='godišnji odmor'>Godišnji odmor</option>
+                      <option value='praznik'>Praznik</option>
+                      <option value='bolovanje'>Bolovanje</option>
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className='block text-sm font-semibold mb-2'>Odsustvo</label>
-                  <select
-                    value={workingHours[day].absence}
-                    onChange={(e) => handleInputChange(day, 'absence', e.target.value)}
-                    className='border border-gray-300 rounded p-2 w-full'
-                  >
-                    <option value='nema odsustva'>Nema odsustva</option>
-                    <option value='godišnji odmor'>Godišnji odmor</option>
-                    <option value='praznik'>Praznik</option>
-                    <option value='bolovanje'>Bolovanje</option>
-                  </select>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
         <div className='mt-4 flex justify-end'>

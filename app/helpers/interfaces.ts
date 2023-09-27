@@ -129,6 +129,8 @@ export interface GenerateSlotsRowProps {
 }
 
 export interface WorkingHoursStateProps {
+  id?: string;
+  employeeId?: string;
   date: string;
   day: string;
   morningFrom: string;
