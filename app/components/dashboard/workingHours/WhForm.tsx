@@ -16,39 +16,45 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   );
   const weekOptions = generateWeekOptions();
   const [selectedWeek, setSelectedWeek] = useState<number>(0);
-  const [workingHours, setWorkingHours] = useState<Record<string, WorkingHoursStateProps>>(whInit);
+  const [workingHours, setWorkingHours] = useState<WorkingHoursStateProps[]>(whInit);
   const dayNames = ['Ponedeljak', 'Utorak', 'Sreda', 'Četvrtak', 'Petak', 'Subota', 'Nedelja'];
   const dateRange: string[] = [];
 
+  const updateDates = () => {
+    const startOfWeekDate = weekOptions[selectedWeek].start;
+    setWorkingHours((prevWorkingHours) => {
+      const updatedWorkingHours = prevWorkingHours.map((wh, index) => {
+        const currentDate = addDays(startOfWeekDate, index);
+        return {
+          ...wh,
+          date: format(currentDate, 'dd.MM.yy'),
+        };
+      });
+      return updatedWorkingHours;
+    });
+  };
+
   useEffect(() => {
     if (weekOptions[selectedWeek]) {
-      const startOfWeekDate = weekOptions[selectedWeek].start;
-      Object.keys(workingHours).forEach((day, index) => {
-        const currentDate = addDays(startOfWeekDate, index);
-        setWorkingHours((prevWorkingHours) => ({
-          ...prevWorkingHours,
-          [day]: {
-            ...prevWorkingHours[day],
-            date: format(currentDate, 'dd.MM.yy'),
-          },
-        }));
-      });
+      fetchWorkingHours();
+      updateDates();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedWeek]);
 
   const generateDateRange = (startDate: Date, endDate: Date) => {
     const currentDate = new Date(startDate);
+    const range: string[] = [];
 
     while (currentDate <= endDate) {
-      dateRange.push(format(currentDate, 'dd.MM.yy'));
+      range.push(format(currentDate, 'dd.MM.yy'));
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
     // Push the endDate after the loop exits
-    dateRange.push(format(endDate, 'dd.MM.yy'));
+    range.push(format(endDate, 'dd.MM.yy'));
 
-    return dateRange;
+    return range;
   };
 
   const startOfWeekDate = new Date(weekOptions[selectedWeek].start);
@@ -64,33 +70,47 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
         weekDates,
       );
       workingHoursData;
+      if (weekOptions[selectedWeek]) {
+        const startOfWeekDate = weekOptions[selectedWeek].start;
+        setWorkingHours((prevWorkingHours) => {
+          const updatedWorkingHours = prevWorkingHours.map((wh, index) => {
+            const currentDate = addDays(startOfWeekDate, index);
+            return {
+              ...wh,
+              date: format(currentDate, 'dd.MM.yy'),
+            };
+          });
+          return updatedWorkingHours;
+        });
+      }
     } catch (error) {
       console.error('Error fetching working hours:', error);
     }
   };
 
-  console.log(workingHours);
-
   useEffect(() => {
-    workingHours.length ? fetchWorkingHours() : setWorkingHours(whInit);
-
+    if (workingHours.length === 0) {
+      setWorkingHours(whInit);
+      updateDates();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedWeek]);
+  }, [workingHours]);
 
-  const handleInputChange = (day: string, field: keyof WorkingHoursStateProps, value: string) => {
-    setWorkingHours((prevWorkingHours) => ({
-      ...prevWorkingHours,
-      [day]: {
-        ...prevWorkingHours[day],
+  const handleInputChange = (day: number, field: keyof WorkingHoursStateProps, value: string) => {
+    const dayIndex = day;
+    setWorkingHours((prevWorkingHours) => {
+      const updatedWorkingHours = [...prevWorkingHours];
+      updatedWorkingHours[dayIndex] = {
+        ...updatedWorkingHours[dayIndex],
         [field]: value,
-      },
-    }));
+      };
+      return updatedWorkingHours;
+    });
   };
 
   const handleSubmit = async () => {
     try {
-      const workingHoursDataForWeek = Object.values(workingHours);
-      await postEmployeeWorkingHours(employeeId, workingHoursDataForWeek);
+      await postEmployeeWorkingHours(employeeId, workingHours);
       handleCloseWorkingHoursForm();
     } catch (error) {
       console.error('Error posting working hours:', error);
@@ -117,15 +137,15 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
         </div>
         <div className='h-workingHoursModalContent overflow-y-auto overflow-x-hidden rounded-lg flex-grow py-5 bg-zinc-50'>
           <div className='flex flex-wrap -mx-4 px-8 gap-1'>
-            {Object.keys(workingHours).map((day, i) => {
+            {workingHours.map((wh, i) => {
               return (
                 <div
-                  key={day}
+                  key={`${wh.date}-${i}`}
                   className='w-full xl:w-workingHoursSlotXl lg:w-workingHoursSlotLg p-4 border border-gray-300 rounded shadow-inner'
                 >
                   <div className='flex items-center justify-between mb-2'>
                     <h3 className='text-lg font-semibold'>{dayNames[i]}</h3>
-                    <p className='text-sm font-semibold'>{workingHours[day].date}</p>
+                    <p className='text-sm font-semibold'>{wh.date}</p>
                   </div>
                   <div className='mb-4'>
                     <label className='block text-sm font-semibold mb-2'>Prva Smena</label>
@@ -133,15 +153,15 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
                       <div className='w-1/2 px-2 mb-2'>
                         <label className='block text-xs font-medium'>Od:</label>
                         <CustomTimeInput
-                          value={workingHours[day].morningFrom}
-                          onChange={(value) => handleInputChange(day, 'morningFrom', value)}
+                          value={wh.morningFrom}
+                          onChange={(value) => handleInputChange(i, 'morningFrom', value)}
                         />
                       </div>
                       <div className='w-1/2 px-2 mb-2'>
                         <label className='block text-xs font-medium'>Do:</label>
                         <CustomTimeInput
-                          value={workingHours[day].morningTo}
-                          onChange={(value) => handleInputChange(day, 'morningTo', value)}
+                          value={wh.morningTo}
+                          onChange={(value) => handleInputChange(i, 'morningTo', value)}
                         />
                       </div>
                     </div>
@@ -152,15 +172,15 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
                       <div className='w-1/2 px-2 mb-2'>
                         <label className='block text-xs font-medium'>Od:</label>
                         <CustomTimeInput
-                          value={workingHours[day].afternoonFrom}
-                          onChange={(value) => handleInputChange(day, 'afternoonFrom', value)}
+                          value={wh.afternoonFrom}
+                          onChange={(value) => handleInputChange(i, 'afternoonFrom', value)}
                         />
                       </div>
                       <div className='w-1/2 px-2 mb-2'>
                         <label className='block text-xs font-medium'>Do:</label>
                         <CustomTimeInput
-                          value={workingHours[day].afternoonTo}
-                          onChange={(value) => handleInputChange(day, 'afternoonTo', value)}
+                          value={wh.afternoonTo}
+                          onChange={(value) => handleInputChange(i, 'afternoonTo', value)}
                         />
                       </div>
                     </div>
@@ -168,8 +188,8 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
                   <div>
                     <label className='block text-sm font-semibold mb-2'>Odsustvo</label>
                     <select
-                      value={workingHours[day].absence}
-                      onChange={(e) => handleInputChange(day, 'absence', e.target.value)}
+                      value={wh.absence}
+                      onChange={(e) => handleInputChange(i, 'absence', e.target.value)}
                       className='border border-gray-300 rounded p-2 w-full'
                     >
                       <option value='nema odsustva'>Nema odsustva</option>

@@ -1,5 +1,5 @@
-export const whInit = {
-  Ponedeljak: {
+export const whInit = [
+  {
     date: '',
     day: 'Mon',
     morningFrom: 'nn:nn',
@@ -8,7 +8,7 @@ export const whInit = {
     afternoonTo: 'nn:nn',
     absence: 'nema odsustva',
   },
-  Utorak: {
+  {
     date: '',
     day: 'Tue',
     morningFrom: 'nn:nn',
@@ -17,7 +17,7 @@ export const whInit = {
     afternoonTo: 'nn:nn',
     absence: 'nema odsustva',
   },
-  Sreda: {
+  {
     date: '',
     day: 'Wed',
     morningFrom: 'nn:nn',
@@ -26,7 +26,7 @@ export const whInit = {
     afternoonTo: 'nn:nn',
     absence: 'nema odsustva',
   },
-  Četvrtak: {
+  {
     date: '',
     day: 'Thu',
     morningFrom: 'nn:nn',
@@ -35,7 +35,7 @@ export const whInit = {
     afternoonTo: 'nn:nn',
     absence: 'nema odsustva',
   },
-  Petak: {
+  {
     date: '',
     day: 'Fri',
     morningFrom: 'nn:nn',
@@ -44,7 +44,7 @@ export const whInit = {
     afternoonTo: 'nn:nn',
     absence: 'nema odsustva',
   },
-  Subota: {
+  {
     date: '',
     day: 'Sat',
     morningFrom: 'nn:nn',
@@ -53,7 +53,7 @@ export const whInit = {
     afternoonTo: 'nn:nn',
     absence: 'nema odsustva',
   },
-  Nedelja: {
+  {
     date: '',
     day: 'Sun',
     morningFrom: 'nn:nn',
@@ -62,4 +62,4 @@ export const whInit = {
     afternoonTo: 'nn:nn',
     absence: 'nema odsustva',
   },
-};
+];
