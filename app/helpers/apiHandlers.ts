@@ -143,7 +143,6 @@ export const postEmployeeWorkingHours = async (
   workingHoursData: WorkingHoursData[],
 ) => {
   try {
-    // Create an array of promises to post working hours for each day
     const postPromises = workingHoursData.map((data) => {
       return axios.post(`${API_URL}/workingHours`, {
         employeeId,

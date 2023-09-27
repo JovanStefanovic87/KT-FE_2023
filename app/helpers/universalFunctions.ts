@@ -77,11 +77,7 @@ export const handleSelectChange = (
   setState(selectedValue);
 };
 
-export const generateWeekDays = (
-  selectedWeekIndex: number,
-  workingHours: any[], // Pass your working hours array as a parameter
-  selectedEmployee: string, // Pass the selected employee
-): WeekDay[] => {
+export const generateWeekDays = (selectedWeekIndex: number): WeekDay[] => {
   const weekDays: WeekDay[] = [];
   const today = new Date();
   const dayOffset = today.getDay() === 0 ? 6 : today.getDay() - 1;
@@ -93,16 +89,7 @@ export const generateWeekDays = (
     const day = format(currentDate, 'EEE');
     const date = format(currentDate, 'dd.MM.yy');
 
-    const workingHour = workingHours.find(
-      (wh) => wh.date === format(currentDate, 'dd.MM.yy') && wh.employeeId === selectedEmployee,
-    );
-
-    if (
-      (workingHour && workingHour?.morningFrom !== '--:--' && workingHour?.morningTo !== '--:--') ||
-      (workingHour?.afternoonFrom !== '--:--' && workingHour?.afternoonTo !== '--:--')
-    ) {
-      weekDays.push({ day, date });
-    }
+    weekDays.push({ day, date });
   }
   return weekDays;
 };
@@ -168,7 +155,7 @@ export const hasWorkingHourInHour = (
         const afternoonTo = parseInt(dayWorkingHours.afternoonTo.replace(':', ''), 10);
 
         // Check if the appointment time is within the working hours range
-        if (morningFrom & afternoonTo) {
+        if (morningFrom && afternoonTo) {
           return appointmentTime >= morningFrom && appointmentTime <= afternoonTo;
         } else if (morningFrom) {
           return appointmentTime >= morningFrom && appointmentTime <= morningTo;

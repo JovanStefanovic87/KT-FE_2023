@@ -68,7 +68,7 @@ const Calendar: React.FC = () => {
     appointmentData: '',
   });
   const [dataLoaded, setDataLoaded] = useState(false);
-  const weekDays = generateWeekDays(selectedWeek, workingHours, selectedEmployee);
+  const weekDays = generateWeekDays(selectedWeek);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
 

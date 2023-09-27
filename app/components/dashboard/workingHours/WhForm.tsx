@@ -18,7 +18,25 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   const [selectedWeek, setSelectedWeek] = useState<number>(0);
   const [workingHours, setWorkingHours] = useState<WorkingHoursStateProps[]>(whInit);
   const dayNames = ['Ponedeljak', 'Utorak', 'Sreda', 'Četvrtak', 'Petak', 'Subota', 'Nedelja'];
-  const dateRange: string[] = [];
+  const startOfWeekDate = new Date(weekOptions[selectedWeek].start);
+  const endOfWeekDate = new Date(weekOptions[selectedWeek].end);
+
+  const generateDateRange = (startDate: Date, endDate: Date) => {
+    const currentDate = new Date(startDate);
+    const range: string[] = [];
+
+    while (currentDate <= endDate) {
+      range.push(format(currentDate, 'dd.MM.yy'));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Push the endDate after the loop exits
+    range.push(format(endDate, 'dd.MM.yy'));
+
+    return range;
+  };
+
+  const weekDates = generateDateRange(startOfWeekDate, endOfWeekDate);
 
   const updateDates = () => {
     const startOfWeekDate = weekOptions[selectedWeek].start;
@@ -37,30 +55,9 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   useEffect(() => {
     if (weekOptions[selectedWeek]) {
       fetchWorkingHours();
-      updateDates();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedWeek]);
-
-  const generateDateRange = (startDate: Date, endDate: Date) => {
-    const currentDate = new Date(startDate);
-    const range: string[] = [];
-
-    while (currentDate <= endDate) {
-      range.push(format(currentDate, 'dd.MM.yy'));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    // Push the endDate after the loop exits
-    range.push(format(endDate, 'dd.MM.yy'));
-
-    return range;
-  };
-
-  const startOfWeekDate = new Date(weekOptions[selectedWeek].start);
-  const endOfWeekDate = new Date(weekOptions[selectedWeek].end);
-
-  const weekDates = generateDateRange(startOfWeekDate, endOfWeekDate);
 
   const fetchWorkingHours = async () => {
     try {
@@ -112,6 +109,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
     try {
       await postEmployeeWorkingHours(employeeId, workingHours);
       handleCloseWorkingHoursForm();
+      console.log(workingHours);
     } catch (error) {
       console.error('Error posting working hours:', error);
     }
