@@ -69,6 +69,7 @@ const Calendar: React.FC = () => {
   });
   const [dataLoaded, setDataLoaded] = useState(false);
   const weekDays = generateWeekDays(selectedWeek);
+  const weekDates = weekDays.map((day) => day.date);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
 
@@ -94,7 +95,6 @@ const Calendar: React.FC = () => {
   }, [selectedEmployee]);
 
   useEffect(() => {
-    const weekDates = weekDays.map((day) => day.date);
     fetchEmployeeWorkingHours(setWorkingHours, selectedEmployee, weekDates);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,6 +205,7 @@ const Calendar: React.FC = () => {
 
               return GenerateSlotsRow({
                 weekDays,
+                weekDates,
                 dataLoaded,
                 workingHours,
                 appointments,

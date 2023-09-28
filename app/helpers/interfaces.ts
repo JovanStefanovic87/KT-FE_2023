@@ -112,6 +112,7 @@ export interface InfoModalType {
 
 export interface GenerateSlotsRowProps {
   weekDays: any[];
+  weekDates: string[];
   dataLoaded: boolean;
   workingHours: any;
   appointments: any[];

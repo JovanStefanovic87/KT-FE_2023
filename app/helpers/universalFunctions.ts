@@ -103,7 +103,7 @@ export const isWorkingHour = (day: string, time: string, workingHours: any): boo
   const dayWorkingHours = workingHours.find((wh: any) => wh.day === day);
 
   if (!dayWorkingHours) {
-    return false; // No working hours information for the given day
+    return false;
   }
 
   const appointmentTime = parseInt(time.replace(':', ''), 10);
@@ -116,14 +116,26 @@ export const isWorkingHour = (day: string, time: string, workingHours: any): boo
   // Check if the appointment time falls within the morning or afternoon working hours
   if (
     (appointmentTime >= morningFrom && appointmentTime <= morningTo) ||
-    (appointmentTime >= afternoonFrom && appointmentTime <= afternoonTo)
+    (appointmentTime >= afternoonFrom && appointmentTime <= afternoonTo) ||
+    dayWorkingHours.absence !== 'nema odsustva'
   ) {
     return true;
   }
-  if (dayWorkingHours.absence !== 'nema odsustva') {
-    return true;
-  }
+
   return false;
+};
+
+export const isAbsenceWeek = (workingHours: any[]): boolean => {
+  // Check if there are no working hours (morning and afternoon) for every day in the week
+  const hasNoWorkingHours = workingHours.every(
+    (wh) => !wh || (wh.morningFrom === 'nn:nn' && wh.afternoonFrom === 'nn:nn'),
+  );
+
+  // Check if there is at least one day with an absence reason other than "nema odsustva"
+  const hasAbsence = workingHours.some((wh) => wh && wh.absence !== 'nema odsustva');
+
+  // Return true if there are no working hours for every day and at least one day with absence
+  return hasNoWorkingHours && hasAbsence;
 };
 
 export const hasWorkingHourInHour = (
@@ -161,6 +173,8 @@ export const hasWorkingHourInHour = (
           return appointmentTime >= morningFrom && appointmentTime <= morningTo;
         } else if (afternoonFrom) {
           return appointmentTime >= afternoonFrom && appointmentTime <= afternoonTo;
+        } else if (!afternoonFrom && !morningFrom && dayWorkingHours.absence !== 'nema odsustva') {
+          return appointmentTime >= 80 && appointmentTime <= 160;
         }
       }
 

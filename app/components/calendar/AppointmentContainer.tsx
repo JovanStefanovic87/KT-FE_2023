@@ -5,7 +5,7 @@ interface AppointmentContainerProps {
 }
 
 const AppointmentContainer: React.FC<AppointmentContainerProps> = ({ children }) => (
-  <div className="flex justify-center relative w-slotsWidth min-w-slotsWidth rounded-lg">
+  <div className='flex justify-center relative w-slotsWidth min-w-slotsWidth rounded-lg'>
     {children}
   </div>
 );
