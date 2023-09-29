@@ -1,4 +1,4 @@
-import { SetStateAction, Dispatch } from 'react';
+import { SetStateAction, Dispatch, useCallback } from 'react';
 import {
   ClientProps,
   ServecesProps,
@@ -7,6 +7,7 @@ import {
   AppointmentProps,
   AppointmentInfoType,
   ErrorModalType,
+  InfoModalType,
 } from '../helpers/interfaces';
 
 import axios from 'axios';
@@ -173,6 +174,47 @@ export const fetchAppointments = async (
     } else {
       setAppointments([]);
     }
+  } catch (error) {
+    console.error('An error occurred while fetching data:', error);
+  }
+};
+
+export const handleAppointmentDelete = async (
+  appointmentId: string,
+  setAppointments: React.Dispatch<React.SetStateAction<any[]>>,
+  setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>,
+  setErrorModal: React.Dispatch<React.SetStateAction<InfoModalType>>,
+) => {
+  try {
+    await axios.delete(`${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments/${appointmentId}`);
+    setAppointments((prevAppointments) =>
+      prevAppointments.filter((appointment) => appointment.id !== appointmentId),
+    );
+
+    setShowInfoModal({ isVisible: true, text: 'Termin je uspešno obrisan.' });
+  } catch (error) {
+    console.error('An error occurred while deleting the appointment:', error);
+    setErrorModal({ isVisible: true, text: 'Došlo je do greške, termin nije obrisan.' });
+  }
+};
+
+export const fetchCleintsData = async (
+  setAllClients: React.Dispatch<React.SetStateAction<any[]>>,
+) => {
+  try {
+    const response = await axios.get('http://localhost:8000/clients');
+    setAllClients(response.data);
+  } catch (error) {
+    console.error('An error occurred while fetching data:', error);
+  }
+};
+
+export const fetchServicesData = async (
+  setAllServices: React.Dispatch<React.SetStateAction<any[]>>,
+) => {
+  try {
+    const response = await axios.get('http://localhost:8000/services');
+    setAllServices(response.data);
   } catch (error) {
     console.error('An error occurred while fetching data:', error);
   }

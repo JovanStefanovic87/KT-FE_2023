@@ -1,23 +1,14 @@
-interface BackdropProps {
-  onClick: (event: React.FormEvent) => void;
-  isVisible: boolean;
-}
+import { BackdropProps } from '@/app/helpers/interfaces';
 
 const Backdrop: React.FC<BackdropProps> = ({ onClick, isVisible }) => {
-  const backdropStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    background: 'rgba(0, 0, 0, 0.85)',
-    display: isVisible ? 'flex' : 'none',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 20,
-  };
-
-  return <div style={backdropStyle} onClick={onClick}></div>;
+  return (
+    <div
+      className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 ${
+        isVisible ? 'flex' : 'hidden'
+      } justify-center items-center z-20`}
+      onClick={onClick}
+    ></div>
+  );
 };
 
 export default Backdrop;

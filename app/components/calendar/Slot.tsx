@@ -9,7 +9,7 @@ import {
   isWorkingHour,
   isAbsenceWeek,
   capitalizeFirstLetter,
-} from '../../helpers/universalFunctions';
+} from '@/app/helpers/universalFunctions';
 
 const Slot: React.FC<SlotProps> = ({
   time,

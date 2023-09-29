@@ -704,10 +704,49 @@
       "serviceProvider": "Brica"
     },
     {
+      "id": "Mon08:0002.10.23Stevan Poljakovic",
+      "date": "02.10.23",
+      "day": "Mon",
+      "time": "08:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Mon09:0002.10.23Stevan Poljakovic",
+      "date": "02.10.23",
+      "day": "Mon",
+      "time": "09:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
       "id": "Mon08:0025.09.23Stevan Poljakovic",
       "date": "25.09.23",
       "day": "Mon",
       "time": "08:00",
+      "client": "Jovan Stefanovic",
+      "services": [
+        "sisanje01"
+      ],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Mon09:0025.09.23Stevan Poljakovic",
+      "date": "25.09.23",
+      "day": "Mon",
+      "time": "09:00",
       "client": "Jovan Stefanovic",
       "services": [
         "sisanje01"

@@ -23,7 +23,11 @@ const Dashboard = () => {
       </SideBarBtn>
       <div className='flex-grow'></div>
       <div className='mt-4'>
-        <SideBarBtn>
+        <SideBarBtn
+          onClick={() => {
+            alert('Bicete odjavljeni kada proradi funkcija');
+          }}
+        >
           <p className='py-2 px-4'>Odjava</p>
         </SideBarBtn>
       </div>

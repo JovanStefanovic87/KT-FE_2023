@@ -10,8 +10,8 @@ import {
   generateWeekDays,
   totalPrice,
   hasWorkingHourInHour,
-} from '../../helpers/universalFunctions';
-import { dayTranslations } from '../../helpers/mock';
+} from '@/app/helpers/universalFunctions';
+import { dayTranslations } from '@/app/helpers/mock';
 import {
   AppointmentProps,
   ServecesProps,
@@ -22,7 +22,7 @@ import {
   EmployeeProps,
   ErrorModalType,
   WorkingHoursStateProps,
-} from '../../helpers/interfaces';
+} from '@/app/helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import {
   fetchCalendarInitData,
@@ -30,14 +30,14 @@ import {
   addNewAppointment,
   fetchAppointments,
   fetchEmployeeWorkingHours,
-} from '../../helpers/apiHandlers';
+} from '@/app/helpers/apiHandlers';
 import GenerateSlotsRow from './GenerateSlotsRow';
 import ClientForm from './ClientForm';
-import WeekSelect from '../ui/select/WeekSelect';
+import WeekSelect from '../ui/select/WeekSelector';
 import SelectUser from '../ui/select/SelectUser';
 import Container from './Container';
 import DaysRow from './DaysRow';
-import SelectContainer from './SelectContainer';
+import SelectContainer from '../ui/select/SelectContainer';
 import ServiceForm from './ServiceForm';
 import ArrowButtonLeft from '../ui/buttons/ArrowButtonLeft';
 import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
@@ -72,9 +72,9 @@ const Calendar: React.FC = () => {
   const weekDates = weekDays.map((day) => day.date);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
+  let isMounted = true;
 
   useEffect(() => {
-    let isMounted = true;
     fetchCalendarInitData(
       setServices,
       setClients,
@@ -177,9 +177,8 @@ const Calendar: React.FC = () => {
           <WeekSelect
             value={selectedWeek}
             onChange={(value) => setSelectedWeek(value)}
-            selectedWeek={selectedWeek}
-            setSelectedWeek={setSelectedWeek}
             weekOptions={weekOptions}
+            selectStyle='p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-pointer'
           />
 
           <ArrowButtonRight

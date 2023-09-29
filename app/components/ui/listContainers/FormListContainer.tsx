@@ -1,14 +1,4 @@
-import React, { ReactNode } from 'react';
-
-interface FormListContainerProps {
-  children: ReactNode;
-  list: {
-    id: number;
-    name: string;
-  };
-  selectedName: string;
-  onClick: () => void;
-}
+import { FormListContainerProps } from '@/app/helpers/interfaces';
 
 const FormListContainer: React.FC<FormListContainerProps> = ({
   children,

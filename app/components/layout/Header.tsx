@@ -1,11 +1,10 @@
-'use client';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { GiHamburgerMenu } from 'react-icons/gi'; // Install this package if not already installed
+import { GiHamburgerMenu } from 'react-icons/gi';
 import SideBarBtn from '../ui/buttons/SideBarBtn';
 import Image from 'next/image';
-import logo from '../../../public/images/logo.png';
+import logo from '@/public/images/logo.png';
 import WorkingHoursModal from '../dashboard/workingHours/WhContainer';
 import WorkingHoursForm from '../dashboard/workingHours/WhForm';
 import Backdrop from '../ui/Backdrop';
@@ -33,30 +32,30 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-ktHeaderGray px-4 py-1">
-      <div className="flex justify-between items-center">
+    <header className='bg-ktHeaderGray px-4 py-1'>
+      <div className='flex justify-between items-center'>
         <Backdrop onClick={toggleMobileMenu} isVisible={isMobileMenuOpen} />
         {isMobileMenuOpen ? (
-          <div className="md:hidden w-64  py-2 px-4 space-y-2 fixed top-0 left-0 h-full z-50 flex flex-col bg-sideBarBg overflow-y-auto">
-            <div className="flex justify-end">
+          <div className='md:hidden w-64  py-2 px-4 space-y-2 fixed top-0 left-0 h-full z-50 flex flex-col bg-sideBarBg overflow-y-auto'>
+            <div className='flex justify-end'>
               <button
                 onClick={toggleMobileMenu}
-                className="text-white text-xl"
-                aria-label="Close Mobile Menu"
+                className='text-white text-xl'
+                aria-label='Close Mobile Menu'
               >
                 <GiHamburgerMenu />
               </button>
             </div>
-            <div className="p-4 border-b border-solid border-white"></div>
-            <p className="text-white font-semibold mt-2 text-lg">Navigacija</p>
+            <div className='p-4 border-b border-solid border-white'></div>
+            <p className='text-white font-semibold mt-2 text-lg'>Navigacija</p>
             <SideBarBtn>
-              <Link href="/" className={`relative block w-full py-2 px-4 ${isActive('/')}`}>
+              <Link href='/' className={`relative block w-full py-2 px-4 ${isActive('/')}`}>
                 Početna
               </Link>
             </SideBarBtn>
             <SideBarBtn>
               <Link
-                href="/kalendar"
+                href='/kalendar'
                 className={`relative block w-full py-2 px-4 ${isActive('/kalendar')}`}
               >
                 Kalendar
@@ -64,7 +63,7 @@ const Header: React.FC = () => {
             </SideBarBtn>
             <SideBarBtn>
               <Link
-                href="/klijenti"
+                href='/klijenti'
                 className={`relative block w-full py-2 px-4 ${isActive('/klijenti')}`}
               >
                 Klijenti
@@ -72,7 +71,7 @@ const Header: React.FC = () => {
             </SideBarBtn>
             <SideBarBtn>
               <Link
-                href="/usluge"
+                href='/usluge'
                 className={`relative block w-full py-2 px-4 ${isActive('/usluge')}`}
               >
                 Usluge
@@ -80,20 +79,20 @@ const Header: React.FC = () => {
             </SideBarBtn>
             <SideBarBtn>
               <Link
-                href="/izvestaji"
+                href='/izvestaji'
                 className={`relative block w-full py-2 px-4 ${isActive('/izvestaji')}`}
               >
                 Izveštaji
               </Link>
             </SideBarBtn>
             <SideBarBtn>
-              <Link href="/sms" className={`relative block w-full py-2 px-4 ${isActive('/sms')}`}>
+              <Link href='/sms' className={`relative block w-full py-2 px-4 ${isActive('/sms')}`}>
                 SMS
               </Link>
             </SideBarBtn>
             <SideBarBtn>
               <Link
-                href="/profil"
+                href='/profil'
                 className={`relative block w-full py-2 px-4 ${isActive('/profil')}`}
               >
                 Profil
@@ -101,75 +100,75 @@ const Header: React.FC = () => {
             </SideBarBtn>
             <SideBarBtn>
               <Link
-                href="/timovi"
+                href='/timovi'
                 className={`relative block w-full py-2 px-4 ${isActive('/timovi')}`}
               >
                 Timovi
               </Link>
             </SideBarBtn>
-            <hr className="border-t-8 border-solid border-ktBg"></hr>
-            <p className="text-white font-semibold mt-2 text-lg">Podesavanja</p>
+            <hr className='border-t-8 border-solid border-ktBg'></hr>
+            <p className='text-white font-semibold mt-2 text-lg'>Podesavanja</p>
             <SideBarBtn onClick={handleOpenWorkingHoursForm}>
-              <p className="py-2 px-4">Radno vreme</p>
+              <p className='py-2 px-4'>Radno vreme</p>
             </SideBarBtn>
-            <div className="flex-grow"></div>
-            <div className="mt-4">
+            <div className='flex-grow'></div>
+            <div className='mt-4'>
               <SideBarBtn>
-                <Link href="/odjava" className="relative block w-full py-2 px-4">
+                <Link href='/odjava' className='relative block w-full py-2 px-4'>
                   Odjava
                 </Link>
               </SideBarBtn>
             </div>
           </div>
         ) : (
-          <div className="hidden md:flex space-x-2 lg:space-x-4">
-            <Link href="/" className={isActive('/')}>
+          <div className='hidden md:flex space-x-2 lg:space-x-4'>
+            <Link href='/' className={isActive('/')}>
               Početna
             </Link>
-            <Link href="/kalendar" className={isActive('/kalendar')}>
+            <Link href='/kalendar' className={isActive('/kalendar')}>
               Kalendar
             </Link>
-            <Link href="/klijenti" className={isActive('/klijenti')}>
+            <Link href='/klijenti' className={isActive('/klijenti')}>
               Klijenti
             </Link>
-            <Link href="/usluge" className={isActive('/usluge')}>
+            <Link href='/usluge' className={isActive('/usluge')}>
               Usluge
             </Link>
-            <Link href="/izvestaji" className={isActive('/izvestaji')}>
+            <Link href='/izvestaji' className={isActive('/izvestaji')}>
               Izveštaji
             </Link>
-            <Link href="/sms" className={isActive('/sms')}>
+            <Link href='/sms' className={isActive('/sms')}>
               SMS
             </Link>
-            <Link href="/profil" className={isActive('/profil')}>
+            <Link href='/profil' className={isActive('/profil')}>
               Profil
             </Link>
-            <Link href="/timovi" className={isActive('/timovi')}>
+            <Link href='/timovi' className={isActive('/timovi')}>
               Timovi
             </Link>
-            <Link href="/odjava" className={isActive('/odjava')}>
+            <Link href='/odjava' className={isActive('/odjava')}>
               Odjava
             </Link>
           </div>
         )}
-        <div className="md:hidden">
+        <div className='md:hidden'>
           <button
             onClick={toggleMobileMenu}
-            className="text-white text-xl"
-            aria-label="Toggle Mobile Menu"
+            className='text-white text-xl'
+            aria-label='Toggle Mobile Menu'
           >
             <GiHamburgerMenu />
           </button>
         </div>
-        <div className="h-logo w-logo relative mr-0 lg:mr-10">
-          <Link href="/">
-            <div className="absolute h-logo w-logo">
+        <div className='h-logo w-logo relative mr-0 lg:mr-10'>
+          <Link href='/'>
+            <div className='absolute h-logo w-logo'>
               <Image
                 src={logo}
-                alt="Your Logo"
+                alt='Your Logo'
                 priority
                 fill
-                sizes="(max-width: 600px) 200px, (max-width: 1200px) 300px, 400px"
+                sizes='(max-width: 600px) 200px, (max-width: 1200px) 300px, 400px'
                 quality={100}
               />
             </div>

@@ -208,3 +208,6 @@ export const capitalizeFirstLetter = (str: string) => {
   if (!str) return str;
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
+
+export const animationClass = (isVisible: boolean) =>
+  isVisible ? 'ease-out duration-300 opacity-100' : 'ease-in duration-200 opacity-0';

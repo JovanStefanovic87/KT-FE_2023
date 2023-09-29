@@ -1,9 +1,5 @@
 import React, { ChangeEvent } from 'react';
-
-interface CustomTimeInputProps {
-  value: string;
-  onChange: (value: string) => void;
-}
+import { CustomTimeInputProps } from '@/app/helpers/interfaces';
 
 const CustomTimeInput: React.FC<CustomTimeInputProps> = ({ value, onChange }) => {
   // Function to handle input change and format the value to 24-hour format
@@ -20,17 +16,16 @@ const CustomTimeInput: React.FC<CustomTimeInputProps> = ({ value, onChange }) =>
       const formattedTime = `${hours}:${minutes}`;
       onChange(formattedTime);
     } else {
-      // Handle invalid input
       onChange('');
     }
   };
 
   return (
     <input
-      type="time"
+      type='time'
       value={value}
       onChange={handleChange}
-      className="border border-gray-300 rounded p-2 w-full"
+      className='border border-gray-300 rounded p-2 w-full'
     />
   );
 };

@@ -1,28 +1,13 @@
-interface CloseBtnProps {
-  onClick: (event: React.FormEvent) => void;
-}
+import { CloseBtnProps } from '@/app/helpers/interfaces';
 
-const CloseBtn: React.FC<CloseBtnProps> = ({ onClick }) => {
+const CloseBtn: React.FC<CloseBtnProps> = ({ onClose }) => {
   return (
     <button
-      className="absolute top-2 right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center focus:outline-none focus:bg-red-600"
-      onClick={onClick}
-      aria-label="Close"
+      onClick={onClose}
+      className='bg-blue-500 text-white py-2 px-4 rounded mt-4 uppercase font-semibold'
+      style={{ marginRight: '10px' }}
     >
-      <svg
-        className="w-6 h-6 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
+      Zatvori
     </button>
   );
 };

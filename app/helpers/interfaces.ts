@@ -1,3 +1,5 @@
+import React, { ReactNode } from 'react';
+
 export interface AppointmentProps {
   id: string;
   day: string;
@@ -159,4 +161,101 @@ export interface ShowConfirmation {
   isVisible: boolean;
   delete: boolean;
   appointmentId: string;
+}
+
+export interface WorkingHoursContainerProps {
+  isOpen: boolean;
+  children: React.ReactNode;
+}
+
+export type ChildrenProps = {
+  children: ReactNode;
+};
+
+export interface AbsenceHoursLabelProps {
+  time: string;
+  absence: string;
+}
+
+export interface ArrowButtonsProps {
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+export interface AppointmentBtnProps {
+  onClick: () => void;
+  time: string;
+}
+
+export interface FormButtonProps {
+  onClick: (event: React.FormEvent) => void;
+}
+
+export interface SideBarBtnProps {
+  children: ReactNode;
+  onClick: (event: React.FormEvent) => void;
+}
+
+export interface CustomTimeInputProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export interface UnworkingHoursLabelProps {
+  time: string;
+}
+
+export interface FormListContainerProps {
+  children: ReactNode;
+  list: {
+    id: number;
+    name: string;
+  };
+  selectedName: string;
+  onClick: () => void;
+}
+
+export interface AppointmentModalProps {
+  totalPrice: (services: string[], servicesList: any[]) => number;
+  services: any[];
+  setAppontmentInfo: React.Dispatch<React.SetStateAction<AppointmentInfoType>>;
+  appontmentInfo: AppointmentInfoType;
+}
+
+export interface ConfirmDeletationModalProps {
+  subject: string;
+  isVisible: boolean;
+  SetState: React.Dispatch<
+    React.SetStateAction<{ isVisible: boolean; delete: boolean; appointmentId: string }>
+  >;
+  submit: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export interface ModalContainerProps {
+  isVisible: boolean;
+  onClose: () => void;
+  children?: React.ReactNode;
+}
+
+export interface InfoModalProps {
+  showInfoModal: InfoModalType;
+  setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>;
+}
+
+export interface ErrorModalProps {
+  errorModal: ErrorModalType;
+  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>;
+}
+
+export interface DeleteBtnProps {
+  onDelete: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export interface CloseBtnProps {
+  onClose: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export interface BackdropProps {
+  onClick: (event: React.FormEvent) => void;
+  isVisible: boolean;
 }

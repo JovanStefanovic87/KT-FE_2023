@@ -1,4 +1,4 @@
-import { SubmitBtnProps } from '../../../helpers/interfaces';
+import { SubmitBtnProps } from '@/app/helpers/interfaces';
 
 const SubmitBtn: React.FC<SubmitBtnProps> = ({ onClick, isDisabled, buttonText }) => {
   return (

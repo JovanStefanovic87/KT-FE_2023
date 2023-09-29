@@ -1,7 +1,4 @@
-interface AbsenceHoursLabelProps {
-  time: string;
-  absence: string;
-}
+import { AbsenceHoursLabelProps } from '../../../helpers/interfaces';
 
 const AbsenceHoursLabel: React.FC<AbsenceHoursLabelProps> = ({ time, absence }) => {
   const colorMap: Record<string, string> = {

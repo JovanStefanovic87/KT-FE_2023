@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { confirmationInit } from './initStates';
 import SlotsRowContainer from './SlotsRowContainer';
-import { GenerateSlotsRowProps, InfoModalType, ShowConfirmation } from '../../helpers/interfaces';
-import ConfirmationModal from '../ui/modals/ConfirmationModal';
+import { GenerateSlotsRowProps, InfoModalType, ShowConfirmation } from '@/app/helpers/interfaces';
+import { handleAppointmentDelete } from '@/app/helpers/apiHandlers';
+import ConfirmDeletationModal from '../ui/modals/ConfirmDeletationModal';
 import InfoModal from '../ui/modals/InfoModal';
 import Slot from './Slot';
 
@@ -22,42 +23,29 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   setAppointments,
   setErrorModal,
 }) => {
-  const [showConfirmation, setShowConfirmation] = useState<ShowConfirmation>({
-    isVisible: false,
-    delete: false,
-    appointmentId: '',
-  });
+  const [showConfirmation, setShowConfirmation] = useState<ShowConfirmation>(confirmationInit);
   const [showInfoModal, setShowInfoModal] = useState<InfoModalType>({ isVisible: false, text: '' });
 
-  const handleAppointmentDelete = useCallback(
-    async (appointmentId: string) => {
-      try {
-        await axios.delete(`${process.env.NEXT_PUBLIC_DATABASE_URL}/appointments/${appointmentId}`);
-        setAppointments((prevAppointments) =>
-          prevAppointments.filter((appointment) => appointment.id !== appointmentId),
-        );
-
-        setShowInfoModal({ isVisible: true, text: 'Termin je uspešno obrisan.' });
-      } catch (error) {
-        console.error('An error occurred while deleting the appointment:', error);
-        setErrorModal({ isVisible: true, text: 'Došlo je do greške, termin nije obrisan.' });
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
   useEffect(() => {
-    showConfirmation.delete ? handleAppointmentDelete(showConfirmation.appointmentId) : undefined;
+    console.log(showConfirmation.delete);
+    showConfirmation.delete
+      ? handleAppointmentDelete(
+          showConfirmation.appointmentId,
+          setAppointments,
+          setShowInfoModal,
+          setErrorModal,
+        )
+      : undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showConfirmation.delete]);
 
   return (
     <div key={index}>
-      <ConfirmationModal
-        showConfirmation={showConfirmation}
-        setShowConfirmation={setShowConfirmation}
-        text='Da li ste sigurni da želite obrisati termin?'
+      <ConfirmDeletationModal
+        subject='termin'
+        isVisible={showConfirmation.isVisible}
+        SetState={setShowConfirmation}
+        submit={() => setShowConfirmation({ ...showConfirmation, delete: true, isVisible: false })}
       />
       <InfoModal showInfoModal={showInfoModal} setShowInfoModal={setShowInfoModal} />
       {showRow && (

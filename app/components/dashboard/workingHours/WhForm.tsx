@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { format, addDays } from 'date-fns';
-import { generateWeekOptions } from '../../../helpers/universalFunctions';
-import { WorkingHoursStateProps } from '../../../helpers/interfaces';
+import { generateWeekOptions } from '@/app/helpers/universalFunctions';
+import { WorkingHoursStateProps } from '@/app/helpers/interfaces';
+import { postEmployeeWorkingHours, fetchEmployeeWorkingHours } from '@/app/helpers/apiHandlers';
 import { whInit } from './whInit';
-import CloseBtn from '../../ui/buttons/CloseBtn';
+import CloseIconBtn from '../../ui/buttons/CloseIconBtn';
 import SubmitBtn from '../../ui/buttons/SubmitBtn';
 import Backdrop from '../../ui/Backdrop';
 import CustomTimeInput from '../../ui/input/CustomTimeInput';
-import { postEmployeeWorkingHours, fetchEmployeeWorkingHours } from '../../../helpers/apiHandlers';
+import WeekSelector from '../../ui/select/WeekSelector';
+import WhWeekSelectorContainer from './whWeekSelectorContainer';
 
 const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   const employeeId = useSelector(
@@ -119,20 +121,14 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
     <>
       <div className='p-4 bg-white relative h-full flex flex-col z-50'>
         <h2 className='text-2xl font-semibold mb-4 text-center'>{`Podešavanje Radnog Vremena - ${employeeId}`}</h2>
-        <div className='mb-4'>
-          <label className='block text-lg font-semibold'>Izaberite Nedelju:</label>
-          <select
+        <WhWeekSelectorContainer>
+          <WeekSelector
             value={selectedWeek}
-            onChange={(e) => setSelectedWeek(Number(e.target.value))}
-            className='border border-gray-300 rounded p-2 w-full'
-          >
-            {weekOptions.map((week, index) => (
-              <option key={index} value={index}>
-                {week.label}
-              </option>
-            ))}
-          </select>
-        </div>
+            onChange={(value) => setSelectedWeek(value)}
+            weekOptions={weekOptions}
+            selectStyle='border border-gray-300 rounded p-2 w-full'
+          />
+        </WhWeekSelectorContainer>
         <div className='h-workingHoursModalContent overflow-y-auto overflow-x-hidden rounded-lg flex-grow py-5 bg-zinc-50'>
           <div className='flex flex-wrap -mx-4 px-8 gap-1'>
             {workingHours.map((wh, i) => {
@@ -204,7 +200,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
         <div className='mt-4 flex justify-end'>
           <div className='flex-grow'></div>
           <SubmitBtn onClick={handleSubmit} isDisabled={false} buttonText='Sačuvaj' />
-          <CloseBtn onClick={() => handleCloseWorkingHoursForm()} />
+          <CloseIconBtn onClick={() => handleCloseWorkingHoursForm()} />
         </div>
       </div>
       <Backdrop onClick={() => handleCloseWorkingHoursForm()} isVisible />

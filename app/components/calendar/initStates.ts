@@ -16,3 +16,9 @@ export const newAppointmentInit = {
   employee: '',
   serviceProvider: '',
 };
+
+export const confirmationInit = {
+  isVisible: false,
+  delete: false,
+  appointmentId: '',
+};

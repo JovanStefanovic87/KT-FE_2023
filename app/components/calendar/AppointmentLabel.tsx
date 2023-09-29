@@ -1,5 +1,5 @@
-import { AppointmentLabelProps, ClientProps } from '../../helpers/interfaces';
-import { calculateSlotsForDuration, totalPrices } from '../../helpers/universalFunctions';
+import { AppointmentLabelProps, ClientProps } from '@/app/helpers/interfaces';
+import { calculateSlotsForDuration, totalPrices } from '@/app/helpers/universalFunctions';
 
 const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
   appointment,
@@ -12,7 +12,7 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
 
   if (!appointment) return null;
 
-  const appointmentServices = appointment.services.map(serviceId => {
+  const appointmentServices = appointment.services.map((serviceId) => {
     const serviceData = services.find((s: { id: string }) => s.id === serviceId);
     return serviceData
       ? serviceData
@@ -27,7 +27,7 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
 
   const totalDuration = appointmentServices.reduce(
     (total, service) => total + (service.duration || 0),
-    0
+    0,
   );
 
   const { time } = appointment;
@@ -50,18 +50,18 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
 
   return (
     <div
-      className="flex flex-col justify-start min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg"
+      className='flex flex-col justify-start min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg'
       style={{ height: `${totalHeight}px` }}
       data-slots-needed={slotsNeeded}
       onDoubleClick={onDoubleClick}
     >
-      <div className="text-ktAppointmentTime text-xl font-bold">
+      <div className='text-ktAppointmentTime text-xl font-bold'>
         {time}h - {formattedEndTime}h
       </div>
-      <div className="text-lg font-semibold text-blue-200">{clientName()}</div>
-      <ul className="list-disc">{totalServicesNames}</ul>
-      <hr className="border-t my-0.5 border-gray-300 w-2/3 mx-auto" />
-      <div className="text-base font-bold">{`${totalPrices(appointmentServices)} RSD`}</div>
+      <div className='text-lg font-semibold text-blue-200'>{clientName()}</div>
+      <ul className='list-disc'>{totalServicesNames}</ul>
+      <hr className='border-t my-0.5 border-gray-300 w-2/3 mx-auto' />
+      <div className='text-base font-bold'>{`${totalPrices(appointmentServices)} RSD`}</div>
     </div>
   );
 };
