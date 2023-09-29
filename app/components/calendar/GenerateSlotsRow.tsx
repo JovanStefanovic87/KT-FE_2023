@@ -1,20 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import SlotsRowContainer from './SlotsRowContainer';
-import AppointmentContainer from './AppointmentContainer';
-import AppointmentLabel from './AppointmentLabel';
-import AppointmentButton from '../ui/buttons/AppointmentBtn';
-import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
-import SpinnerSmall from '../ui/SpinnerSmall';
-import { GenerateSlotsRowProps, InfoModalType } from '../../helpers/interfaces';
-import {
-  isWorkingHour,
-  capitalizeFirstLetter,
-  isAbsenceWeek,
-} from '../../helpers/universalFunctions';
+import { GenerateSlotsRowProps, InfoModalType, ShowConfirmation } from '../../helpers/interfaces';
 import ConfirmationModal from '../ui/modals/ConfirmationModal';
 import InfoModal from '../ui/modals/InfoModal';
-import AbsenceHoursLabel from '../ui/labels/AbsenceHoursLabel';
+import Slot from './Slot';
 
 const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   weekDays,
@@ -32,7 +22,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   setAppointments,
   setErrorModal,
 }) => {
-  const [showConfirmation, setShowConfirmation] = useState({
+  const [showConfirmation, setShowConfirmation] = useState<ShowConfirmation>({
     isVisible: false,
     delete: false,
     appointmentId: '',
@@ -72,98 +62,19 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
       <InfoModal showInfoModal={showInfoModal} setShowInfoModal={setShowInfoModal} />
       {showRow && (
         <SlotsRowContainer>
-          {weekDays.map((day) => {
-            const workingHour = workingHours.find((wh: any) => wh.date === day.date);
-            const isAbsence = workingHour?.absence !== 'nema odsustva';
-            // Check if it's an absence week
-            if (isAbsenceWeek(workingHours)) {
-              const absenceHours = [];
-              // Generate AbsenceHoursLabel for hours between 08:00 and 16:00
-              for (let hour = 8; hour <= 16; hour++) {
-                const formattedHour = hour.toString().padStart(2, '0') + ':00';
-                absenceHours.push(
-                  <div
-                    className='col-span-1 border-2 border-solid border-transparent'
-                    key={formattedHour}
-                  >
-                    <AbsenceHoursLabel
-                      time={formattedHour}
-                      absence={capitalizeFirstLetter(workingHour?.absence)}
-                    />
-                  </div>,
-                );
-              }
-              return <div key={day.day}>{absenceHours}</div>;
-            }
-
-            return (
-              <div className='col-span-1 border-2 border-solid border-transparent' key={day.day}>
-                {dataLoaded ? (
-                  workingHours &&
-                  workingHours.length > 0 &&
-                  isWorkingHour(day.day, time, workingHours) ? (
-                    <AppointmentContainer>
-                      {appointments.find(
-                        (appointment) =>
-                          appointment.day === day.day &&
-                          appointment.time === time &&
-                          appointment.date === day.date,
-                      ) ? (
-                        <AppointmentLabel
-                          appointment={appointments.find(
-                            (appointment) =>
-                              appointment.day === day.day &&
-                              appointment.time === time &&
-                              appointment.date === day.date,
-                          )}
-                          services={services}
-                          clients={clients}
-                          slotDuration={slotDuration}
-                          onDoubleClick={() => {
-                            const appointment = appointments.find(
-                              (appointment) =>
-                                appointment.day === day.day &&
-                                appointment.time === time &&
-                                appointment.date === day.date,
-                            );
-                            if (appointment) {
-                              setShowConfirmation({
-                                ...showConfirmation,
-                                isVisible: true,
-                                appointmentId: appointment.id,
-                              });
-                            }
-                          }}
-                        />
-                      ) : isAbsence ? (
-                        <AbsenceHoursLabel
-                          time={time}
-                          absence={capitalizeFirstLetter(workingHour?.absence)}
-                        />
-                      ) : (
-                        <AppointmentButton
-                          onClick={() => {
-                            setDisplayForm({
-                              clientForm: true,
-                              serviceForm: false,
-                              backdrop: true,
-                              post: false,
-                            });
-                            handleAppointmentButton(day.day, time, day.date);
-                          }}
-                          time={time}
-                        />
-                      )}
-                    </AppointmentContainer>
-                  ) : (
-                    <UnworkingHoursLabel time={time} />
-                  )
-                ) : (
-                  <SpinnerSmall />
-                )}
-              </div>
-            );
-          })}
+          <Slot
+            time={time}
+            dataLoaded={dataLoaded}
+            workingHours={workingHours}
+            appointments={appointments}
+            handleAppointmentButton={handleAppointmentButton}
+            setDisplayForm={setDisplayForm}
+            services={services}
+            clients={clients}
+            slotDuration={slotDuration}
+            setShowConfirmation={setShowConfirmation}
+            weekDays={weekDays}
+          />
         </SlotsRowContainer>
       )}
     </div>

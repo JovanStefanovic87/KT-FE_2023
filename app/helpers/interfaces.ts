@@ -111,7 +111,7 @@ export interface InfoModalType {
 }
 
 export interface GenerateSlotsRowProps {
-  weekDays: any[];
+  weekDays: WeekDay[];
   weekDates: string[];
   dataLoaded: boolean;
   workingHours: any;
@@ -129,6 +129,20 @@ export interface GenerateSlotsRowProps {
   setErrorModal: React.Dispatch<React.SetStateAction<any>>;
 }
 
+export interface SlotProps {
+  time: string;
+  dataLoaded: boolean;
+  workingHours: any;
+  appointments: any[];
+  handleAppointmentButton: Function;
+  setDisplayForm: Function;
+  services: any[];
+  clients: any[];
+  slotDuration: number;
+  setShowConfirmation: Function;
+  weekDays: WeekDay[];
+}
+
 export interface WorkingHoursStateProps {
   id?: string;
   employeeId?: string;
@@ -139,4 +153,10 @@ export interface WorkingHoursStateProps {
   afternoonFrom: string;
   afternoonTo: string;
   absence: string;
+}
+
+export interface ShowConfirmation {
+  isVisible: boolean;
+  delete: boolean;
+  appointmentId: string;
 }
