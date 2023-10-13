@@ -27,7 +27,6 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   const [showInfoModal, setShowInfoModal] = useState<InfoModalType>({ isVisible: false, text: '' });
 
   useEffect(() => {
-    console.log(showConfirmation.delete);
     showConfirmation.delete
       ? handleAppointmentDelete(
           showConfirmation.appointmentId,

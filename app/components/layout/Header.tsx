@@ -48,12 +48,12 @@ const Header: React.FC = () => {
             </div>
             <div className='p-4 border-b border-solid border-white'></div>
             <p className='text-white font-semibold mt-2 text-lg'>Navigacija</p>
-            <SideBarBtn>
+            <SideBarBtn onClick={() => {}}>
               <Link href='/' className={`relative block w-full py-2 px-4 ${isActive('/')}`}>
                 Početna
               </Link>
             </SideBarBtn>
-            <SideBarBtn>
+            <SideBarBtn onClick={() => {}}>
               <Link
                 href='/kalendar'
                 className={`relative block w-full py-2 px-4 ${isActive('/kalendar')}`}
@@ -61,7 +61,7 @@ const Header: React.FC = () => {
                 Kalendar
               </Link>
             </SideBarBtn>
-            <SideBarBtn>
+            <SideBarBtn onClick={() => {}}>
               <Link
                 href='/klijenti'
                 className={`relative block w-full py-2 px-4 ${isActive('/klijenti')}`}
@@ -69,7 +69,7 @@ const Header: React.FC = () => {
                 Klijenti
               </Link>
             </SideBarBtn>
-            <SideBarBtn>
+            <SideBarBtn onClick={() => {}}>
               <Link
                 href='/usluge'
                 className={`relative block w-full py-2 px-4 ${isActive('/usluge')}`}
@@ -77,7 +77,7 @@ const Header: React.FC = () => {
                 Usluge
               </Link>
             </SideBarBtn>
-            <SideBarBtn>
+            <SideBarBtn onClick={() => {}}>
               <Link
                 href='/izvestaji'
                 className={`relative block w-full py-2 px-4 ${isActive('/izvestaji')}`}
@@ -85,12 +85,12 @@ const Header: React.FC = () => {
                 Izveštaji
               </Link>
             </SideBarBtn>
-            <SideBarBtn>
+            <SideBarBtn onClick={() => {}}>
               <Link href='/sms' className={`relative block w-full py-2 px-4 ${isActive('/sms')}`}>
                 SMS
               </Link>
             </SideBarBtn>
-            <SideBarBtn>
+            <SideBarBtn onClick={() => {}}>
               <Link
                 href='/profil'
                 className={`relative block w-full py-2 px-4 ${isActive('/profil')}`}
@@ -98,7 +98,7 @@ const Header: React.FC = () => {
                 Profil
               </Link>
             </SideBarBtn>
-            <SideBarBtn>
+            <SideBarBtn onClick={() => {}}>
               <Link
                 href='/timovi'
                 className={`relative block w-full py-2 px-4 ${isActive('/timovi')}`}
@@ -113,7 +113,7 @@ const Header: React.FC = () => {
             </SideBarBtn>
             <div className='flex-grow'></div>
             <div className='mt-4'>
-              <SideBarBtn>
+              <SideBarBtn onClick={() => {}}>
                 <Link href='/odjava' className='relative block w-full py-2 px-4'>
                   Odjava
                 </Link>

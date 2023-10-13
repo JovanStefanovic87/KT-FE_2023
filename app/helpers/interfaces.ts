@@ -10,6 +10,7 @@ export interface AppointmentProps {
   price: number;
   employee: string;
   serviceProvider: string;
+  totalDuration?: number;
 }
 
 export interface WorkingHours {
@@ -20,18 +21,37 @@ export interface DayTranslations {
   [day: string]: string;
 }
 
+export interface ServicesProps {
+  id: string;
+  name: string;
+  description: string;
+  duration?: number;
+  price: number;
+}
+
+export interface AppointmentServicesProps {
+  appointmentServices: (
+    | ServicesProps // id: string; name: string; description: string; duration?: number; price: number;
+    | { id: string; name: string; duration: number; price: number }
+  )[];
+}
+
 export interface AppointmentLabelProps {
-  appointment?: AppointmentProps;
-  services: any;
-  clients: any;
+  appointment?: AppointmentProps; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
+  services: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
+  clients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
   slotDuration: number;
-  onDoubleClick: any;
+  onDoubleClick: React.MouseEventHandler<HTMLDivElement>;
+}
+
+export interface AppointmentClientName {
+  appointment?: AppointmentProps; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
+  clients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
 }
 
 export interface CalendarFormsInitProps {
   clientForm: boolean;
   serviceForm: boolean;
-  backdrop: boolean;
   post: boolean;
 }
 
@@ -48,10 +68,10 @@ type NewAppointmentProps = {
 };
 
 export interface CalendarFormsProps {
-  displayForm: CalendarFormsInitProps;
-  setDisplayForm: React.Dispatch<React.SetStateAction<CalendarFormsInitProps>>;
-  newAppointment: NewAppointmentProps;
-  setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointmentProps>>;
+  displayForm: CalendarFormsInitProps; // clientForm: boolean; serviceForm: boolean; post: boolean;
+  setDisplayForm: React.Dispatch<React.SetStateAction<CalendarFormsInitProps>>; // clientForm: boolean; serviceForm: boolean; post: boolean;
+  newAppointment: NewAppointmentProps; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
+  setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointmentProps>>; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   selected: any;
   setSelected: React.Dispatch<React.SetStateAction<any>>;
 }
@@ -77,14 +97,6 @@ export interface EmployeeProps {
   service_provider: String;
 }
 
-export interface ServecesProps {
-  id: string;
-  name: string;
-  description: string;
-  duration: number;
-  price: number;
-}
-
 export interface ClientProps {
   id: string;
   name: string;
@@ -97,35 +109,32 @@ export interface WeekDay {
   date: string;
 }
 
-export interface AppointmentInfoType {
-  isVisible: boolean;
-  appointmentData?: any;
-}
-
-export interface ErrorModalType {
-  isVisible: boolean;
-  text: string;
-}
-
 export interface InfoModalType {
   isVisible: boolean;
   text: string;
 }
 
+export interface AppointmentInfoType {
+  isVisible: boolean;
+  appointmentData?: any;
+}
+
+export interface ErrorModalType extends InfoModalType {} //showInfoModal: InfoModalType; setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>;
+
 export interface GenerateSlotsRowProps {
-  weekDays: WeekDay[];
+  weekDays: WeekDay[]; // day: string; date: string;
   weekDates: string[];
   dataLoaded: boolean;
-  workingHours: any;
-  appointments: any[];
-  setAppointments: React.Dispatch<React.SetStateAction<AppointmentProps[]>>;
+  workingHours: WorkingHoursStateProps[]; // id?: string; employeeId?: string; date: string; day: string; morningFrom: string; morningTo: string; afternoonFrom: string; afternoonTo: string; absence: string;
+  appointments: AppointmentProps[]; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
+  setAppointments: React.Dispatch<React.SetStateAction<AppointmentProps[]>>; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   time: string;
   handleAppointmentButton: Function;
   setDisplayForm: Function;
-  services: any[];
-  clients: any[];
+  services: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
+  clients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
   slotDuration: number;
-  showRow: any;
+  showRow: boolean;
   index: number;
   selectedEmployee: string;
   setErrorModal: React.Dispatch<React.SetStateAction<any>>;
@@ -134,15 +143,15 @@ export interface GenerateSlotsRowProps {
 export interface SlotProps {
   time: string;
   dataLoaded: boolean;
-  workingHours: any;
-  appointments: any[];
+  workingHours: WorkingHoursStateProps[]; // id?: string; employeeId?: string; date: string; day: string; morningFrom: string; morningTo: string; afternoonFrom: string; afternoonTo: string; absence: string;
+  appointments: AppointmentProps[]; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   handleAppointmentButton: Function;
   setDisplayForm: Function;
-  services: any[];
-  clients: any[];
+  services: ServicesProps[]; // id: string; name: string; phoneNumber: string; email: string;
+  clients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
   slotDuration: number;
   setShowConfirmation: Function;
-  weekDays: WeekDay[];
+  weekDays: WeekDay[]; // day: string; date: string;
 }
 
 export interface WorkingHoursStateProps {
@@ -154,7 +163,7 @@ export interface WorkingHoursStateProps {
   morningTo: string;
   afternoonFrom: string;
   afternoonTo: string;
-  absence: string;
+  absence: string | any;
 }
 
 export interface ShowConfirmation {
@@ -216,8 +225,8 @@ export interface FormListContainerProps {
 }
 
 export interface AppointmentModalProps {
-  totalPrice: (services: string[], servicesList: any[]) => number;
-  services: any[];
+  totalPrice: (services: string[], servicesList: ServicesProps[]) => number;
+  services: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
   setAppontmentInfo: React.Dispatch<React.SetStateAction<AppointmentInfoType>>;
   appontmentInfo: AppointmentInfoType;
 }
@@ -228,34 +237,78 @@ export interface ConfirmDeletationModalProps {
   SetState: React.Dispatch<
     React.SetStateAction<{ isVisible: boolean; delete: boolean; appointmentId: string }>
   >;
-  submit: React.Dispatch<React.SetStateAction<any>>;
+  submit: (event: React.FormEvent<Element>) => void;
 }
 
 export interface ModalContainerProps {
   isVisible: boolean;
-  onClose: () => void;
+  onClose: (event: React.FormEvent<Element>) => void;
   children?: React.ReactNode;
 }
 
 export interface InfoModalProps {
-  showInfoModal: InfoModalType;
-  setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>;
+  showInfoModal: InfoModalType; // isVisible: boolean; text: string;
+  setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>; // isVisible: boolean; text: string;
 }
 
 export interface ErrorModalProps {
-  errorModal: ErrorModalType;
-  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>;
+  errorModal: ErrorModalType; // isVisible: boolean; text: string;
+  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>; // isVisible: boolean; text: string;
 }
 
 export interface DeleteBtnProps {
-  onDelete: React.Dispatch<React.SetStateAction<any>>;
+  onDelete: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export interface CloseBtnProps {
-  onClose: React.Dispatch<React.SetStateAction<any>>;
+  onClose: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export interface BackdropProps {
   onClick: (event: React.FormEvent) => void;
   isVisible: boolean;
+}
+
+export interface AppointmentTimeRangeProps {
+  appointment: AppointmentProps; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
+}
+
+export interface SelectUserProps {
+  selectedUser: string;
+  onSelectUser: (user: string) => void;
+  id: string;
+  data: EmployeeProps[] | ServiceProviderProps[]; // id: string; name: string; phoneNumber: string; email: string; service_provider: String; && // id: string; name: string; phoneNumber: string; email: string;
+}
+
+export interface DaysRowProps {
+  weekDays: WeekDay[]; // day: string; date: string;
+}
+
+export interface SearchInputProps {
+  dataSearchQuery: string;
+  value: string;
+  setState: React.Dispatch<React.SetStateAction<any>>;
+}
+
+export interface ClientsDataListProps {
+  filteredClients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
+  newAppointment: NewAppointmentProps; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
+  setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointmentProps>>; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
+}
+
+export interface PrimaryTitleProps {
+  value: string;
+}
+
+export interface FormContainerProps {
+  displayForm: boolean;
+  id: string;
+  handleFormClose: (event: React.FormEvent) => void;
+  children: React.ReactNode;
+}
+
+export interface ServiceDataListProps {
+  filteredServices: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
+  selected: string[];
+  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
 }

@@ -1,7 +1,7 @@
-import { SetStateAction, Dispatch, useCallback } from 'react';
+import { SetStateAction, Dispatch } from 'react';
 import {
   ClientProps,
-  ServecesProps,
+  ServicesProps,
   ServiceProviderProps,
   EmployeeProps,
   AppointmentProps,
@@ -15,7 +15,7 @@ import axios from 'axios';
 const API_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 export const fetchCalendarInitData = async (
-  setServices: Dispatch<SetStateAction<ServecesProps[]>>,
+  setServices: Dispatch<SetStateAction<ServicesProps[]>>,
   setClients: Dispatch<SetStateAction<ClientProps[]>>,
   setServiceProviders: Dispatch<SetStateAction<ServiceProviderProps[]>>,
   setSelectedServiceProvider: Dispatch<SetStateAction<string>>,

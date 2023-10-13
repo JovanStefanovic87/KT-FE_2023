@@ -1,7 +1,6 @@
 export const displayFormInit = {
   clientForm: false,
   serviceForm: false,
-  backdrop: false,
   post: false,
 };
 

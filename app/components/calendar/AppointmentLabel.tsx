@@ -1,5 +1,10 @@
-import { AppointmentLabelProps, ClientProps } from '@/app/helpers/interfaces';
-import { calculateSlotsForDuration, totalPrices } from '@/app/helpers/universalFunctions';
+import { AppointmentLabelProps } from '@/app/helpers/interfaces';
+import { calculateSlotsForDuration } from '@/app/helpers/universalFunctions';
+import AppointmentDividingLine from '../ui/dividingLines/AppointmentDividingLine';
+import AppointmentTimeRange from '../ui/text/AppointmentTimeRange';
+import AppointmentClientName from '../ui/text/AppointmentClientName';
+import AppointmentPrice from '../ui/text/AppointmentPrice';
+import AppointmentServicesNameContainer from '../ui/listContainers/AppointmentServicesNameContainer';
 
 const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
   appointment,
@@ -19,25 +24,10 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
       : { id: serviceId, name: 'Unknown Service', duration: 0, price: 0 };
   });
 
-  const clientName = () => {
-    const clientId = appointment.client;
-    const client = clients.find((client: ClientProps) => client.id === clientId);
-    return client?.name || 'Unknown Client';
-  };
-
   const totalDuration = appointmentServices.reduce(
     (total, service) => total + (service.duration || 0),
     0,
   );
-
-  const { time } = appointment;
-  const [startHours, startMinutes] = time.split(':').map(Number);
-  const totalMinutes = startHours * 60 + startMinutes + totalDuration;
-  const endHours = Math.floor(totalMinutes / 60);
-  const endMinutes = totalMinutes % 60;
-  const formattedEndTime = `${endHours.toString().padStart(2, '0')}:${endMinutes
-    .toString()
-    .padStart(2, '0')}`;
 
   const slotsNeeded = calculateSlotsForDuration(totalDuration, slotDuration);
   const singleSlotHeight = 112;
@@ -55,13 +45,11 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
       data-slots-needed={slotsNeeded}
       onDoubleClick={onDoubleClick}
     >
-      <div className='text-ktAppointmentTime text-xl font-bold'>
-        {time}h - {formattedEndTime}h
-      </div>
-      <div className='text-lg font-semibold text-blue-200'>{clientName()}</div>
-      <ul className='list-disc'>{totalServicesNames}</ul>
-      <hr className='border-t my-0.5 border-gray-300 w-2/3 mx-auto' />
-      <div className='text-base font-bold'>{`${totalPrices(appointmentServices)} RSD`}</div>
+      <AppointmentTimeRange appointment={appointment} />
+      <AppointmentClientName appointment={appointment} clients={clients} />
+      <AppointmentServicesNameContainer>{totalServicesNames}</AppointmentServicesNameContainer>
+      <AppointmentDividingLine />
+      <AppointmentPrice appointmentServices={appointmentServices} />
     </div>
   );
 };

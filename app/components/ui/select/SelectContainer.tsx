@@ -1,6 +1,6 @@
-import { Children } from '../../../helpers/interfaces';
+import { ChildrenProps } from '../../../helpers/interfaces';
 
-const SelectContainer: React.FC<Children> = ({ children }) => {
+const SelectContainer: React.FC<ChildrenProps> = ({ children }) => {
   return (
     <div className='flex self-center justify-center gap-x-6 w-calendar-sm md:w-calendar-lg'>
       {children}

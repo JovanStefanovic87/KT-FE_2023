@@ -10,7 +10,7 @@ import SubmitBtn from '../../ui/buttons/SubmitBtn';
 import Backdrop from '../../ui/Backdrop';
 import CustomTimeInput from '../../ui/input/CustomTimeInput';
 import WeekSelector from '../../ui/select/WeekSelector';
-import WhWeekSelectorContainer from './whWeekSelectorContainer';
+import WhWeekSelectorContainer from './WhWeekSelectorContainer';
 
 const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   const employeeId = useSelector(
@@ -111,7 +111,6 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
     try {
       await postEmployeeWorkingHours(employeeId, workingHours);
       handleCloseWorkingHoursForm();
-      console.log(workingHours);
     } catch (error) {
       console.error('Error posting working hours:', error);
     }

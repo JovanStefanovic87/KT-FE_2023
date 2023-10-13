@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchCleintsData } from '@/app/helpers/apiHandlers';
 import { ClientProps, CalendarFormsProps } from '@/app/helpers/interfaces';
 import { newAppointmentInit } from './initStates';
-import Backdrop from '../ui/Backdrop';
 import CloseIconBtn from '../ui/buttons/CloseIconBtn';
 import SubmitBtn from '../ui/buttons/SubmitBtn';
+import SearchInput from '../ui/input/SearchInput';
+import FormContainer from '../ui/forms/FormContainer';
+import ClientsDataList from '../ui/listContainers/ClientDataList';
+import PrimaryTitle from '../ui/text/PrimaryTitle';
 
 const ClientForm: React.FC<CalendarFormsProps> = ({
   displayForm,
@@ -41,61 +44,32 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
 
   const handleFormClose = (event: React.FormEvent) => {
     event.preventDefault();
-    setDisplayForm({ ...displayForm, clientForm: false, backdrop: false });
+    setDisplayForm({ ...displayForm, clientForm: false });
     setNewAppointment(newAppointmentInit);
   };
 
   return (
-    <form
-      className='fixed mx-auto z-20'
-      style={{ display: displayForm.clientForm ? 'flex' : 'none' }}
+    <FormContainer
+      displayForm={displayForm.clientForm}
       id='clientForm'
+      handleFormClose={handleFormClose}
     >
-      <div className='flex flex-col items-center fixed  w-98dvw lg:w-form lg:max-w-form h-main left-0 md:left-1/2 md:-translate-x-1/2 mx-2 bg-white overflow-y-auto z-30'>
-        <div className='bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1'>
-          <CloseIconBtn onClick={handleFormClose} />
-          <h1 className='text-2xl font-bold mb-4 text-white'>IZBOR KLIJENTA</h1>
-          <input
-            id='ClientSearchQuery'
-            name='ClientSearchQuery'
-            type='text'
-            placeholder='Pretraga'
-            className='p-2 border rounded-md mb-4'
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <ul className='grid px-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-4/6 overflow-auto'>
-          {filteredClients.map((client, index) => (
-            <li
-              key={client.id}
-              className={`border-2 p-2 rounded-md cursor-pointer ${
-                newAppointment.client?.includes(client.id) ? 'bg-blue-100' : ''
-              }`}
-              onClick={() => handleNameClick(client.id)}
-            >
-              <h2 className='font-bold text-ktFormItemName mb-1'>{`${index + 1}. ${
-                client.name
-              }`}</h2>
-              <p className='mb-1'>
-                <b>
-                  <em>Phone:</em>
-                </b>
-                {` ${client.phoneNumber}`}
-              </p>
-              <p>
-                <b>
-                  <em>Email:</em>
-                </b>
-                {` ${client.email}`}
-              </p>
-            </li>
-          ))}
-        </ul>
-        <SubmitBtn onClick={handleSubmit} isDisabled={!isClientSelected} buttonText='Dalje >>' />
+      <div className='bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1'>
+        <CloseIconBtn onClick={handleFormClose} />
+        <PrimaryTitle value='IZBOR KLIJENTA' />
+        <SearchInput
+          dataSearchQuery='ClientSearchQuery'
+          value={searchQuery}
+          setState={setSearchQuery}
+        />
       </div>
-      <Backdrop onClick={(event) => handleFormClose(event)} isVisible={displayForm.backdrop} />
-    </form>
+      <ClientsDataList
+        filteredClients={filteredClients}
+        newAppointment={newAppointment}
+        setNewAppointment={setNewAppointment}
+      />
+      <SubmitBtn onClick={handleSubmit} isDisabled={!isClientSelected} buttonText='Dalje >>' />
+    </FormContainer>
   );
 };
 

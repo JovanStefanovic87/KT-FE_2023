@@ -11,10 +11,9 @@ import {
   totalPrice,
   hasWorkingHourInHour,
 } from '@/app/helpers/universalFunctions';
-import { dayTranslations } from '@/app/helpers/mock';
 import {
   AppointmentProps,
-  ServecesProps,
+  ServicesProps,
   CalendarFormsInitProps,
   AppointmentInfoType,
   ClientProps,
@@ -44,6 +43,7 @@ import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
 import AppointmentModal from '../ui/modals/AppointmentModal';
 import ErrorModal from '../ui/modals/ErrorModal';
 import Spinner from '../ui/Spinner';
+import UnsetWorkingHoursText from '../ui/text/UnsetWorkingHoursText';
 
 const Calendar: React.FC = () => {
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const Calendar: React.FC = () => {
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
   const [employees, setEmployees] = useState<EmployeeProps[]>([]);
   const [workingHours, setWorkingHours] = useState<WorkingHoursStateProps[]>([]);
-  const [services, setServices] = useState<ServecesProps[]>([]);
+  const [services, setServices] = useState<ServicesProps[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
   const [selectedClient, setSelectedClient] = useState('');
@@ -188,16 +188,7 @@ const Calendar: React.FC = () => {
         </SelectContainer>
         <div className='flex px-2 relative'>
           <div className='h-calHeight w-calendarSlots overflow-auto border-2 bg-ktBg border-solid border-white mt-3 mb-3 mx-auto relative'>
-            <DaysRow>
-              {weekDays.map((dayInfo) => (
-                <div
-                  key={dayInfo.day}
-                  className='flex justify-center items-center h-slotDayHeight w-slotsWidth mx-0.5 mt-1 min-w-slotsWidth text-orange-200 font-bold border-2 border-stone-500 border-solid bg-gray-800'
-                >
-                  {dayTranslations[dayInfo.day]} ({dayInfo.date})
-                </div>
-              ))}
-            </DaysRow>
+            <DaysRow weekDays={weekDays} />
             {timeSlots.map((time, index) => {
               const hour = time.split(':')[0];
               const showRow = hasWorkingHourInHour(hour, weekDays, timeSlots, workingHours);
@@ -224,13 +215,7 @@ const Calendar: React.FC = () => {
 
             {!dataLoaded && <Spinner />}
 
-            {dataLoaded && workingHours.length === 0 && (
-              <div className='w-full h-2/4 flex justify-center items-end absolute'>
-                <p className='text-red-500 font-bold text-lg md:text-xl lg:text-2xl xl:text-3xl p-2 md:p-4 lg:p-6 xl:p-8'>
-                  Radno vreme nije podeseno
-                </p>
-              </div>
-            )}
+            {dataLoaded && workingHours.length === 0 && <UnsetWorkingHoursText />}
           </div>
         </div>
         <SelectContainer>
@@ -240,25 +225,15 @@ const Calendar: React.FC = () => {
               setSelectedServiceProvider(user);
             }}
             id='selectedServiceProvider'
-          >
-            {serviceProviders.map((prov) => (
-              <option key={prov.id} value={prov.name}>
-                {prov.name}
-              </option>
-            ))}
-          </SelectUser>
+            data={serviceProviders}
+          />
 
           <SelectUser
             selectedUser={selectedEmployee || ''}
             onSelectUser={(user) => setSelectedEmployee(user)}
             id='selectedEmployee'
-          >
-            {employees.map((employee) => (
-              <option key={employee.id} value={employee.name}>
-                {employee.name}
-              </option>
-            ))}
-          </SelectUser>
+            data={employees}
+          />
         </SelectContainer>
       </Container>
     </>
