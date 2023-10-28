@@ -1,4 +1,7 @@
-import { WorkingHoursContainerProps } from '@/app/helpers/interfaces';
+interface WorkingHoursContainerProps {
+  isOpen: boolean;
+  children: React.ReactNode;
+}
 
 const WorkingHoursContainer: React.FC<WorkingHoursContainerProps> = ({ isOpen, children }) => {
   if (!isOpen) return null;

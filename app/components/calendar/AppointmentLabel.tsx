@@ -1,10 +1,21 @@
 import { AppointmentLabelProps } from '@/app/helpers/interfaces';
-import { calculateSlotsForDuration } from '@/app/helpers/universalFunctions';
 import AppointmentDividingLine from '../ui/dividingLines/AppointmentDividingLine';
 import AppointmentTimeRange from '../ui/text/AppointmentTimeRange';
 import AppointmentClientName from '../ui/text/AppointmentClientName';
 import AppointmentPrice from '../ui/text/AppointmentPrice';
 import AppointmentServicesNameContainer from '../ui/listContainers/AppointmentServicesNameContainer';
+
+const calculateSlotsForDuration = (appointmentDuration: number, slotDuration: number): number =>
+  Math.ceil(appointmentDuration / slotDuration);
+
+interface ServiceComponentProps {
+  service: { name: string };
+  index: number;
+}
+
+const ServiceComponent: React.FC<ServiceComponentProps> = ({ service, index }) => (
+  <div key={index}>{`${index + 1}: ${service.name}`}</div>
+);
 
 const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
   appointment,
@@ -34,10 +45,6 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
   const spaceBetweenSlots = (slotsNeeded - 1) * (borderSize * 2);
   const totalHeight = singleSlotHeight * slotsNeeded + spaceBetweenSlots;
 
-  const totalServicesNames = appointmentServices.map((service, index) => (
-    <div key={index}>{`${index + 1}: ${service.name}`}</div>
-  ));
-
   return (
     <div
       className='flex flex-col justify-start min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg'
@@ -47,7 +54,11 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
     >
       <AppointmentTimeRange appointment={appointment} />
       <AppointmentClientName appointment={appointment} clients={clients} />
-      <AppointmentServicesNameContainer>{totalServicesNames}</AppointmentServicesNameContainer>
+      <AppointmentServicesNameContainer>
+        {appointmentServices.map((service, index) => (
+          <ServiceComponent key={index} service={service} index={index} />
+        ))}
+      </AppointmentServicesNameContainer>
       <AppointmentDividingLine />
       <AppointmentPrice appointmentServices={appointmentServices} />
     </div>

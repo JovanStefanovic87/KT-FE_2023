@@ -1,8 +1,16 @@
-import { ConfirmDeletationModalProps } from '@/app/helpers/interfaces';
 import { animationClass } from '@/app/helpers/universalFunctions';
 import ModalContainer from './ModalContainer';
 import DeleteBtn from '../buttons/DeleteBtn';
 import CloseBtn from '../buttons/CloseBtn';
+
+interface ConfirmDeletationModalProps {
+  subject: string;
+  isVisible: boolean;
+  SetState: React.Dispatch<
+    React.SetStateAction<{ isVisible: boolean; delete: boolean; appointmentId: string }>
+  >;
+  submit: (event: React.FormEvent<Element>) => void;
+}
 
 const ConfirmDeletationModal: React.FC<ConfirmDeletationModalProps> = ({
   subject,

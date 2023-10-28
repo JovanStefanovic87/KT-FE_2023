@@ -1,6 +1,17 @@
-import { ErrorModalProps } from '@/app/helpers/interfaces';
 import { animationClass } from '@/app/helpers/universalFunctions';
 import ModalContainer from './ModalContainer';
+
+interface InfoModalType {
+  isVisible: boolean;
+  text: string;
+}
+
+interface ErrorModalType extends InfoModalType {} //showInfoModal: InfoModalType; setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>;
+
+interface ErrorModalProps {
+  errorModal: ErrorModalType; // isVisible: boolean; text: string;
+  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>; // isVisible: boolean; text: string;
+}
 
 const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) => {
   const isVisible = errorModal.isVisible;

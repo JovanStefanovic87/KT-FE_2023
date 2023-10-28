@@ -94,11 +94,6 @@ export const generateWeekDays = (selectedWeekIndex: number): WeekDay[] => {
   return weekDays;
 };
 
-export const calculateSlotsForDuration = (
-  appointmentDuration: number,
-  slotDuration: number,
-): number => Math.ceil(appointmentDuration / slotDuration);
-
 export const isWorkingHour = (day: string, time: string, workingHours: any): boolean => {
   const dayWorkingHours = workingHours.find((wh: any) => wh.day === day);
 

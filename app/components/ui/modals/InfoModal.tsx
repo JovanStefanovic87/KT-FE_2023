@@ -1,6 +1,15 @@
-import { InfoModalProps } from '@/app/helpers/interfaces';
 import { animationClass } from '@/app/helpers/universalFunctions';
 import InfoModalContainer from './ModalContainer';
+
+interface InfoModalType {
+  isVisible: boolean;
+  text: string;
+}
+
+interface InfoModalProps {
+  showInfoModal: InfoModalType; // isVisible: boolean; text: string;
+  setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>; // isVisible: boolean; text: string;
+}
 
 const InfoModal: React.FC<InfoModalProps> = ({ showInfoModal, setShowInfoModal }) => {
   const isVisible = showInfoModal.isVisible;

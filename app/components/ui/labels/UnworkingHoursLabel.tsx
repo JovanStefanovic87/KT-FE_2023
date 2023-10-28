@@ -1,4 +1,6 @@
-import { UnworkingHoursLabelProps } from '@/app/helpers/interfaces';
+interface UnworkingHoursLabelProps {
+  time: string;
+}
 
 const UnworkingHoursLabel: React.FC<UnworkingHoursLabelProps> = ({ time }) => {
   return (

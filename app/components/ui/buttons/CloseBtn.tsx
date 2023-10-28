@@ -1,4 +1,6 @@
-import { CloseBtnProps } from '@/app/helpers/interfaces';
+interface CloseBtnProps {
+  onClose: React.MouseEventHandler<HTMLButtonElement>;
+}
 
 const CloseBtn: React.FC<CloseBtnProps> = ({ onClose }) => {
   return (

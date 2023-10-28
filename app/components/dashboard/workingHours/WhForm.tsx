@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { format, addDays } from 'date-fns';
 import { generateWeekOptions } from '@/app/helpers/universalFunctions';
 import { WorkingHoursStateProps } from '@/app/helpers/interfaces';
-import { postEmployeeWorkingHours, fetchEmployeeWorkingHours } from '@/app/helpers/apiHandlers';
+import {
+  postEmployeeWorkingHours,
+  fetchEmployeeWorkingHours,
+  updateEmployeeWorkingHours,
+} from '@/app/helpers/apiHandlers';
 import { whInit } from './whInit';
 import CloseIconBtn from '../../ui/buttons/CloseIconBtn';
 import SubmitBtn from '../../ui/buttons/SubmitBtn';
@@ -37,6 +41,8 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
 
     return range;
   };
+
+  console.log(workingHours);
 
   const weekDates = generateDateRange(startOfWeekDate, endOfWeekDate);
 
@@ -109,10 +115,18 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
 
   const handleSubmit = async () => {
     try {
-      await postEmployeeWorkingHours(employeeId, workingHours);
+      const hasEntriesToUpdate = workingHours.some((wh) => wh.id);
+
+      if (hasEntriesToUpdate) {
+        // If there is at least one entry with an 'id', update working hours
+        await updateEmployeeWorkingHours(employeeId, workingHours);
+      } else {
+        // If there are no 'id's, post new working hours
+        await postEmployeeWorkingHours(employeeId, workingHours);
+      }
       handleCloseWorkingHoursForm();
     } catch (error) {
-      console.error('Error posting working hours:', error);
+      console.error('Error updating/posting working hours:', error);
     }
   };
 

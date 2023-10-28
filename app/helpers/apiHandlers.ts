@@ -12,6 +12,17 @@ import {
 
 import axios from 'axios';
 
+interface WorkingHoursData {
+  date: string;
+  day: string;
+  morningFrom: string;
+  morningTo: string;
+  afternoonFrom: string;
+  afternoonTo: string;
+  absence: string;
+  id?: string;
+}
+
 const API_URL = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 export const fetchCalendarInitData = async (
@@ -129,16 +140,6 @@ export const addNewAppointment = async (
   }
 };
 
-interface WorkingHoursData {
-  date: string;
-  day: string;
-  morningFrom: string;
-  morningTo: string;
-  afternoonFrom: string;
-  afternoonTo: string;
-  absence: string;
-}
-
 export const postEmployeeWorkingHours = async (
   employeeId: string,
   workingHoursData: WorkingHoursData[],
@@ -157,6 +158,28 @@ export const postEmployeeWorkingHours = async (
     console.log('Working hours posted successfully');
   } catch (error) {
     console.error('Error posting working hours:', error);
+    throw error;
+  }
+};
+
+export const updateEmployeeWorkingHours = async (
+  employeeId: string,
+  workingHoursData: WorkingHoursData[],
+) => {
+  try {
+    const updatePromises = workingHoursData.map((data) => {
+      return axios.put(`${API_URL}/workingHours/${data.id}`, {
+        employeeId,
+        ...data,
+      });
+    });
+
+    // Wait for all promises to resolve
+    await Promise.all(updatePromises);
+
+    console.log('Working hours updated successfully');
+  } catch (error) {
+    console.error('Error updating working hours:', error);
     throw error;
   }
 };

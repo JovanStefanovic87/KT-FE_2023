@@ -1,4 +1,12 @@
-import { FormListContainerProps } from '@/app/helpers/interfaces';
+interface FormListContainerProps {
+  children: React.ReactNode;
+  list: {
+    id: number;
+    name: string;
+  };
+  selectedName: string;
+  onClick: () => void;
+}
 
 const FormListContainer: React.FC<FormListContainerProps> = ({
   children,

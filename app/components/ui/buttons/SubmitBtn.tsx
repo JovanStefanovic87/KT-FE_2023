@@ -1,4 +1,8 @@
-import { SubmitBtnProps } from '@/app/helpers/interfaces';
+interface SubmitBtnProps {
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  isDisabled: boolean;
+  buttonText: string;
+}
 
 const SubmitBtn: React.FC<SubmitBtnProps> = ({ onClick, isDisabled, buttonText }) => {
   return (

@@ -1,4 +1,8 @@
-import { SearchInputProps } from '@/app/helpers/interfaces';
+interface SearchInputProps {
+  dataSearchQuery: string;
+  value: string;
+  setState: React.Dispatch<React.SetStateAction<any>>;
+}
 
 const SearchInput: React.FC<SearchInputProps> = ({ dataSearchQuery, value, setState }) => (
   <input

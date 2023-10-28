@@ -1,5 +1,11 @@
-import { FormContainerProps } from '@/app/helpers/interfaces';
 import Backdrop from '../Backdrop';
+
+interface FormContainerProps {
+  displayForm: boolean;
+  id: string;
+  handleFormClose: (event: React.FormEvent) => void;
+  children: React.ReactNode;
+}
 
 const FormContainer: React.FC<FormContainerProps> = ({
   displayForm,

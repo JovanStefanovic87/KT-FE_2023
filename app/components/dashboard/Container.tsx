@@ -1,4 +1,6 @@
-import { ChildrenProps } from '@/app/helpers/interfaces';
+type ChildrenProps = {
+  children: React.ReactNode;
+};
 
 const Container: React.FC<ChildrenProps> = ({ children }) => {
   return (

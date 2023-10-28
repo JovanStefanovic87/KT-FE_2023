@@ -1,5 +1,9 @@
 import { BsArrowRight } from 'react-icons/bs';
-import { ArrowButtonsProps } from '@/app/helpers/interfaces';
+
+interface ArrowButtonsProps {
+  onClick: () => void;
+  disabled?: boolean;
+}
 
 const ArrowButtonRight: React.FC<ArrowButtonsProps> = ({ onClick, disabled }) => {
   return (

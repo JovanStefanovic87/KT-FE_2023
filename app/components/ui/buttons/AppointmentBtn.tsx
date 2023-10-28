@@ -1,4 +1,7 @@
-import { AppointmentBtnProps } from '@/app/helpers/interfaces';
+interface AppointmentBtnProps {
+  onClick: () => void;
+  time: string;
+}
 
 const AppointmentBtn: React.FC<AppointmentBtnProps> = ({ onClick, time }) => {
   return (

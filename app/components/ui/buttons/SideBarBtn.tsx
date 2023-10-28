@@ -1,4 +1,7 @@
-import { SideBarBtnProps } from '@/app/helpers/interfaces';
+interface SideBarBtnProps {
+  children: React.ReactNode;
+  onClick: (event: React.FormEvent) => void;
+}
 
 const SideBarBtn: React.FC<SideBarBtnProps> = ({ onClick, children }) => {
   return (

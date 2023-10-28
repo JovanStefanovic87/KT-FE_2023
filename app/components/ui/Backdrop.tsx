@@ -1,4 +1,7 @@
-import { BackdropProps } from '@/app/helpers/interfaces';
+interface BackdropProps {
+  onClick: (event: React.FormEvent) => void;
+  isVisible: boolean;
+}
 
 const Backdrop: React.FC<BackdropProps> = ({ onClick, isVisible }) => {
   return (

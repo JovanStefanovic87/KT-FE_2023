@@ -1,4 +1,6 @@
-import { FormButtonProps } from '@/app/helpers/interfaces';
+interface FormButtonProps {
+  onClick: (event: React.FormEvent) => void;
+}
 
 const CloseBtn: React.FC<FormButtonProps> = ({ onClick }) => {
   return (

@@ -1,4 +1,6 @@
-import { DeleteBtnProps } from '@/app/helpers/interfaces';
+export interface DeleteBtnProps {
+  onDelete: React.MouseEventHandler<HTMLButtonElement>;
+}
 
 const DeleteBtn: React.FC<DeleteBtnProps> = ({ onDelete }) => {
   return (
