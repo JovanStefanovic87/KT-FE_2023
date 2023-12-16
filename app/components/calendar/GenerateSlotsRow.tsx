@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { confirmationInit } from './initStates';
-import SlotsRowContainer from './SlotsRowContainer';
+import SlotsRowContainer from '../ui/containers/SlotsRowContainer';
 import { GenerateSlotsRowProps, InfoModalType, ShowConfirmation } from '@/app/helpers/interfaces';
 import { handleAppointmentDelete } from '@/app/helpers/apiHandlers';
 import ConfirmDeletationModal from '../ui/modals/ConfirmDeletationModal';
@@ -57,7 +57,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
             handleAppointmentButton={handleAppointmentButton}
             setDisplayForm={setDisplayForm}
             services={services}
-            clients={clients}
+            clients={clients ? clients : []}
             slotDuration={slotDuration}
             setShowConfirmation={setShowConfirmation}
             weekDays={weekDays}

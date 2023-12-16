@@ -1,14 +1,14 @@
-interface FormListContainerProps {
+interface Props {
   children: React.ReactNode;
   list: {
-    id: number;
+    id: string;
     name: string;
   };
-  selectedName: string;
+  selectedName: string[];
   onClick: () => void;
 }
 
-const FormListContainer: React.FC<FormListContainerProps> = ({
+const NewAppointmentListContainer: React.FC<Props> = ({
   children,
   list,
   selectedName,
@@ -18,7 +18,7 @@ const FormListContainer: React.FC<FormListContainerProps> = ({
     <li
       key={list.id}
       className={`border-2 p-2 rounded-md cursor-pointer ${
-        selectedName === list.name ? 'bg-blue-100' : ''
+        selectedName.includes(list.id) ? 'bg-blue-100' : ''
       }`}
       onClick={onClick}
     >
@@ -27,4 +27,4 @@ const FormListContainer: React.FC<FormListContainerProps> = ({
   );
 };
 
-export default FormListContainer;
+export default NewAppointmentListContainer;

@@ -42,8 +42,6 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
     return range;
   };
 
-  console.log(workingHours);
-
   const weekDates = generateDateRange(startOfWeekDate, endOfWeekDate);
 
   const updateDates = () => {
@@ -118,10 +116,9 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
       const hasEntriesToUpdate = workingHours.some((wh) => wh.id);
 
       if (hasEntriesToUpdate) {
-        // If there is at least one entry with an 'id', update working hours
         await updateEmployeeWorkingHours(employeeId, workingHours);
       } else {
-        // If there are no 'id's, post new working hours
+        console.log(workingHours);
         await postEmployeeWorkingHours(employeeId, workingHours);
       }
       handleCloseWorkingHoursForm();

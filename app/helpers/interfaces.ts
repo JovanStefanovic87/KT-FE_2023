@@ -39,6 +39,7 @@ export interface AppointmentServicesProps {
 export interface AppointmentLabelProps {
   appointment?: AppointmentProps; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   services: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
+  time?: string;
   clients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
   slotDuration: number;
   onDoubleClick: React.MouseEventHandler<HTMLDivElement>;
@@ -119,7 +120,7 @@ export interface GenerateSlotsRowProps {
   handleAppointmentButton: Function;
   setDisplayForm: Function;
   services: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
-  clients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
+  clients?: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
   slotDuration: number;
   showRow: boolean;
   index: number;
@@ -186,13 +187,15 @@ export interface DaysRowProps {
 }
 
 export interface ClientsDataListProps {
-  filteredClients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
+  clients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
   newAppointment: NewAppointmentProps; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointmentProps>>; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
+  selected: string[];
+  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export interface ServiceDataListProps {
-  filteredServices: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
+  services: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
   selected: string[];
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;
 }

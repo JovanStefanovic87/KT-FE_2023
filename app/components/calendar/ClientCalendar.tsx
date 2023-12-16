@@ -16,7 +16,6 @@ import {
   ServicesProps,
   CalendarFormsInitProps,
   AppointmentInfoType,
-  ClientProps,
   ServiceProviderProps,
   EmployeeProps,
   ErrorModalType,
@@ -24,14 +23,13 @@ import {
 } from '@/app/helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import {
-  fetchCalendarInitData,
+  fetchCleintCalendarInitData,
   fetchEmployeesData,
   addNewAppointment,
   fetchAppointments,
   fetchEmployeeWorkingHours,
 } from '@/app/helpers/apiHandlers';
 import GenerateSlotsRow from './GenerateSlotsRow';
-import ClientForm from './ClientForm';
 import WeekSelect from '../ui/select/WeekSelector';
 import SelectUser from '../ui/select/SelectUser';
 import Container from './Container';
@@ -46,7 +44,7 @@ import Spinner from '../ui/Spinner';
 import UnsetWorkingHoursText from '../ui/text/UnsetWorkingHoursText';
 import SlotsContainer from '../ui/containers/SlotsContainer';
 
-const Calendar: React.FC = () => {
+const ClientCalendar: React.FC = () => {
   const dispatch = useDispatch();
   const firstRun = useRef(true);
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
@@ -55,10 +53,8 @@ const Calendar: React.FC = () => {
   const [services, setServices] = useState<ServicesProps[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
-  const [selectedClient, setSelectedClient] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
-  const [clients, setClients] = useState<ClientProps[]>([]);
   const [newAppointment, setNewAppointment] = useState<AppointmentProps>(newAppointmentInit);
   const weekOptions = generateWeekOptions();
   const [displayForm, setDisplayForm] = useState<CalendarFormsInitProps>(displayFormInit);
@@ -76,9 +72,8 @@ const Calendar: React.FC = () => {
   let isMounted = true;
 
   useEffect(() => {
-    fetchCalendarInitData(
+    fetchCleintCalendarInitData(
       setServices,
-      setClients,
       setServiceProviders,
       setSelectedServiceProvider,
       setDataLoaded,
@@ -92,13 +87,10 @@ const Calendar: React.FC = () => {
     fetchAppointments(setAppointments, selectedEmployee);
     const employeeId = selectedEmployee;
     dispatch(setEmployeeId(employeeId));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee]);
 
   useEffect(() => {
     fetchEmployeeWorkingHours(setWorkingHours, selectedEmployee, weekDates);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmployee, selectedWeek]);
 
   useEffect(() => {
@@ -153,14 +145,6 @@ const Calendar: React.FC = () => {
         />
       )}
       <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />
-      <ClientForm
-        displayForm={displayForm}
-        setDisplayForm={setDisplayForm}
-        newAppointment={newAppointment}
-        setNewAppointment={setNewAppointment}
-        selected={selectedClient}
-        setSelected={setSelectedClient}
-      />
       <ServiceForm
         displayForm={displayForm}
         setDisplayForm={setDisplayForm}
@@ -204,7 +188,6 @@ const Calendar: React.FC = () => {
               handleAppointmentButton,
               setDisplayForm,
               services,
-              clients,
               slotDuration,
               showRow,
               index,
@@ -239,4 +222,4 @@ const Calendar: React.FC = () => {
   );
 };
 
-export default Calendar;
+export default ClientCalendar;

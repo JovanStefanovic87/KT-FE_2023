@@ -1,6 +1,6 @@
-import Calendar from '../components/calendar/Calendar';
 import '../../styles/globals.css';
 import Dashboard from '../components/dashboard/Dashboard';
+import ClientCalendar from '../components/calendar/ClientCalendar';
 import Main from '../components/layout/Main';
 
 const AppointmentPage = () => {
@@ -8,7 +8,7 @@ const AppointmentPage = () => {
     <div className='flex flex-row justify-start left-0 h-main'>
       <Dashboard />
       <Main>
-        <Calendar />
+        <ClientCalendar />
       </Main>
     </div>
   );

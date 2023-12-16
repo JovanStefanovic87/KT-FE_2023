@@ -24,6 +24,37 @@ const Slot: React.FC<SlotProps> = ({
   setShowConfirmation,
   weekDays,
 }) => {
+  const appointmentLabel = (day: any) => {
+    return (
+      <AppointmentLabel
+        appointment={appointments.find(
+          (appointment) =>
+            appointment.day === day.day &&
+            appointment.time === time &&
+            appointment.date === day.date,
+        )}
+        time={time}
+        services={services}
+        clients={clients}
+        slotDuration={slotDuration}
+        onDoubleClick={() => {
+          const appointment = appointments.find(
+            (appointment) =>
+              appointment.day === day.day &&
+              appointment.time === time &&
+              appointment.date === day.date,
+          );
+          if (appointment) {
+            setShowConfirmation((prevShowConfirmation: any) => ({
+              ...prevShowConfirmation,
+              isVisible: true,
+              appointmentId: appointment.id,
+            }));
+          }
+        }}
+      />
+    );
+  };
   return (
     <>
       {weekDays.map((day) => {
@@ -63,32 +94,7 @@ const Slot: React.FC<SlotProps> = ({
                       appointment.time === time &&
                       appointment.date === day.date,
                   ) ? (
-                    <AppointmentLabel
-                      appointment={appointments.find(
-                        (appointment) =>
-                          appointment.day === day.day &&
-                          appointment.time === time &&
-                          appointment.date === day.date,
-                      )}
-                      services={services}
-                      clients={clients}
-                      slotDuration={slotDuration}
-                      onDoubleClick={() => {
-                        const appointment = appointments.find(
-                          (appointment) =>
-                            appointment.day === day.day &&
-                            appointment.time === time &&
-                            appointment.date === day.date,
-                        );
-                        if (appointment) {
-                          setShowConfirmation((prevShowConfirmation: any) => ({
-                            ...prevShowConfirmation,
-                            isVisible: true,
-                            appointmentId: appointment.id,
-                          }));
-                        }
-                      }}
-                    />
+                    appointmentLabel(day)
                   ) : isAbsence ? (
                     <AbsenceHoursLabel
                       time={time}

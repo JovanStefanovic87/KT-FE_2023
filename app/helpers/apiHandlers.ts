@@ -55,6 +55,31 @@ export const fetchCalendarInitData = async (
   }
 };
 
+export const fetchCleintCalendarInitData = async (
+  setServices: Dispatch<SetStateAction<ServicesProps[]>>,
+  setServiceProviders: Dispatch<SetStateAction<ServiceProviderProps[]>>,
+  setSelectedServiceProvider: Dispatch<SetStateAction<string>>,
+  setDataLoaded: Dispatch<SetStateAction<boolean>>,
+) => {
+  try {
+    const servicesResponse = await axios.get(`${API_URL}/services`);
+    if (servicesResponse.data) {
+      setServices(servicesResponse.data);
+    }
+    const serviceProvidersResponse = await axios.get(`${API_URL}/service_providers`);
+    if (serviceProvidersResponse.data) {
+      setServiceProviders(serviceProvidersResponse.data);
+      if (serviceProvidersResponse.data.length > 0) {
+        setSelectedServiceProvider(serviceProvidersResponse.data[0].name);
+      }
+      setDataLoaded(true);
+    }
+  } catch (error) {
+    console.error('An error occurred while fetching data:', error);
+    return { error: true, message: 'Failed to fetch data' };
+  }
+};
+
 export const fetchEmployeesData = async (
   setEmployees: Dispatch<SetStateAction<EmployeeProps[]>>,
   setSelectedEmployee: Dispatch<SetStateAction<string>>,
@@ -77,10 +102,7 @@ export const fetchEmployeeWorkingHours = async (
   calendarDates: string[],
 ) => {
   try {
-    // Initialize an empty array to store the working hours data for all dates.
     const allWorkingHoursDataPromises = [];
-
-    // Loop through the calendarDates array and create a promise for each date.
     for (const date of calendarDates) {
       const workingHoursPromise = axios.get(`${API_URL}/workingHours`, {
         params: {
@@ -91,16 +113,12 @@ export const fetchEmployeeWorkingHours = async (
 
       allWorkingHoursDataPromises.push(workingHoursPromise);
     }
-
-    // Use Promise.all to wait for all promises to resolve.
     const allWorkingHoursDataResponses = await Promise.all(allWorkingHoursDataPromises);
 
-    // Extract the data from the resolved promises and filter out undefined values.
     const allWorkingHoursData = allWorkingHoursDataResponses
       .map((response) => response.data)
-      .filter((data) => data); // Filter out undefined values
+      .filter((data) => data);
 
-    // Set the combined working hours data in the state.
     setWorkingHours(allWorkingHoursData.flatMap((innerArray) => innerArray));
   } catch (error) {
     // Handle errors
@@ -225,7 +243,7 @@ export const fetchCleintsData = async (
   setAllClients: React.Dispatch<React.SetStateAction<any[]>>,
 ) => {
   try {
-    const response = await axios.get('http://localhost:8000/clients');
+    const response = await axios.get(`${API_URL}/clients`);
     setAllClients(response.data);
   } catch (error) {
     console.error('An error occurred while fetching data:', error);
@@ -236,7 +254,7 @@ export const fetchServicesData = async (
   setAllServices: React.Dispatch<React.SetStateAction<any[]>>,
 ) => {
   try {
-    const response = await axios.get('http://localhost:8000/services');
+    const response = await axios.get(`${API_URL}/services`);
     setAllServices(response.data);
   } catch (error) {
     console.error('An error occurred while fetching data:', error);

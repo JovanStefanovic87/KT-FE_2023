@@ -34,7 +34,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ showInfoModal, setShowInfoModal }
         </div>
         <button
           onClick={onClose}
-          className='bg-blue-500 text-white py-2 px-4 rounded mt-4 uppercase font-semibold float-right'
+          className='bg-blue-500 text-white py-2 px-4 rounded mt-12 uppercase font-semibold float-right'
         >
           Zatvori
         </button>

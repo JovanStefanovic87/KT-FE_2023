@@ -1,5 +1,6 @@
+import { useSelector } from 'react-redux';
+import { RootState } from '../../globalRedux/store';
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import SideBarBtn from '../ui/buttons/SideBarBtn';
@@ -8,9 +9,12 @@ import logo from '@/public/images/logo.png';
 import WorkingHoursModal from '../dashboard/workingHours/WhContainer';
 import WorkingHoursForm from '../dashboard/workingHours/WhForm';
 import Backdrop from '../ui/Backdrop';
+import NavBtn from '../ui/buttons/NavBtn';
 
 const Header: React.FC = () => {
-  const pathname = usePathname();
+  const userInfo = useSelector((state: RootState) => state.user);
+  const userType: string = userInfo.userType;
+  const isAdmin = userType === 'admin';
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isWorkingHoursFormOpen, setIsWorkingHoursFormOpen] = useState(false);
   const handleOpenWorkingHoursForm = () => {
@@ -25,14 +29,8 @@ const Header: React.FC = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const isActive = (href: string) => {
-    return pathname === href
-      ? 'text-ktOrange font-bold'
-      : 'transition duration-medium text-white hover:text-ktOrange';
-  };
-
   return (
-    <header className='bg-ktHeaderGray px-4 py-1'>
+    <header className='bg-ktHeaderGray px-4 py-1 fixed h-header w-screen z-10'>
       <div className='flex justify-between items-center'>
         <Backdrop onClick={toggleMobileMenu} isVisible={isMobileMenuOpen} />
         {isMobileMenuOpen ? (
@@ -48,107 +46,29 @@ const Header: React.FC = () => {
             </div>
             <div className='p-4 border-b border-solid border-white'></div>
             <p className='text-white font-semibold mt-2 text-lg'>Navigacija</p>
-            <SideBarBtn onClick={() => {}}>
-              <Link href='/' className={`relative block w-full py-2 px-4 ${isActive('/')}`}>
-                Početna
-              </Link>
-            </SideBarBtn>
-            <SideBarBtn onClick={() => {}}>
-              <Link
-                href='/kalendar'
-                className={`relative block w-full py-2 px-4 ${isActive('/kalendar')}`}
-              >
-                Kalendar
-              </Link>
-            </SideBarBtn>
-            <SideBarBtn onClick={() => {}}>
-              <Link
-                href='/klijenti'
-                className={`relative block w-full py-2 px-4 ${isActive('/klijenti')}`}
-              >
-                Klijenti
-              </Link>
-            </SideBarBtn>
-            <SideBarBtn onClick={() => {}}>
-              <Link
-                href='/usluge'
-                className={`relative block w-full py-2 px-4 ${isActive('/usluge')}`}
-              >
-                Usluge
-              </Link>
-            </SideBarBtn>
-            <SideBarBtn onClick={() => {}}>
-              <Link
-                href='/izvestaji'
-                className={`relative block w-full py-2 px-4 ${isActive('/izvestaji')}`}
-              >
-                Izveštaji
-              </Link>
-            </SideBarBtn>
-            <SideBarBtn onClick={() => {}}>
-              <Link href='/sms' className={`relative block w-full py-2 px-4 ${isActive('/sms')}`}>
-                SMS
-              </Link>
-            </SideBarBtn>
-            <SideBarBtn onClick={() => {}}>
-              <Link
-                href='/profil'
-                className={`relative block w-full py-2 px-4 ${isActive('/profil')}`}
-              >
-                Profil
-              </Link>
-            </SideBarBtn>
-            <SideBarBtn onClick={() => {}}>
-              <Link
-                href='/timovi'
-                className={`relative block w-full py-2 px-4 ${isActive('/timovi')}`}
-              >
-                Timovi
-              </Link>
-            </SideBarBtn>
+            <NavBtn value='Početna' href='/' />
+            <NavBtn isVisible={isAdmin} value='Kalendar' href='/kalendar' />
+            <NavBtn isVisible={!isAdmin} value='Kalendar' href='/klijent_kalendar' />
+            <NavBtn isVisible={isAdmin} value='Klijenti' href='/klijenti' />
+            <NavBtn isVisible={isAdmin} value='Usluge' href='/usluge' />
+            <NavBtn isVisible={isAdmin} value='SMS' href='/sms' />
+            <NavBtn value='Profil' href='/profil' />
+            <NavBtn isVisible={isAdmin} value='Timovi' href='/timovi' />
             <hr className='border-t-8 border-solid border-ktBg'></hr>
             <p className='text-white font-semibold mt-2 text-lg'>Podesavanja</p>
-            <SideBarBtn onClick={handleOpenWorkingHoursForm}>
-              <p className='py-2 px-4'>Radno vreme</p>
-            </SideBarBtn>
+            <SideBarBtn onClick={handleOpenWorkingHoursForm} value='Radno vreme' />
             <div className='flex-grow'></div>
-            <div className='mt-4'>
-              <SideBarBtn onClick={() => {}}>
-                <Link href='/odjava' className='relative block w-full py-2 px-4'>
-                  Odjava
-                </Link>
-              </SideBarBtn>
-            </div>
           </div>
         ) : (
           <div className='hidden md:flex space-x-2 lg:space-x-4'>
-            <Link href='/' className={isActive('/')}>
-              Početna
-            </Link>
-            <Link href='/kalendar' className={isActive('/kalendar')}>
-              Kalendar
-            </Link>
-            <Link href='/klijenti' className={isActive('/klijenti')}>
-              Klijenti
-            </Link>
-            <Link href='/usluge' className={isActive('/usluge')}>
-              Usluge
-            </Link>
-            <Link href='/izvestaji' className={isActive('/izvestaji')}>
-              Izveštaji
-            </Link>
-            <Link href='/sms' className={isActive('/sms')}>
-              SMS
-            </Link>
-            <Link href='/profil' className={isActive('/profil')}>
-              Profil
-            </Link>
-            <Link href='/timovi' className={isActive('/timovi')}>
-              Timovi
-            </Link>
-            <Link href='/odjava' className={isActive('/odjava')}>
-              Odjava
-            </Link>
+            <NavBtn value='Početna' href='/' />
+            <NavBtn isVisible={isAdmin} value='Kalendar' href='/kalendar' />
+            <NavBtn isVisible={!isAdmin} value='Kalendar' href='/klijent_kalendar' />
+            <NavBtn isVisible={isAdmin} value='Klijenti' href='/klijenti' />
+            <NavBtn isVisible={isAdmin} value='Usluge' href='/usluge' />
+            <NavBtn isVisible={isAdmin} value='SMS' href='/sms' />
+            <NavBtn value='Profil' href='/profil' />
+            <NavBtn isVisible={isAdmin} value='Timovi' href='/timovi' />
           </div>
         )}
         <div className='md:hidden'>

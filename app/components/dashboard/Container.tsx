@@ -4,8 +4,8 @@ type ChildrenProps = {
 
 const Container: React.FC<ChildrenProps> = ({ children }) => {
   return (
-    <div className='flex flex-col h-auto bg-sideBarBg'>
-      <aside className='h-full relative shadow-lg overflow-y-auto z-19 hidden md:block '>
+    <div className='hidden fixed md:flex flex-col w-slotsWidth h-main mt-header bg-sideBarBg z-3'>
+      <aside className='h-full relative shadow-lg overflow-y-auto z-19'>
         <nav className='p-4 h-full'>
           <ul className='space-y-2 h-full flex flex-col'>{children}</ul>
         </nav>

@@ -6,14 +6,17 @@ import CloseIconBtn from '../ui/buttons/CloseIconBtn';
 import SubmitBtn from '../ui/buttons/SubmitBtn';
 import SearchInput from '../ui/input/SearchInput';
 import FormContainer from '../ui/forms/FormContainer';
-import ClientsDataList from '../ui/listContainers/ClientDataList';
+import ClientsDataList from '../ui/containers/ClientDataList';
 import PrimaryTitle from '../ui/text/PrimaryTitle';
+import FormHeader from '../ui/forms/FormHeader';
 
 const ClientForm: React.FC<CalendarFormsProps> = ({
   displayForm,
   setDisplayForm,
   newAppointment,
   setNewAppointment,
+  selected,
+  setSelected,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [allClients, setAllClients] = useState<ClientProps[]>([]);
@@ -28,10 +31,6 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
       client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       client.phoneNumber.includes(searchQuery),
   );
-
-  const handleNameClick = (clientId: string) => {
-    setNewAppointment({ ...newAppointment, client: clientId });
-  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -54,7 +53,7 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
       id='clientForm'
       handleFormClose={handleFormClose}
     >
-      <div className='bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1'>
+      <FormHeader>
         <CloseIconBtn onClick={handleFormClose} />
         <PrimaryTitle value='IZBOR KLIJENTA' />
         <SearchInput
@@ -62,11 +61,13 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
           value={searchQuery}
           setState={setSearchQuery}
         />
-      </div>
+      </FormHeader>
       <ClientsDataList
-        filteredClients={filteredClients}
+        clients={filteredClients}
         newAppointment={newAppointment}
         setNewAppointment={setNewAppointment}
+        selected={selected}
+        setSelected={setSelected}
       />
       <SubmitBtn onClick={handleSubmit} isDisabled={!isClientSelected} buttonText='Dalje >>' />
     </FormContainer>

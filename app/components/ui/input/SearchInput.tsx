@@ -10,7 +10,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ dataSearchQuery, value, setSt
     name={dataSearchQuery}
     type='text'
     placeholder='Pretraga'
-    className='p-2 border rounded-md mb-4'
+    className='p-2 border rounded-md'
     value={value}
     onChange={(e) => setState(e.target.value)}
   />

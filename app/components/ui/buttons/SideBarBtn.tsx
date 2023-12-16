@@ -1,15 +1,18 @@
 interface SideBarBtnProps {
-  children: React.ReactNode;
+  value: string;
+  isVisible?: boolean;
   onClick: (event: React.FormEvent) => void;
 }
 
-const SideBarBtn: React.FC<SideBarBtnProps> = ({ onClick, children }) => {
+const SideBarBtn: React.FC<SideBarBtnProps> = ({ onClick, isVisible = true, value }) => {
   return (
     <div
-      className='text-center text-white center  border border-white rounded-md transition duration-300 hover:bg-sideBarBgHover transform hover:translate-x-1 cursor-pointer'
+      className={`${
+        isVisible ? 'flex' : 'hidden'
+      } text-white border border-sideBarBgHover cursor-pointer rounded-md transition duration-300 hover:bg-gray-700 hover:text-white hover:border-gray-600 active:border-white`}
       onClick={onClick}
     >
-      {children}
+      <p className='py-2 px-4 w-full text-center'>{value}</p>
     </div>
   );
 };

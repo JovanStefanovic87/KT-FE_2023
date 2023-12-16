@@ -5,9 +5,10 @@ import { newAppointmentInit } from './initStates';
 import CloseIconBtn from '../ui/buttons/CloseIconBtn';
 import SubmitBtn from '../ui/buttons/SubmitBtn';
 import FormContainer from '../ui/forms/FormContainer';
-import ServiceDataList from '../ui/listContainers/ServiceDataList';
+import ServiceDataList from '../ui/containers/ServiceDataList';
 import SearchInput from '../ui/input/SearchInput';
 import PrimaryTitle from '../ui/text/PrimaryTitle';
+import FormHeader from '../ui/forms/FormHeader';
 
 const ServiceForm: React.FC<CalendarFormsProps> = ({
   displayForm,
@@ -56,7 +57,7 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
       id='serviceForm'
       handleFormClose={handleFormClose}
     >
-      <div className='bg-ktCyan z-11 w-full flex flex-col items-center sticky top-0 mb-4 p-1'>
+      <FormHeader>
         <CloseIconBtn onClick={handleFormClose} />
         <PrimaryTitle value='IZBOR USLUGE' />
         <SearchInput
@@ -64,12 +65,8 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
           value={searchQuery}
           setState={setSearchQuery}
         />
-      </div>
-      <ServiceDataList
-        filteredServices={filteredServices}
-        selected={selected}
-        setSelected={setSelected}
-      />
+      </FormHeader>
+      <ServiceDataList services={filteredServices} selected={selected} setSelected={setSelected} />
       <SubmitBtn
         onClick={handleSubmit}
         isDisabled={!isServiceSelected}

@@ -6,6 +6,7 @@ import activePageReducer from './features/nav/activePageSlice';
 import nameReducer from './features/name/nameSlice';
 import formReducer from './features/form/formSlice';
 import employeeReducer from './features/employee/employeeSlice';
+import userReducer from './features/user/userSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     name: nameReducer,
     form: formReducer,
     employee: employeeReducer,
+    user: userReducer,
   },
 });
 
