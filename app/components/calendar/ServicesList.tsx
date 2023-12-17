@@ -1,10 +1,10 @@
 import { ServiceListProps } from '@/app/helpers/interfaces';
-import ListItemData from '../text/ListItemData';
-import ListItemName from '../text/ListItemName';
-import NewAppointmentListContainer from './NewAppointmentListContainer';
-import NewAppointmentFormContainer from './NewAppointmentFormContainer';
+import ListItemData from '../ui/text/ListItemData';
+import ListItemName from '../ui/text/ListItemName';
+import NewAppointmentListContainer from '../ui/containers/NewAppointmentListContainer';
+import NewAppointmentFormContainer from '../ui/containers/NewAppointmentFormContainer';
 
-const ServiceDataList: React.FC<ServiceListProps> = ({ services, selected, setSelected }) => {
+const ServicesList: React.FC<ServiceListProps> = ({ services, selected, setSelected }) => {
   const handleNameClick = (serviceId: string) => {
     const serviceIndex = selected.indexOf(serviceId);
 
@@ -35,4 +35,4 @@ const ServiceDataList: React.FC<ServiceListProps> = ({ services, selected, setSe
   );
 };
 
-export default ServiceDataList;
+export default ServicesList;

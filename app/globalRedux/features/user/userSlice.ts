@@ -7,7 +7,7 @@ interface UserState {
 
 const initialState: UserState = {
   userId: '',
-  userType: 'guest',
+  userType: 'admin',
 };
 
 const userSlice = createSlice({

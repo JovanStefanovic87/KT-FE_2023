@@ -67,8 +67,13 @@ module.exports = {
         header: 68,
         slotsWidth: 200,
       },
+      spacing: {
+        header: 68,
+      },
       zIndex: {
         3: 3,
+        4:4,
+        5: 5,
       },
     },
   },

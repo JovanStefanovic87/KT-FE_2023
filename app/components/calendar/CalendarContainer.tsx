@@ -1,7 +1,8 @@
 interface Props {
   children: React.ReactNode;
 }
-const Container: React.FC<Props> = ({ children }) => {
+
+const CalendarContainer: React.FC<Props> = ({ children }) => {
   const headerHeight = 68;
 
   return (
@@ -14,4 +15,4 @@ const Container: React.FC<Props> = ({ children }) => {
   );
 };
 
-export default Container;
+export default CalendarContainer;

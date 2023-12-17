@@ -1,8 +1,8 @@
-type ChildrenProps = {
+type Props = {
   children: React.ReactNode;
 };
 
-const whWeekSelectorContainer: React.FC<ChildrenProps> = ({ children }) => {
+const WeekSelectorContainer: React.FC<Props> = ({ children }) => {
   return (
     <div className='mb-4'>
       <label className='block text-lg font-semibold'>Izaberite Nedelju:</label>
@@ -11,4 +11,4 @@ const whWeekSelectorContainer: React.FC<ChildrenProps> = ({ children }) => {
   );
 };
 
-export default whWeekSelectorContainer;
+export default WeekSelectorContainer;

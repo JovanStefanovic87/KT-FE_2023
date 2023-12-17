@@ -1,10 +1,10 @@
 import { ClientsListProps } from '@/app/helpers/interfaces';
-import NewAppointmentListContainer from './NewAppointmentListContainer';
-import ListItemName from '../text/ListItemName';
-import ListItemData from '../text/ListItemData';
-import NewAppointmentFormContainer from './NewAppointmentFormContainer';
+import NewAppointmentListContainer from '../ui/containers/NewAppointmentListContainer';
+import ListItemName from '../ui/text/ListItemName';
+import ListItemData from '../ui/text/ListItemData';
+import NewAppointmentFormContainer from '../ui/containers/NewAppointmentFormContainer';
 
-const ClientsDataList: React.FC<ClientsListProps> = ({
+const ClientsList: React.FC<ClientsListProps> = ({
   clients,
   newAppointment,
   setNewAppointment,
@@ -47,4 +47,4 @@ const ClientsDataList: React.FC<ClientsListProps> = ({
   );
 };
 
-export default ClientsDataList;
+export default ClientsList;

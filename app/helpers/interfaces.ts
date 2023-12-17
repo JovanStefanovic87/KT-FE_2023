@@ -186,7 +186,7 @@ export interface DaysRowProps {
   weekDays: WeekDay[]; // day: string; date: string;
 }
 
-export interface ClientsDataListProps {
+export interface ClientsListProps {
   clients: ClientProps[]; // id: string; name: string; phoneNumber: string; email: string;
   newAppointment: NewAppointmentProps; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   setNewAppointment: React.Dispatch<React.SetStateAction<NewAppointmentProps>>; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
@@ -194,7 +194,7 @@ export interface ClientsDataListProps {
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export interface ServiceDataListProps {
+export interface ServiceListProps {
   services: ServicesProps[]; // id: string; name: string; description: string; duration?: number; price: number;
   selected: string[];
   setSelected: React.Dispatch<React.SetStateAction<string[]>>;

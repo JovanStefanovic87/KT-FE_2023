@@ -6,7 +6,7 @@ import { GiHamburgerMenu } from 'react-icons/gi';
 import SideBarBtn from '../ui/buttons/SideBarBtn';
 import Image from 'next/image';
 import logo from '@/public/images/logo.png';
-import WorkingHoursModal from '../dashboard/workingHours/WhContainer';
+import WorkingHoursModal from '../ui/containers/WorkingHoursContainer';
 import WorkingHoursForm from '../dashboard/workingHours/WhForm';
 import Backdrop from '../ui/Backdrop';
 import NavBtn from '../ui/buttons/NavBtn';

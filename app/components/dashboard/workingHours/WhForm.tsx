@@ -14,7 +14,7 @@ import SubmitBtn from '../../ui/buttons/SubmitBtn';
 import Backdrop from '../../ui/Backdrop';
 import CustomTimeInput from '../../ui/input/CustomTimeInput';
 import WeekSelector from '../../ui/select/WeekSelector';
-import WhWeekSelectorContainer from './WhWeekSelectorContainer';
+import WeekSelectorContainer from '../../ui/containers/WeekSelectorContainer';
 
 const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
   const employeeId = useSelector(
@@ -129,16 +129,16 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
 
   return (
     <>
-      <div className='p-4 bg-white relative h-full flex flex-col z-50'>
+      <div className='p-4 bg-white relative flex flex-col z-50'>
         <h2 className='text-2xl font-semibold mb-4 text-center'>{`Podešavanje Radnog Vremena - ${employeeId}`}</h2>
-        <WhWeekSelectorContainer>
+        <WeekSelectorContainer>
           <WeekSelector
             value={selectedWeek}
             onChange={(value) => setSelectedWeek(value)}
             weekOptions={weekOptions}
             selectStyle='border border-gray-300 rounded p-2 w-full'
           />
-        </WhWeekSelectorContainer>
+        </WeekSelectorContainer>
         <div className='h-workingHoursModalContent overflow-y-auto overflow-x-hidden rounded-lg flex-grow py-5 bg-zinc-50'>
           <div className='flex flex-wrap -mx-4 px-8 gap-1'>
             {workingHours.map((wh, i) => {

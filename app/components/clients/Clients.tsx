@@ -3,8 +3,12 @@
 import React, { useState } from 'react';
 import PrimaryBtn from '../ui/buttons/PrimaryBtn';
 import SearchInput from '../ui/input/SearchInput';
+import ListItemContainer from '../ui/containers/ListItemContainer';
+import ListItemName from '../ui/text/ListItemName';
 import ListContainer from '../ui/containers/ListContainer';
-import FormItemName from '../ui/text/ListItemName';
+import ListItemData from '../ui/text/ListItemData';
+import ListItemsContainer from '../ui/containers/ListItemsContainer';
+import ListHeadContainer from '../ui/containers/ListHeadContainer';
 
 const clients = [
   { id: 1, name: 'Client 1', phoneNumber: '123-456-7890', email: 'client1@example.com' },
@@ -31,33 +35,21 @@ const ClientList: React.FC = () => {
   );
 
   return (
-    <div className='container mx-auto mt-8 w-full'>
-      <div className='flex justify-between items-center py-4'>
+    <ListContainer>
+      <ListHeadContainer>
         <PrimaryBtn onClick={() => {}} isDisabled={false} buttonText='Novi klijent' />
         <SearchInput dataSearchQuery={searchTerm} value={searchTerm} setState={setSearchTerm} />
-      </div>
-      <div className='flex overflow-y-auto h-list list-none'>
-        <div className='grid grid-cols-1 w-full md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {filteredClients.map((client, index) => (
-            <ListContainer key={client.id} client={client}>
-              <FormItemName index={index} title={client.name} />
-              <p className='mb-1'>
-                <b>
-                  <em>Br. telefona:</em>
-                </b>
-                {` ${client.phoneNumber}`}
-              </p>
-              <p>
-                <b>
-                  <em>Email:</em>
-                </b>
-                {` ${client.email}`}
-              </p>
-            </ListContainer>
-          ))}
-        </div>
-      </div>
-    </div>
+      </ListHeadContainer>
+      <ListItemsContainer>
+        {filteredClients.map((client, index) => (
+          <ListItemContainer key={client.id} client={client}>
+            <ListItemName index={index} title={client.name} />
+            <ListItemData title='Br. telefona' item={client.phoneNumber} />
+            <ListItemData title='Email' item={client.email} />
+          </ListItemContainer>
+        ))}
+      </ListItemsContainer>
+    </ListContainer>
   );
 };
 

@@ -2,10 +2,11 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../../globalRedux/store';
 import { useState } from 'react';
-import Container from './Container';
+import DashboardContainer from '../ui/containers/DashboardContainer';
 import WorkingHoursForm from './workingHours/WhForm';
-import WorkingHoursModal from './workingHours/WhContainer';
+import WorkingHoursContainer from '../ui/containers/WorkingHoursContainer';
 import SideBarBtn from '../ui/buttons/SideBarBtn';
+import FlexGrow from '../ui/FlexGrow';
 
 const Dashboard = () => {
   const userInfo = useSelector((state: RootState) => state.user);
@@ -22,9 +23,9 @@ const Dashboard = () => {
   };
 
   return (
-    <Container>
+    <DashboardContainer>
       <SideBarBtn onClick={handleOpenWorkingHoursForm} isVisible={isAdmin} value='Radno vreme' />
-      <div className='flex-grow'></div>
+      <FlexGrow />
       <div className='mt-4'>
         <SideBarBtn
           onClick={() => {
@@ -33,10 +34,10 @@ const Dashboard = () => {
           value='Odjavi se'
         />
       </div>
-      <WorkingHoursModal isOpen={isWorkingHoursFormOpen}>
+      <WorkingHoursContainer isOpen={isWorkingHoursFormOpen}>
         <WorkingHoursForm handleCloseWorkingHoursForm={handleCloseWorkingHoursForm} />
-      </WorkingHoursModal>
-    </Container>
+      </WorkingHoursContainer>
+    </DashboardContainer>
   );
 };
 
