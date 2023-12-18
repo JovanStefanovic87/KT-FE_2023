@@ -1,14 +1,14 @@
-interface BackdropProps {
+interface Props {
   onClick: (event: React.FormEvent) => void;
   isVisible: boolean;
 }
 
-const Backdrop: React.FC<BackdropProps> = ({ onClick, isVisible }) => {
+const Backdrop: React.FC<Props> = ({ onClick, isVisible }) => {
   return (
     <div
       className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 ${
         isVisible ? 'flex' : 'hidden'
-      } justify-center items-center z-2`}
+      } justify-center items-center z-4`}
       onClick={onClick}
     ></div>
   );

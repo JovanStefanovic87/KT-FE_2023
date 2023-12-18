@@ -1,5 +1,6 @@
 import { animationClass } from '@/app/helpers/universalFunctions';
-import InfoModalContainer from './ModalContainer';
+import InfoModalContainer from '../containers/ModalContainer';
+import BlueTitle from '../text/BlueTitle';
 
 interface InfoModalType {
   isVisible: boolean;
@@ -29,7 +30,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ showInfoModal, setShowInfoModal }
         onClick={handleModalClick}
       >
         <div className='font-sans text-sm md:text-base text-gray-700 leading-6 tracking-wide mb-4'>
-          <h2 className='text-xl md:text-3xl font-bold text-blue-600 mb-4'>Obaveštenje</h2>
+          <BlueTitle title='Obaveštenje' />
           <p className='text-sm md:text-base mb-2'>{showInfoModal.text}</p>
         </div>
         <button

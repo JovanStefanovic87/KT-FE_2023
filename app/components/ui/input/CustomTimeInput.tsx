@@ -1,11 +1,11 @@
 import React, { ChangeEvent } from 'react';
 
-interface CustomTimeInputProps {
+interface Props {
   value: string;
   onChange: (value: string) => void;
 }
 
-const CustomTimeInput: React.FC<CustomTimeInputProps> = ({ value, onChange }) => {
+const CustomTimeInput: React.FC<Props> = ({ value, onChange }) => {
   // Function to handle input change and format the value to 24-hour format
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const inputValue = e.target.value;

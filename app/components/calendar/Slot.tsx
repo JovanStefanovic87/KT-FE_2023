@@ -1,5 +1,5 @@
 import { SlotProps } from '../../helpers/interfaces';
-import AppointmentContainer from './AppointmentContainer';
+import AppointmentContainer from '../ui/containers/AppointmentContainer';
 import AppointmentLabel from './AppointmentLabel';
 import AppointmentButton from '../ui/buttons/AppointmentBtn';
 import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
@@ -82,7 +82,7 @@ const Slot: React.FC<SlotProps> = ({
         }
 
         return (
-          <div className='col-span-1 border-2 border-solid border-transparent' key={day.day}>
+          <div className='col-span-1 border-2 border-solid border-transparent z-0' key={day.day}>
             {dataLoaded ? (
               workingHours &&
               workingHours.length > 0 &&

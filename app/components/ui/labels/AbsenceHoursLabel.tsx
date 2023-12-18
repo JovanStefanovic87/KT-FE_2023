@@ -1,9 +1,9 @@
-interface AbsenceHoursLabelProps {
+interface Props {
   time: string;
   absence: string;
 }
 
-const AbsenceHoursLabel: React.FC<AbsenceHoursLabelProps> = ({ time, absence }) => {
+const AbsenceHoursLabel: React.FC<Props> = ({ time, absence }) => {
   const colorMap: Record<string, string> = {
     'Godišnji odmor': 'bg-sky-950',
     Bolovanje: 'bg-red-950',

@@ -1,5 +1,9 @@
 import { animationClass } from '@/app/helpers/universalFunctions';
-import ModalContainer from './ModalContainer';
+import ModalContainer from '../containers/ModalContainer';
+import BlueTitle from '../text/BlueTitle';
+import PrimaryButton from '../buttons/PrimaryButton';
+import ButtonMtRightFloatCintainer from '../containers/ButtonMtRightFloatCintainer';
+import CommonText from '../text/CommonText';
 
 interface InfoModalType {
   isVisible: boolean;
@@ -31,15 +35,12 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) =>
         onClick={handleModalClick}
       >
         <div className='font-sans text-sm md:text-base text-gray-700 leading-6 tracking-wide mb-4'>
-          <h2 className='text-xl md:text-3xl font-bold text-blue-600 mb-4'>Greška</h2>
-          <p className='text-sm md:text-base mb-2'>{errorModal.text}</p>
+          <BlueTitle title='Greška' />
+          <CommonText>{errorModal.text}</CommonText>
         </div>
-        <button
-          onClick={onClose}
-          className='bg-blue-500 text-white py-2 px-4 rounded mt-4 uppercase font-semibold float-right'
-        >
-          Zatvori
-        </button>
+        <ButtonMtRightFloatCintainer>
+          <PrimaryButton onClick={onClose} buttonText='Zatvori' type='close' />
+        </ButtonMtRightFloatCintainer>
       </div>
     </ModalContainer>
   );

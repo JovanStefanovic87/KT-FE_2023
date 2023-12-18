@@ -2,7 +2,7 @@ interface Props {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isDisabled?: boolean;
   buttonText: string;
-  type: 'close' | 'submit' | 'delete';
+  type: 'default' | 'close' | 'submit' | 'delete';
 }
 
 const PrimaryButton: React.FC<Props> = ({ onClick, isDisabled, buttonText = 'default', type }) => {

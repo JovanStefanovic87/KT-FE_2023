@@ -1,10 +1,10 @@
-interface SearchInputProps {
+interface Props {
   dataSearchQuery: string;
   value: string;
   setState: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ dataSearchQuery, value, setState }) => (
+const SearchInput: React.FC<Props> = ({ dataSearchQuery, value, setState }) => (
   <input
     id={dataSearchQuery}
     name={dataSearchQuery}

@@ -9,6 +9,7 @@ import SearchInput from '../ui/input/SearchInput';
 import PrimaryTitle from '../ui/text/PrimaryTitle';
 import FormHeader from '../ui/forms/FormHeader';
 import PrimaryButton from '../ui/buttons/PrimaryButton';
+import ButtonMtRightFloatCintainer from '../ui/containers/ButtonMtRightFloatCintainer';
 
 const ServiceForm: React.FC<CalendarFormsProps> = ({
   displayForm,
@@ -67,12 +68,14 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
         />
       </FormHeader>
       <ServiceDataList services={filteredServices} selected={selected} setSelected={setSelected} />
-      <PrimaryButton
-        onClick={handleSubmit}
-        isDisabled={!isServiceSelected}
-        buttonText='Rezerviši termin >>'
-        type='submit'
-      />
+      <ButtonMtRightFloatCintainer>
+        <PrimaryButton
+          onClick={handleSubmit}
+          isDisabled={!isServiceSelected}
+          buttonText='Rezerviši termin >>'
+          type='submit'
+        />
+      </ButtonMtRightFloatCintainer>
     </FormContainer>
   );
 };

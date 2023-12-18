@@ -1,5 +1,10 @@
 import { AppointmentModalProps } from '@/app/helpers/interfaces';
-import ModalContainer from './ModalContainer';
+import ModalContainer from '../containers/ModalContainer';
+import BlueTitle from '../text/BlueTitle';
+import CommonText from '../text/CommonText';
+import GreenText from '../text/GreenText';
+import PrimaryButton from '../buttons/PrimaryButton';
+import ButtonMtRightFloatCintainer from '../containers/ButtonMtRightFloatCintainer';
 
 export const AppointmentModal: React.FC<AppointmentModalProps> = ({
   totalPrice,
@@ -25,36 +30,21 @@ export const AppointmentModal: React.FC<AppointmentModalProps> = ({
         className={`bg-white rounded-lg p-4 md:p-8 transition-all transform ${animationClass} shadow-lg`}
         onClick={handleModalClick}
       >
-        <div className='font-sans text-sm md:text-base text-gray-700 leading-6 tracking-wide mb-4'></div>
-        <div>
-          <h2 className='text-xl md:text-3xl font-bold text-blue-600 mb-4'>
-            Uspešno ste zakazali termin
-          </h2>
-          <p className='text-sm md:text-base mb-2'>
-            Termin:{' '}
-            {`${appontmentInfo.appointmentData?.date} u ${appontmentInfo.appointmentData?.time}h`}
-          </p>
-          <p className='text-sm md:text-base mb-2'>
-            Klijent: {appontmentInfo.appointmentData?.client}
-          </p>
-          <p className='text-sm md:text-base mb-2'>Usluge: {appointmentServices.join(', ')}</p>
-          <p className='text-sm md:text-base mb-2'>
-            Salon: {appontmentInfo.appointmentData?.serviceProvider}
-          </p>
-          <p className='text-sm md:text-base mb-2'>
-            Radnik: {appontmentInfo.appointmentData?.employee}
-          </p>
-          <p className='text-lg md:text-xl font-bold text-green-600 mb-2'>
-            Ukupna cena: {`${totalPrice(appointmentServices, services)} RSD`}{' '}
-          </p>
-        </div>
+        <BlueTitle title='Uspešno ste zakazali termin' />
+        <CommonText>
+          Termin:{' '}
+          {`${appontmentInfo.appointmentData?.date} u ${appontmentInfo.appointmentData?.time}h`}
+        </CommonText>
+        <CommonText>Klijent: {appontmentInfo.appointmentData?.client}</CommonText>
+        <CommonText>Usluge: {appointmentServices.join(', ')}</CommonText>
+        <CommonText>Salon: {appontmentInfo.appointmentData?.serviceProvider}</CommonText>
+        <CommonText>Radnik: {appontmentInfo.appointmentData?.employee}</CommonText>
+        <CommonText>Ukupna cena: {`${totalPrice(appointmentServices, services)} RSD`} </CommonText>
+        <GreenText>Ukupna cena: {`${totalPrice(appointmentServices, services)} RSD`} </GreenText>
       </div>
-      <button
-        onClick={onClose}
-        className='bg-blue-500 text-white py-2 px-4 rounded mt-4 uppercase font-semibold float-right'
-      >
-        Zatvori
-      </button>
+      <ButtonMtRightFloatCintainer>
+        <PrimaryButton onClick={onClose} buttonText='Zatvori' type='close' />
+      </ButtonMtRightFloatCintainer>
     </ModalContainer>
   );
 };

@@ -9,6 +9,7 @@ import ClientsDataList from '../ui/containers/ClientDataList';
 import PrimaryTitle from '../ui/text/PrimaryTitle';
 import FormHeader from '../ui/forms/FormHeader';
 import PrimaryButton from '../ui/buttons/PrimaryButton';
+import ButtonMtRightFloatCintainer from '../ui/containers/ButtonMtRightFloatCintainer';
 
 const ClientForm: React.FC<CalendarFormsProps> = ({
   displayForm,
@@ -39,12 +40,14 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
       clientForm: false,
       serviceForm: true,
     });
+    setSelected([]);
   };
 
   const handleFormClose = (event: React.FormEvent) => {
     event.preventDefault();
     setDisplayForm({ ...displayForm, clientForm: false });
     setNewAppointment(newAppointmentInit);
+    setSelected([]);
   };
 
   return (
@@ -69,12 +72,14 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
         selected={selected}
         setSelected={setSelected}
       />
-      <PrimaryButton
-        onClick={handleSubmit}
-        isDisabled={!isClientSelected}
-        buttonText='Dalje >>'
-        type='submit'
-      />
+      <ButtonMtRightFloatCintainer>
+        <PrimaryButton
+          onClick={handleSubmit}
+          isDisabled={!isClientSelected}
+          buttonText='Dalje >>'
+          type='submit'
+        />
+      </ButtonMtRightFloatCintainer>
     </FormContainer>
   );
 };
