@@ -3,12 +3,12 @@ import { fetchServicesData } from '@/app/helpers/apiHandlers';
 import { ServicesProps, CalendarFormsProps } from '@/app/helpers/interfaces';
 import { newAppointmentInit } from './initStates';
 import CloseIconBtn from '../ui/buttons/CloseIconBtn';
-import SubmitBtn from '../ui/buttons/SubmitBtn';
 import FormContainer from '../ui/forms/FormContainer';
 import ServiceDataList from '../ui/containers/ServiceDataList';
 import SearchInput from '../ui/input/SearchInput';
 import PrimaryTitle from '../ui/text/PrimaryTitle';
 import FormHeader from '../ui/forms/FormHeader';
+import PrimaryButton from '../ui/buttons/PrimaryButton';
 
 const ServiceForm: React.FC<CalendarFormsProps> = ({
   displayForm,
@@ -67,10 +67,11 @@ const ServiceForm: React.FC<CalendarFormsProps> = ({
         />
       </FormHeader>
       <ServiceDataList services={filteredServices} selected={selected} setSelected={setSelected} />
-      <SubmitBtn
+      <PrimaryButton
         onClick={handleSubmit}
         isDisabled={!isServiceSelected}
         buttonText='Rezerviši termin >>'
+        type='submit'
       />
     </FormContainer>
   );

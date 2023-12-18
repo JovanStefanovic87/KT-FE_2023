@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import PrimaryBtn from '../ui/buttons/PrimaryBtn';
+import PrimaryBtn from '../ui/buttons/PrimaryButton';
 import SearchInput from '../ui/input/SearchInput';
 import ListItemContainer from '../ui/containers/ListItemContainer';
 import ListItemName from '../ui/text/ListItemName';
@@ -37,7 +37,12 @@ const ClientList: React.FC = () => {
   return (
     <ListContainer>
       <ListHeadContainer>
-        <PrimaryBtn onClick={() => {}} isDisabled={false} buttonText='Novi klijent' />
+        <PrimaryBtn
+          onClick={() => {}}
+          isDisabled={false}
+          buttonText='Novi klijent'
+          type='default'
+        />
         <SearchInput dataSearchQuery={searchTerm} value={searchTerm} setState={setSearchTerm} />
       </ListHeadContainer>
       <ListItemsContainer>

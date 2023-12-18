@@ -3,7 +3,7 @@ import { dayTranslations } from '@/app/helpers/mock';
 
 const DaysRow: React.FC<DaysRowProps> = ({ weekDays }) => {
   return (
-    <div className='flex sticky top-0 mb-0.5 z-4 bg-ktBg'>
+    <div className='flex sticky top-0 mb-0.5 z-3 bg-ktBg'>
       {weekDays.map((dayInfo) => (
         <div
           key={dayInfo.day}

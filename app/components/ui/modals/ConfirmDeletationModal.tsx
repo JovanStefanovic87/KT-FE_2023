@@ -1,7 +1,6 @@
 import { animationClass } from '@/app/helpers/universalFunctions';
 import ModalContainer from './ModalContainer';
-import DeleteBtn from '../buttons/DeleteBtn';
-import CloseBtn from '../buttons/CloseBtn';
+import PrimaryButton from '../buttons/PrimaryButton';
 
 interface ConfirmDeletationModalProps {
   subject: string;
@@ -34,8 +33,8 @@ const ConfirmDeletationModal: React.FC<ConfirmDeletationModalProps> = ({
           {`Da li ste sigurni da želite obrisati ${subject}`}
         </div>
         <div className='flex justify-end'>
-          <CloseBtn onClose={onClose} />
-          <DeleteBtn onDelete={submit} />
+          <PrimaryButton onClick={onClose} buttonText='Zatvori' type='submit' />
+          <PrimaryButton onClick={submit} buttonText='Obriši' type='delete' />
         </div>
       </div>
     </ModalContainer>

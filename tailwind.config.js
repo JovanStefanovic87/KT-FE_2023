@@ -38,8 +38,6 @@ module.exports = {
         main: 'calc(100dvh - 68px)',
         list: 'calc(100dvh - 200px)',
         logo: 55,
-        workingHoursModal: '96vh',
-        workingHoursModalContent: '50vh',
       },
       width: {
         slotsWidth: 200,
@@ -74,6 +72,8 @@ module.exports = {
         3: 3,
         4:4,
         5: 5,
+        6: 6,
+        7: 7,
       },
     },
   },

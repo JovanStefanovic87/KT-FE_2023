@@ -7,7 +7,7 @@ import SideBarBtn from '../ui/buttons/SideBarBtn';
 import Image from 'next/image';
 import logo from '@/public/images/logo.png';
 import WorkingHoursModal from '../ui/containers/WorkingHoursContainer';
-import WorkingHoursForm from '../dashboard/workingHours/WhForm';
+import WorkingHoursForm from '../workingHours/WorkingHoursForm';
 import Backdrop from '../ui/Backdrop';
 import NavBtn from '../ui/buttons/NavBtn';
 

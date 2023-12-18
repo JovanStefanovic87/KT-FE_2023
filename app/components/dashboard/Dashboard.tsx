@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../globalRedux/store';
 import { useState } from 'react';
 import DashboardContainer from '../ui/containers/DashboardContainer';
-import WorkingHoursForm from './workingHours/WhForm';
+import WorkingHoursForm from '../workingHours/WorkingHoursForm';
 import WorkingHoursContainer from '../ui/containers/WorkingHoursContainer';
 import SideBarBtn from '../ui/buttons/SideBarBtn';
 import FlexGrow from '../ui/FlexGrow';

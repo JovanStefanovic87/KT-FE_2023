@@ -36,13 +36,12 @@ import Container from './Container';
 import DaysRow from './DaysRow';
 import SelectContainer from '../ui/select/SelectContainer';
 import ServiceForm from './ServiceForm';
-import ArrowButtonLeft from '../ui/buttons/ArrowButtonLeft';
-import ArrowButtonRight from '../ui/buttons/ArrowButtonRight';
 import AppointmentModal from '../ui/modals/AppointmentModal';
 import ErrorModal from '../ui/modals/ErrorModal';
 import Spinner from '../ui/Spinner';
 import UnsetWorkingHoursText from '../ui/text/UnsetWorkingHoursText';
 import SlotsContainer from '../ui/containers/SlotsContainer';
+import ArrowBtn from '../ui/buttons/ArrowBtn';
 
 const ClientCalendar: React.FC = () => {
   const dispatch = useDispatch();
@@ -155,9 +154,10 @@ const ClientCalendar: React.FC = () => {
       />
       <Container>
         <SelectContainer>
-          <ArrowButtonLeft
+          <ArrowBtn
             onClick={() => setSelectedWeek(selectedWeek - 1)}
             disabled={selectedWeek === 0}
+            direction='left'
           />
           <WeekSelect
             value={selectedWeek}
@@ -166,9 +166,10 @@ const ClientCalendar: React.FC = () => {
             selectStyle='p-2.5 bg-ktHeaderGray border border-ktAppointmentBg text-ktOrange text-sm lg:text-base rounded-lg  placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 cursor-pointer'
           />
 
-          <ArrowButtonRight
+          <ArrowBtn
             onClick={() => setSelectedWeek(selectedWeek + 1)}
             disabled={selectedWeek === weekOptions.length - 1}
+            direction='right'
           />
         </SelectContainer>
         <SlotsContainer>

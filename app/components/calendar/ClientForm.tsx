@@ -3,12 +3,12 @@ import { fetchCleintsData } from '@/app/helpers/apiHandlers';
 import { ClientProps, CalendarFormsProps } from '@/app/helpers/interfaces';
 import { newAppointmentInit } from './initStates';
 import CloseIconBtn from '../ui/buttons/CloseIconBtn';
-import SubmitBtn from '../ui/buttons/SubmitBtn';
 import SearchInput from '../ui/input/SearchInput';
 import FormContainer from '../ui/forms/FormContainer';
 import ClientsDataList from '../ui/containers/ClientDataList';
 import PrimaryTitle from '../ui/text/PrimaryTitle';
 import FormHeader from '../ui/forms/FormHeader';
+import PrimaryButton from '../ui/buttons/PrimaryButton';
 
 const ClientForm: React.FC<CalendarFormsProps> = ({
   displayForm,
@@ -69,7 +69,12 @@ const ClientForm: React.FC<CalendarFormsProps> = ({
         selected={selected}
         setSelected={setSelected}
       />
-      <SubmitBtn onClick={handleSubmit} isDisabled={!isClientSelected} buttonText='Dalje >>' />
+      <PrimaryButton
+        onClick={handleSubmit}
+        isDisabled={!isClientSelected}
+        buttonText='Dalje >>'
+        type='submit'
+      />
     </FormContainer>
   );
 };

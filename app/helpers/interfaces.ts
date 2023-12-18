@@ -113,7 +113,7 @@ export interface GenerateSlotsRowProps {
   weekDays: WeekDay[]; // day: string; date: string;
   weekDates: string[];
   dataLoaded: boolean;
-  workingHours: WorkingHoursStateProps[]; // id?: string; employeeId?: string; date: string; day: string; morningFrom: string; morningTo: string; afternoonFrom: string; afternoonTo: string; absence: string;
+  workingHours: WorkingHoursProps[]; // id?: string; employeeId?: string; date: string; day: string; morningFrom: string; morningTo: string; afternoonFrom: string; afternoonTo: string; absence: string;
   appointments: AppointmentProps[]; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   setAppointments: React.Dispatch<React.SetStateAction<AppointmentProps[]>>; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   time: string;
@@ -131,7 +131,7 @@ export interface GenerateSlotsRowProps {
 export interface SlotProps {
   time: string;
   dataLoaded: boolean;
-  workingHours: WorkingHoursStateProps[]; // id?: string; employeeId?: string; date: string; day: string; morningFrom: string; morningTo: string; afternoonFrom: string; afternoonTo: string; absence: string;
+  workingHours: WorkingHoursProps[]; // id?: string; employeeId?: string; date: string; day: string; morningFrom: string; morningTo: string; afternoonFrom: string; afternoonTo: string; absence: string;
   appointments: AppointmentProps[]; // id: string; date: string; day: string; time: string; client: string; services: string[]; price: number; employee: string; serviceProvider: string;
   handleAppointmentButton: Function;
   setDisplayForm: Function;
@@ -142,7 +142,7 @@ export interface SlotProps {
   weekDays: WeekDay[]; // day: string; date: string;
 }
 
-export interface WorkingHoursStateProps {
+export interface WorkingHoursProps {
   id?: string;
   employeeId?: string;
   date: string;

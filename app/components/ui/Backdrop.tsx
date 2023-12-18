@@ -8,7 +8,7 @@ const Backdrop: React.FC<BackdropProps> = ({ onClick, isVisible }) => {
     <div
       className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 ${
         isVisible ? 'flex' : 'hidden'
-      } justify-center items-center z-20`}
+      } justify-center items-center z-2`}
       onClick={onClick}
     ></div>
   );
