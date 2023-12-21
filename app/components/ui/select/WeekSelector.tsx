@@ -1,4 +1,4 @@
-interface WeekSelectProps {
+interface Props {
   value: number;
   onChange: (value: number) => void;
   weekOptions: {
@@ -9,7 +9,7 @@ interface WeekSelectProps {
   selectStyle: string;
 }
 
-const WeekSelector: React.FC<WeekSelectProps> = ({ value, onChange, weekOptions, selectStyle }) => {
+const WeekSelector: React.FC<Props> = ({ value, onChange, weekOptions, selectStyle }) => {
   return (
     <select
       id='selectedWeek'

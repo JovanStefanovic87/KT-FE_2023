@@ -1,10 +1,10 @@
-interface SideBarBtnProps {
+interface Props {
   value: string;
   isVisible?: boolean;
   onClick: (event: React.FormEvent) => void;
 }
 
-const SideBarBtn: React.FC<SideBarBtnProps> = ({ onClick, isVisible = true, value }) => {
+const SideBarBtn: React.FC<Props> = ({ onClick, isVisible = true, value }) => {
   return (
     <div
       className={`${

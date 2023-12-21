@@ -7,12 +7,12 @@ interface InfoModalType {
   text: string;
 }
 
-interface InfoModalProps {
-  showInfoModal: InfoModalType; // isVisible: boolean; text: string;
-  setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>; // isVisible: boolean; text: string;
+interface Props {
+  showInfoModal: InfoModalType;
+  setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>;
 }
 
-const InfoModal: React.FC<InfoModalProps> = ({ showInfoModal, setShowInfoModal }) => {
+const InfoModal: React.FC<Props> = ({ showInfoModal, setShowInfoModal }) => {
   const isVisible = showInfoModal.isVisible;
 
   const handleModalClick = (e: React.MouseEvent) => {

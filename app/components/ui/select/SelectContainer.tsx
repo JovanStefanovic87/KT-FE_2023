@@ -1,8 +1,8 @@
-type ChildrenProps = {
+type Props = {
   children: React.ReactNode;
 };
 
-const SelectContainer: React.FC<ChildrenProps> = ({ children }) => {
+const SelectContainer: React.FC<Props> = ({ children }) => {
   return (
     <div className='flex self-center justify-center gap-x-6 w-calendar-sm md:w-calendar-lg'>
       {children}

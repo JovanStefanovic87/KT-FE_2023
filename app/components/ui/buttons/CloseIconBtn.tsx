@@ -1,8 +1,8 @@
-interface FormButtonProps {
+interface Props {
   onClick: (event: React.FormEvent) => void;
 }
 
-const CloseBtn: React.FC<FormButtonProps> = ({ onClick }) => {
+const CloseBtn: React.FC<Props> = ({ onClick }) => {
   return (
     <button
       className='absolute top-2 right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center focus:outline-none focus:bg-red-600'

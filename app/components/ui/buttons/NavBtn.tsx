@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-interface NavBtnProps {
+interface Props {
   value: string;
   isVisible?: boolean;
   onClick?: (event: React.FormEvent) => void;
   href: string;
 }
 
-const NavBtn: React.FC<NavBtnProps> = ({ isVisible = true, value, href }) => {
+const NavBtn: React.FC<Props> = ({ isVisible = true, value, href }) => {
   const pathname = usePathname();
 
   const isActive = () => {

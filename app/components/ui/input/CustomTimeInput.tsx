@@ -6,7 +6,6 @@ interface Props {
 }
 
 const CustomTimeInput: React.FC<Props> = ({ value, onChange }) => {
-  // Function to handle input change and format the value to 24-hour format
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const inputValue = e.target.value;
     const parts = inputValue.split(':');

@@ -1,8 +1,8 @@
-type ChildrenProps = {
+type Props = {
   children: React.ReactNode;
 };
 
-const AppointmentServicesNameContainer: React.FC<ChildrenProps> = ({ children }) => (
+const AppointmentServicesNameContainer: React.FC<Props> = ({ children }) => (
   <ul className='list-disc'>{children}</ul>
 );
 

@@ -1,13 +1,13 @@
 import Backdrop from '../Backdrop';
 import { animationClass } from '@/app/helpers/universalFunctions';
 
-interface ModalContainerProps {
+interface Props {
   isVisible: boolean;
   onClose: (event: React.FormEvent<Element>) => void;
   children?: React.ReactNode;
 }
 
-const ModalContainer: React.FC<ModalContainerProps> = ({ isVisible, onClose, children }) => {
+const ModalContainer: React.FC<Props> = ({ isVisible, onClose, children }) => {
   const handleModalClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };

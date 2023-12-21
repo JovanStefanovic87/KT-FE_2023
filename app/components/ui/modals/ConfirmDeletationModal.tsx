@@ -3,7 +3,7 @@ import ModalContainer from '../containers/ModalContainer';
 import PrimaryButton from '../buttons/PrimaryButton';
 import CommonText from '../text/CommonText';
 
-interface ConfirmDeletationModalProps {
+interface Props {
   subject: string;
   isVisible: boolean;
   SetState: React.Dispatch<
@@ -12,12 +12,7 @@ interface ConfirmDeletationModalProps {
   submit: (event: React.FormEvent<Element>) => void;
 }
 
-const ConfirmDeletationModal: React.FC<ConfirmDeletationModalProps> = ({
-  subject,
-  SetState,
-  isVisible,
-  submit,
-}) => {
+const ConfirmDeletationModal: React.FC<Props> = ({ subject, SetState, isVisible, submit }) => {
   const onClose = () => {
     SetState((prevState: any) => ({ ...prevState, isVisible: false }));
   };

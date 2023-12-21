@@ -10,14 +10,14 @@ interface InfoModalType {
   text: string;
 }
 
-interface ErrorModalType extends InfoModalType {} //showInfoModal: InfoModalType; setShowInfoModal: React.Dispatch<React.SetStateAction<InfoModalType>>;
+interface ErrorModalType extends InfoModalType {}
 
-interface ErrorModalProps {
-  errorModal: ErrorModalType; // isVisible: boolean; text: string;
-  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>; // isVisible: boolean; text: string;
+interface Props {
+  errorModal: ErrorModalType;
+  setErrorModal: React.Dispatch<React.SetStateAction<ErrorModalType>>;
 }
 
-const ErrorModal: React.FC<ErrorModalProps> = ({ errorModal, setErrorModal }) => {
+const ErrorModal: React.FC<Props> = ({ errorModal, setErrorModal }) => {
   const isVisible = errorModal.isVisible;
 
   const handleModalClick = (e: React.MouseEvent) => {
