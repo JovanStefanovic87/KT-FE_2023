@@ -3,11 +3,11 @@ interface Props {
   time: string;
 }
 
-const AppointmentBtn: React.FC<Props> = ({ onClick, time }) => {
+const AppointmentBtnDayView: React.FC<Props> = ({ onClick, time }) => {
   return (
     <button
       onClick={onClick}
-      className='bg-ktCyan text-white min-w-slotsWidth max-w-slotsWidth h-appointmentSlot select-none rounded-lg'
+      className={`bg-ktCyan text-white w-full h-appointmentSlot select-none rounded-lg`}
     >
       <span className='text-ktAppointmentTime text-xl font-bold'>{time}</span>
       <div>REZERVIŠI TERMIN</div>
@@ -15,4 +15,4 @@ const AppointmentBtn: React.FC<Props> = ({ onClick, time }) => {
   );
 };
 
-export default AppointmentBtn;
+export default AppointmentBtnDayView;

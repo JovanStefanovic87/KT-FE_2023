@@ -1,20 +1,19 @@
-import { SlotProps } from '../../helpers/interfaces';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../globalRedux/store';
-import AppointmentContainer from '../ui/containers/AppointmentContainer';
-import AppointmentLabel from '../ui/labels/AppointmentLabel';
-import AppointmentButton from '../ui/buttons/AppointmentBtn';
-import UnworkingHoursLabel from '../ui/labels/UnworkingHoursLabel';
-import AbsenceHoursLabel from '../ui/labels/AbsenceHoursLabel';
+import { SlotProps } from '../../../helpers/interfaces';
+import AppointmentContainer from '../../ui/containers/AppointmentContainer';
+import AppointmentLabel from '../../ui/labels/AppointmentLabel';
+import AppointmentButton from '../../ui/buttons/AppointmentBtn';
+import UnworkingHoursLabel from '../../ui/labels/UnworkingHoursLabel';
+import SpinnerSmall from '../../ui/SpinnerSmall';
+import AbsenceHoursLabel from '../../ui/labels/AbsenceHoursLabel';
 import {
   isWorkingHour,
   isAbsenceWeek,
   capitalizeFirstLetter,
 } from '@/app/helpers/universalFunctions';
-import AppointmentBtnDayView from '../ui/buttons/AppointmentBtnDayView';
 
-const Slot: React.FC<SlotProps> = ({
+const SlotPerDay: React.FC<SlotProps> = ({
   time,
+  dataLoaded,
   workingHours,
   appointments,
   handleAppointmentButton,
@@ -25,8 +24,6 @@ const Slot: React.FC<SlotProps> = ({
   setShowConfirmation,
   weekDays,
 }) => {
-  const calendarMode = useSelector((state: RootState) => state.calendarMode);
-  const isWeekMode = calendarMode.mode === 'week';
   const appointmentLabel = (day: any) => {
     return (
       <AppointmentLabel
@@ -84,48 +81,45 @@ const Slot: React.FC<SlotProps> = ({
           return <div key={day.day}>{absenceHours}</div>;
         }
 
-        const renderAppointmentButton = (day: any, time: string, isWeekMode: boolean) => {
-          const onClickHandler = () => {
-            setDisplayForm({
-              clientForm: true,
-              serviceForm: false,
-              backdrop: true,
-              post: false,
-            });
-            handleAppointmentButton(day.day, time, day.date);
-          };
-
-          return isWeekMode ? (
-            <AppointmentButton onClick={onClickHandler} time={time} />
-          ) : (
-            <AppointmentBtnDayView onClick={onClickHandler} time={time} />
-          );
-        };
-
         return (
-          <div className={`border-2 border-solid border-transparent z-1 w-full`} key={day.day}>
-            {workingHours &&
-            workingHours.length > 0 &&
-            isWorkingHour(day.day, time, workingHours) ? (
-              <AppointmentContainer>
-                {appointments.find(
-                  (appointment) =>
-                    appointment.day === day.day &&
-                    appointment.time === time &&
-                    appointment.date === day.date,
-                ) ? (
-                  appointmentLabel(day)
-                ) : isAbsence ? (
-                  <AbsenceHoursLabel
-                    time={time}
-                    absence={capitalizeFirstLetter(workingHour?.absence)}
-                  />
-                ) : (
-                  renderAppointmentButton(day, time, isWeekMode)
-                )}
-              </AppointmentContainer>
+          <div className='col-span-1 border-2 border-solid border-transparent z-0' key={day.day}>
+            {dataLoaded ? (
+              workingHours &&
+              workingHours.length > 0 &&
+              isWorkingHour(day.day, time, workingHours) ? (
+                <AppointmentContainer>
+                  {appointments.find(
+                    (appointment) =>
+                      appointment.day === day.day &&
+                      appointment.time === time &&
+                      appointment.date === day.date,
+                  ) ? (
+                    appointmentLabel(day)
+                  ) : isAbsence ? (
+                    <AbsenceHoursLabel
+                      time={time}
+                      absence={capitalizeFirstLetter(workingHour?.absence)}
+                    />
+                  ) : (
+                    <AppointmentButton
+                      onClick={() => {
+                        setDisplayForm({
+                          clientForm: true,
+                          serviceForm: false,
+                          backdrop: true,
+                          post: false,
+                        });
+                        handleAppointmentButton(day.day, time, day.date);
+                      }}
+                      time={time}
+                    />
+                  )}
+                </AppointmentContainer>
+              ) : (
+                <UnworkingHoursLabel time={time} />
+              )
             ) : (
-              <UnworkingHoursLabel time={time} />
+              <SpinnerSmall />
             )}
           </div>
         );
@@ -134,4 +128,4 @@ const Slot: React.FC<SlotProps> = ({
   );
 };
 
-export default Slot;
+export default SlotPerDay;

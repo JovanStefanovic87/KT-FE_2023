@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
-import { RootState } from '../../globalRedux/store';
+import { RootState } from '../../../globalRedux/store';
 import { AppointmentLabelProps } from '@/app/helpers/interfaces';
-import AppointmentDividingLine from '../ui/dividingLines/AppointmentDividingLine';
-import AppointmentTimeRange from '../ui/text/AppointmentTimeRange';
-import AppointmentClientName from '../ui/text/AppointmentClientName';
-import AppointmentPrice from '../ui/text/AppointmentPrice';
-import AppointmentServicesNameContainer from '../ui/containers/AppointmentServicesNameContainer';
+import AppointmentDividingLine from '../dividingLines/AppointmentDividingLine';
+import AppointmentTimeRange from '../text/AppointmentTimeRange';
+import AppointmentClientName from '../text/AppointmentClientName';
+import AppointmentPrice from '../text/AppointmentPrice';
+import AppointmentServicesNameContainer from '../containers/AppointmentServicesNameContainer';
 
 const calculateSlotsForDuration = (appointmentDuration: number, slotDuration: number): number =>
   Math.ceil(appointmentDuration / slotDuration);
@@ -28,8 +28,10 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
   onDoubleClick,
 }) => {
   const borderSize = 2;
-  const user = useSelector((state: RootState) => state.user);
-  const userType: string = user.userType;
+  const userInfo = useSelector((state: RootState) => state.user);
+  const userType: string = userInfo.userType;
+  const calendarMode = useSelector((state: RootState) => state.calendarMode);
+  const isWeekMode = calendarMode.mode === 'week';
 
   if (!appointment) return null;
 
@@ -87,7 +89,9 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
 
   return (
     <div
-      className='flex flex-col justify-start min-w-slotsWidth max-w-slotsWidth text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg'
+      className={`flex flex-col justify-start ${
+        isWeekMode ? 'w-slotsWidth min-w-slotsWidth max-w-slotsWidth' : 'w-full'
+      } text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg`}
       style={{ height: `${totalHeight}px` }}
       data-slots-needed={slotsNeeded}
       onDoubleClick={userType === 'admin' ? onDoubleClick : undefined}

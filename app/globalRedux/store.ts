@@ -7,6 +7,8 @@ import nameReducer from './features/name/nameSlice';
 import formReducer from './features/form/formSlice';
 import employeeReducer from './features/employee/employeeSlice';
 import userReducer from './features/user/userSlice';
+import deviceReducer from './features/device/deviceSlice';
+import calendarModeReducer from './features/calendarMode/calendarModeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +18,8 @@ export const store = configureStore({
     form: formReducer,
     employee: employeeReducer,
     user: userReducer,
+    device: deviceReducer,
+    calendarMode: calendarModeReducer,
   },
 });
 

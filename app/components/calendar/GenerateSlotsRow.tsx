@@ -9,7 +9,6 @@ import Slot from './Slot';
 
 const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   weekDays,
-  dataLoaded,
   workingHours,
   appointments,
   time,
@@ -39,7 +38,7 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
   }, [showConfirmation.delete]);
 
   return (
-    <div key={index}>
+    <div key={index} className='flex'>
       <ConfirmDeletationModal
         subject='termin'
         isVisible={showConfirmation.isVisible}
@@ -51,7 +50,6 @@ const GenerateSlotsRow: React.FC<GenerateSlotsRowProps> = ({
         <SlotsRowContainer>
           <Slot
             time={time}
-            dataLoaded={dataLoaded}
             workingHours={workingHours}
             appointments={appointments}
             handleAppointmentButton={handleAppointmentButton}

@@ -466,8 +466,8 @@
       "employeeId": "Stevan Poljakovic",
       "date": "03.01.24",
       "day": "Wed",
-      "morningFrom": "nn:nn",
-      "morningTo": "nn:nn",
+      "morningFrom": "08:00",
+      "morningTo": "15:00",
       "afternoonFrom": "nn:nn",
       "afternoonTo": "nn:nn",
       "absence": "nema odsustva",
@@ -525,10 +525,7 @@
       "day": "Sun",
       "time": "11:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01",
-        "sisanje02"
-      ],
+      "services": ["sisanje01", "sisanje02"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -539,9 +536,7 @@
       "day": "Wed",
       "time": "08:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -552,9 +547,7 @@
       "day": "Wed",
       "time": "09:00",
       "client": "Alen Stefanovic",
-      "services": [
-        "sisanje02"
-      ],
+      "services": ["sisanje02"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -565,9 +558,7 @@
       "day": "Mon",
       "time": "08:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -578,9 +569,7 @@
       "day": "Mon",
       "time": "09:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -591,9 +580,7 @@
       "day": "Mon",
       "time": "11:00",
       "client": "Alen Stefanovic",
-      "services": [
-        "sisanje02"
-      ],
+      "services": ["sisanje02"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -604,9 +591,7 @@
       "day": "Wed",
       "time": "08:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -617,9 +602,7 @@
       "day": "Mon",
       "time": "09:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -630,9 +613,7 @@
       "day": "Wed",
       "time": "09:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -643,9 +624,7 @@
       "day": "Mon",
       "time": "08:00",
       "client": "Jovan Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"
@@ -656,9 +635,18 @@
       "day": "Mon",
       "time": "10:00",
       "client": "Alen Stefanovic",
-      "services": [
-        "sisanje01"
-      ],
+      "services": ["sisanje01"],
+      "price": 0,
+      "employee": "Stevan Poljakovic",
+      "serviceProvider": "Brica"
+    },
+    {
+      "id": "Wed08:0001.01.24Stevan Poljakovic",
+      "date": "03.01.24",
+      "day": "Wed",
+      "time": "08:00",
+      "client": "Jovan Stefanovic",
+      "services": ["sisanje01"],
       "price": 0,
       "employee": "Stevan Poljakovic",
       "serviceProvider": "Brica"

@@ -9,8 +9,8 @@ import SideBarBtn from '../ui/buttons/SideBarBtn';
 import FlexGrow from '../ui/FlexGrow';
 
 const Dashboard = () => {
-  const userInfo = useSelector((state: RootState) => state.user);
-  const userType: string = userInfo.userType;
+  const user = useSelector((state: RootState) => state.user);
+  const userType: string = user.userType;
   const isAdmin = userType === 'admin';
   const [isWorkingHoursFormOpen, setIsWorkingHoursFormOpen] = useState(false);
 

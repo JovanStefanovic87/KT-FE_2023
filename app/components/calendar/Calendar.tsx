@@ -20,7 +20,7 @@ import {
   ServiceProviderProps,
   EmployeeProps,
   ErrorModalType,
-  WorkingHoursStateProps,
+  WorkingHoursProps,
 } from '@/app/helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import {
@@ -50,7 +50,7 @@ const Calendar: React.FC = () => {
   const firstRun = useRef(true);
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
   const [employees, setEmployees] = useState<EmployeeProps[]>([]);
-  const [workingHours, setWorkingHours] = useState<WorkingHoursStateProps[]>([]);
+  const [workingHours, setWorkingHours] = useState<WorkingHoursProps[]>([]);
   const [services, setServices] = useState<ServicesProps[]>([]);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
@@ -141,34 +141,9 @@ const Calendar: React.FC = () => {
     });
   };
 
-  return (
+  const calendar = () => (
     <>
-      {appontmentInfo.appointmentData && (
-        <AppointmentModal
-          appontmentInfo={appontmentInfo}
-          setAppontmentInfo={setAppontmentInfo}
-          totalPrice={totalPrice}
-          services={services}
-        />
-      )}
-      <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />
-      <ClientForm
-        displayForm={displayForm}
-        setDisplayForm={setDisplayForm}
-        newAppointment={newAppointment}
-        setNewAppointment={setNewAppointment}
-        selected={selectedClient}
-        setSelected={setSelectedClient}
-      />
-      <ServiceForm
-        displayForm={displayForm}
-        setDisplayForm={setDisplayForm}
-        newAppointment={newAppointment}
-        setNewAppointment={setNewAppointment}
-        selected={selectedServices}
-        setSelected={setSelectedServices}
-      />
-      <Container>
+      <Container dataLoaded={dataLoaded}>
         <SelectContainer>
           <ArrowBtn
             onClick={() => setSelectedWeek(selectedWeek - 1)}
@@ -214,8 +189,6 @@ const Calendar: React.FC = () => {
             });
           })}
 
-          {!dataLoaded && <Spinner />}
-
           {dataLoaded && workingHours.length === 0 && <UnsetWorkingHoursText />}
         </SlotsContainer>
         <SelectContainer>
@@ -236,6 +209,44 @@ const Calendar: React.FC = () => {
           />
         </SelectContainer>
       </Container>
+    </>
+  );
+
+  const assets = () => (
+    <>
+      {appontmentInfo.appointmentData && (
+        <AppointmentModal
+          appontmentInfo={appontmentInfo}
+          setAppontmentInfo={setAppontmentInfo}
+          totalPrice={totalPrice}
+          services={services}
+        />
+      )}
+      <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />
+      <ClientForm
+        displayForm={displayForm}
+        setDisplayForm={setDisplayForm}
+        newAppointment={newAppointment}
+        setNewAppointment={setNewAppointment}
+        selected={selectedClient}
+        setSelected={setSelectedClient}
+      />
+      <ServiceForm
+        displayForm={displayForm}
+        setDisplayForm={setDisplayForm}
+        newAppointment={newAppointment}
+        setNewAppointment={setNewAppointment}
+        selected={selectedServices}
+        setSelected={setSelectedServices}
+      />
+    </>
+  );
+
+  return (
+    <>
+      <Spinner dataLoaded={dataLoaded} />
+      {assets()}
+      {calendar()}
     </>
   );
 };

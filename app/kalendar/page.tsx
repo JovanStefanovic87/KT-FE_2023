@@ -6,10 +6,10 @@ import Main from '../components/layout/Main';
 const AppointmentPage = () => {
   return (
     <div className='flex flex-row justify-start left-0 h-main'>
-      <Dashboard />
       <Main>
         <Calendar />
       </Main>
+      <Dashboard />
     </div>
   );
 };

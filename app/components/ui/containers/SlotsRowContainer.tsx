@@ -4,8 +4,8 @@ interface Props {
 
 const SlotsRowContainer: React.FC<Props> = ({ children }) => {
   return (
-    <div className='grid grid-cols-9 gap-2 mt-0 z-5'>
-      <div className='flex flex-row col-span-8'>{children}</div>
+    <div className={`grid grid-cols-7 mt-0 z-2 w-full`}>
+      <div className={`flex flex-row col-span-8`}>{children}</div>
     </div>
   );
 };

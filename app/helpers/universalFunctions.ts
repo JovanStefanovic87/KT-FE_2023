@@ -1,21 +1,6 @@
-import { useState, useEffect } from 'react';
 import { format, addDays, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
 /* import { workingHours } from './mock'; */
 import { WeekDay } from '../helpers/interfaces';
-
-export function useDeviceDetect() {
-  const [isMobile, setMobile] = useState(false);
-
-  useEffect(() => {
-    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent : '';
-    const mobile = Boolean(
-      userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i),
-    );
-    setMobile(mobile);
-  }, []);
-
-  return { isMobile };
-}
 
 export const generateWeekOptions = () => {
   const today = new Date();
@@ -77,14 +62,15 @@ export const handleSelectChange = (
   setState(selectedValue);
 };
 
-export const generateWeekDays = (selectedWeekIndex: number): WeekDay[] => {
+export const generateWeekDays = (selectedWeekIndex: number, dayView = false): WeekDay[] => {
   const weekDays: WeekDay[] = [];
   const today = new Date();
   const dayOffset = today.getDay() === 0 ? 6 : today.getDay() - 1;
   const startOfWeek = addDays(today, -dayOffset);
   const currentWeekStart = addWeeks(startOfWeek, selectedWeekIndex);
+  const days = dayView ? 1 : 7;
 
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < days; i++) {
     const currentDate = addDays(currentWeekStart, i);
     const day = format(currentDate, 'EEE');
     const date = format(currentDate, 'dd.MM.yy');

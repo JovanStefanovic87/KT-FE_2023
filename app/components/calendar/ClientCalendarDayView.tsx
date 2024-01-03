@@ -1,16 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { format, addDays, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
 import { useDispatch } from 'react-redux';
 import { setEmployeeId } from '../../globalRedux/features/employee/employeeSlice';
 import 'animate.css';
-import {
-  generateWeekOptions,
-  generateTimeSlots,
-  generateWeekDays,
-  totalPrice,
-  hasWorkingHourInHour,
-} from '@/app/helpers/universalFunctions';
 import {
   AppointmentProps,
   ServicesProps,
@@ -20,6 +14,7 @@ import {
   EmployeeProps,
   ErrorModalType,
   WorkingHoursProps,
+  WeekDay,
 } from '@/app/helpers/interfaces';
 import { displayFormInit, newAppointmentInit } from './initStates';
 import {
@@ -43,7 +38,120 @@ import UnsetWorkingHoursText from '../ui/text/UnsetWorkingHoursText';
 import SlotsContainer from '../ui/containers/SlotsContainer';
 import ArrowBtn from '../ui/buttons/ArrowBtn';
 
-const ClientCalendar: React.FC = () => {
+const generateTimeSlots = (slotInterval: number): string[] => {
+  const timeSlots: string[] = [];
+  const startTime = '00:00';
+  const endTime = '23:59';
+
+  let currentTime = startTime;
+  while (currentTime <= endTime) {
+    timeSlots.push(currentTime);
+
+    // Increment currentTime by the slotInterval
+    const [hours, minutes] = currentTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const nextTotalMinutes = totalMinutes + slotInterval;
+    const nextHours = Math.floor(nextTotalMinutes / 60);
+    const nextMinutes = nextTotalMinutes % 60;
+    currentTime = `${nextHours.toString().padStart(2, '0')}:${nextMinutes
+      .toString()
+      .padStart(2, '0')}`;
+  }
+  return timeSlots;
+};
+
+const generateWeekOptions = () => {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const nextYear = currentYear + 1;
+
+  const weeks = [];
+  let currentDate = startOfWeek(today, { weekStartsOn: 1 }); // Start from the current week, with Monday as the starting day
+
+  while (currentDate.getFullYear() <= nextYear) {
+    const endOfWeekDate = endOfWeek(currentDate);
+
+    weeks.push({
+      label: `Nedelja ${format(currentDate, 'w')} (${format(currentDate, 'dd.MM.yy.')} - ${format(
+        endOfWeekDate,
+        'dd.MM.yy.',
+      )})`,
+      start: currentDate,
+      end: endOfWeekDate,
+    });
+
+    currentDate = addWeeks(currentDate, 1);
+  }
+  return weeks;
+};
+
+const generateWeekDays = (): WeekDay[] => {
+  const weekDays: WeekDay[] = [];
+  const today = new Date();
+  const day = format(today, 'EEE');
+  const date = format(today, 'dd.MM.yy');
+
+  weekDays.push({ day, date });
+
+  return weekDays;
+};
+
+export const totalPrice = (selectedServices: any[], allServices: any[] | undefined) => {
+  return selectedServices.reduce((sum, serviceId) => {
+    const service = allServices?.find((s) => s.id === serviceId);
+    if (service) {
+      return sum + (service.price || 0);
+    }
+    return sum;
+  }, 0);
+};
+
+const hasWorkingHourInHour = (
+  hour: string,
+  weekDays: WeekDay[],
+  timeSlots: string[],
+  workingHours: any,
+): boolean => {
+  return weekDays.some((dayInfo) => {
+    const dayWorkingHours = workingHours.find((wh: any) => wh.day === dayInfo.day);
+    if (!dayWorkingHours) {
+      return false; // No working hours information for the given day
+    }
+
+    return timeSlots.some((time) => {
+      // Check for "HH:mm" format or "nn:nn" format
+      const isValidTime = (timeStr: string) => {
+        return (
+          /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(timeStr) || /^\d{1,2}:\d{1,2}$/.test(timeStr)
+        );
+      };
+
+      const startsWithHour = isValidTime(time) && time.startsWith(hour);
+      if (startsWithHour) {
+        const appointmentTime = parseInt(time.replace(':', ''), 10);
+        const morningFrom = parseInt(dayWorkingHours.morningFrom.replace(':', ''), 10);
+        const morningTo = parseInt(dayWorkingHours.morningTo.replace(':', ''), 10);
+        const afternoonFrom = parseInt(dayWorkingHours.afternoonFrom.replace(':', ''), 10);
+        const afternoonTo = parseInt(dayWorkingHours.afternoonTo.replace(':', ''), 10);
+
+        // Check if the appointment time is within the working hours range
+        if (morningFrom && afternoonTo) {
+          return appointmentTime >= morningFrom && appointmentTime <= afternoonTo;
+        } else if (morningFrom) {
+          return appointmentTime >= morningFrom && appointmentTime <= morningTo;
+        } else if (afternoonFrom) {
+          return appointmentTime >= afternoonFrom && appointmentTime <= afternoonTo;
+        } else if (!afternoonFrom && !morningFrom && dayWorkingHours.absence !== 'nema odsustva') {
+          return appointmentTime >= 80 && appointmentTime <= 160;
+        }
+      }
+
+      return false;
+    });
+  });
+};
+
+const ClientCalendarDayView: React.FC = () => {
   const dispatch = useDispatch();
   const firstRun = useRef(true);
   const [serviceProviders, setServiceProviders] = useState<ServiceProviderProps[]>([]);
@@ -64,7 +172,7 @@ const ClientCalendar: React.FC = () => {
     appointmentData: '',
   });
   const [dataLoaded, setDataLoaded] = useState(false);
-  const weekDays = generateWeekDays(selectedWeek);
+  const weekDays = generateWeekDays();
   const weekDates = weekDays.map((day) => day.date);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
@@ -133,28 +241,6 @@ const ClientCalendar: React.FC = () => {
     });
   };
 
-  const assets = () => (
-    <>
-      {appontmentInfo.appointmentData && (
-        <AppointmentModal
-          appontmentInfo={appontmentInfo}
-          setAppontmentInfo={setAppontmentInfo}
-          totalPrice={totalPrice}
-          services={services}
-        />
-      )}
-      <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />
-      <ServiceForm
-        displayForm={displayForm}
-        setDisplayForm={setDisplayForm}
-        newAppointment={newAppointment}
-        setNewAppointment={setNewAppointment}
-        selected={selectedServices}
-        setSelected={setSelectedServices}
-      />
-    </>
-  );
-
   const calendar = () => (
     <Container dataLoaded={dataLoaded}>
       <SelectContainer>
@@ -163,13 +249,6 @@ const ClientCalendar: React.FC = () => {
           disabled={selectedWeek === 0}
           direction='left'
         />
-        <WeekSelect
-          value={selectedWeek}
-          onChange={(value) => setSelectedWeek(value)}
-          weekOptions={weekOptions}
-          selectStyle='p-2.5 bg-ktHeaderGray border border-ktAppointmentBg text-ktOrange text-sm lg:text-base rounded-lg  placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 cursor-pointer'
-        />
-
         <ArrowBtn
           onClick={() => setSelectedWeek(selectedWeek + 1)}
           disabled={selectedWeek === weekOptions.length - 1}
@@ -222,6 +301,28 @@ const ClientCalendar: React.FC = () => {
     </Container>
   );
 
+  const assets = () => (
+    <>
+      {appontmentInfo.appointmentData && (
+        <AppointmentModal
+          appontmentInfo={appontmentInfo}
+          setAppontmentInfo={setAppontmentInfo}
+          totalPrice={totalPrice}
+          services={services}
+        />
+      )}
+      <ErrorModal setErrorModal={setErrorModal} errorModal={errorModal} />
+      <ServiceForm
+        displayForm={displayForm}
+        setDisplayForm={setDisplayForm}
+        newAppointment={newAppointment}
+        setNewAppointment={setNewAppointment}
+        selected={selectedServices}
+        setSelected={setSelectedServices}
+      />
+    </>
+  );
+
   return (
     <>
       <Spinner dataLoaded={dataLoaded} />
@@ -231,4 +332,4 @@ const ClientCalendar: React.FC = () => {
   );
 };
 
-export default ClientCalendar;
+export default ClientCalendarDayView;
