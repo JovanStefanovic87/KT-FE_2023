@@ -1,0 +1,221 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  serviceProviders ServiceProvider[]
+}
+
+model ServiceProvider {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+
+  companyId Int
+  company Company @relation(fields: [companyId], references: [id])
+
+  employee Employee[]
+  client Client[]
+  contactServiceProvider ContactServiceProvider[]
+  service Service[]
+}
+
+model Employee {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  serviceProviderId Int
+  serviceProvider ServiceProvider @relation(fields: [serviceProviderId], references: [id])
+
+  userId Int? @unique
+  user User? @relation(fields: [userId], references: [id])
+
+  contactEmployee ContactEmployee[]
+  appointment Appointment[]
+  serviceEmployee ServiceEmployee[]
+  workingHours WorkingHours[]
+}
+
+model Client {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  note String
+
+  userId Int? @unique
+  user User? @relation(fields: [userId], references: [id])
+
+  serviceProviderId Int
+  serviceProvider ServiceProvider @relation(fields: [serviceProviderId], references: [id])
+
+  contactClient ContactClient[]
+  appointment Appointment[]
+}
+
+model ContactType {
+  id Int @id @default(autoincrement())
+  name String
+  contacts Contact[]
+}
+
+model Contact {
+  id Int @id @default(autoincrement())
+  value String 
+
+  typeId Int
+  type ContactType @relation(fields: [typeId], references: [id])
+
+  contactServiceProvider ContactServiceProvider[]
+  contactEmployee ContactEmployee[]
+  contactClient ContactClient[]
+}
+
+model ContactServiceProvider {
+  id Int @id @default(autoincrement())
+
+  serviceProviderId Int
+  serviceProvider ServiceProvider @relation(fields: [serviceProviderId], references: [id])
+
+  contactId Int
+  contact Contact @relation(fields: [contactId], references: [id])
+}
+
+model ContactEmployee {
+  id Int @id @default(autoincrement())
+  
+  employeeId Int
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  contactId Int
+  contact Contact @relation(fields: [contactId], references: [id])
+}
+
+model ContactClient {
+  id Int @id @default(autoincrement())
+  
+  clientId Int
+  client Client @relation(fields: [clientId], references: [id])
+
+  contactId Int
+  contact Contact @relation(fields: [contactId], references: [id])
+}
+
+model Service {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  price Decimal @db.Decimal(10, 2)
+  note String
+
+  serviceProviderId Int
+  serviceProvider ServiceProvider @relation(fields: [serviceProviderId], references: [id])
+
+  serviceAppointments ServiceAppointments[]
+  serviceEmployee ServiceEmployee[]
+}
+
+
+model ServiceOption {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+
+  serviceOptionEmployee ServiceOptionEmployee[]
+}
+
+model ServiceEmployee {
+  id Int @id @default(autoincrement())
+  
+  serviceId Int
+  service Service @relation(fields: [serviceId], references: [id])
+
+  employeeId Int
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  serviceOptionEmployee ServiceOptionEmployee[]
+}
+
+model ServiceOptionEmployee {
+  id Int @id @default(autoincrement())
+
+  serviceOptionId Int
+  serviceOption ServiceOption @relation(fields: [serviceOptionId], references: [id])
+
+  serviceEmployeeId Int
+  serviceEmployee ServiceEmployee @relation(fields: [serviceEmployeeId], references: [id])
+}
+
+model ServiceAppointments {
+  id Int @id @default(autoincrement())
+  
+  serviceId Int
+  service Service @relation(fields: [serviceId], references: [id])
+
+  appointmentId Int
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+}
+
+model Appointment {
+  id Int @id @default(autoincrement())
+  title String
+  appointmentDateTime DateTime
+  createdAt DateTime @default(now())
+  isDeleted Boolean @default(false)
+
+  clientId Int
+  client Client @relation(fields: [clientId], references: [id])
+
+  employeeId Int
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  serviceAppointments ServiceAppointments[]
+}
+
+model AbsenceType {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+
+  workinHours WorkingHours[]
+}
+
+model WorkingHours {
+  id Int @id @default(autoincrement())
+  date DateTime
+  startTime1 Int
+  endTime1 Int
+  startTime2 Int
+  endTime2 Int
+
+  absenceTypeId Int
+  absenceType AbsenceType @relation(fields: [absenceTypeId], references: [id])
+
+  employeeId Int
+  employee Employee @relation(fields: [employeeId], references: [id])
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  password String
+
+  employee Employee?
+  client Client?
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
