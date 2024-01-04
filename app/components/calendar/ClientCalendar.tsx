@@ -34,7 +34,7 @@ import WeekSelect from '../ui/select/WeekSelector';
 import SelectUser from '../ui/select/SelectUser';
 import Container from './Container';
 import DaysRow from './DaysRow';
-import SelectContainer from '../ui/select/SelectContainer';
+import SelectContainer from '../ui/containers/SelectContainer';
 import ServiceForm from './ServiceForm';
 import AppointmentModal from '../ui/modals/AppointmentModal';
 import ErrorModal from '../ui/modals/ErrorModal';

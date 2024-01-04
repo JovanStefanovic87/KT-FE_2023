@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { format, addDays, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
+import { addDays } from 'date-fns';
 import { useDispatch } from 'react-redux';
 import { setEmployeeId } from '../../globalRedux/features/employee/employeeSlice';
 import 'animate.css';
@@ -25,11 +25,10 @@ import {
   fetchEmployeeWorkingHours,
 } from '@/app/helpers/apiHandlers';
 import GenerateSlotsRow from './GenerateSlotsRow';
-import WeekSelect from '../ui/select/WeekSelector';
 import SelectUser from '../ui/select/SelectUser';
 import Container from './Container';
 import DaysRow from './DaysRow';
-import SelectContainer from '../ui/select/SelectContainer';
+import SelectContainer from '../ui/containers/SelectContainer';
 import ServiceForm from './ServiceForm';
 import AppointmentModal from '../ui/modals/AppointmentModal';
 import ErrorModal from '../ui/modals/ErrorModal';
@@ -37,6 +36,11 @@ import Spinner from '../ui/Spinner';
 import UnsetWorkingHoursText from '../ui/text/UnsetWorkingHoursText';
 import SlotsContainer from '../ui/containers/SlotsContainer';
 import ArrowBtn from '../ui/buttons/ArrowBtn';
+
+interface DayObject {
+  day: string;
+  date: string;
+}
 
 const generateTimeSlots = (slotInterval: number): string[] => {
   const timeSlots: string[] = [];
@@ -60,40 +64,20 @@ const generateTimeSlots = (slotInterval: number): string[] => {
   return timeSlots;
 };
 
-const generateWeekOptions = () => {
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const nextYear = currentYear + 1;
+const generateDayObject = (selectedDay: Date): DayObject[] => {
+  const serbianLatinLocale: string = 'sr-Latn-RS';
 
-  const weeks = [];
-  let currentDate = startOfWeek(today, { weekStartsOn: 1 }); // Start from the current week, with Monday as the starting day
+  const dayOptions: Intl.DateTimeFormatOptions = { weekday: 'long' };
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
 
-  while (currentDate.getFullYear() <= nextYear) {
-    const endOfWeekDate = endOfWeek(currentDate);
+  const day: string = selectedDay.toLocaleDateString(serbianLatinLocale, dayOptions);
+  const date: string = selectedDay.toLocaleDateString(serbianLatinLocale, dateOptions);
 
-    weeks.push({
-      label: `Nedelja ${format(currentDate, 'w')} (${format(currentDate, 'dd.MM.yy.')} - ${format(
-        endOfWeekDate,
-        'dd.MM.yy.',
-      )})`,
-      start: currentDate,
-      end: endOfWeekDate,
-    });
-
-    currentDate = addWeeks(currentDate, 1);
-  }
-  return weeks;
-};
-
-const generateWeekDays = (): WeekDay[] => {
-  const weekDays: WeekDay[] = [];
-  const today = new Date();
-  const day = format(today, 'EEE');
-  const date = format(today, 'dd.MM.yy');
-
-  weekDays.push({ day, date });
-
-  return weekDays;
+  return [{ day, date }];
 };
 
 export const totalPrice = (selectedServices: any[], allServices: any[] | undefined) => {
@@ -162,8 +146,9 @@ const ClientCalendarDayView: React.FC = () => {
   const [selectedServiceProvider, setSelectedServiceProvider] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedWeek, setSelectedWeek] = useState(0);
+  const today = new Date();
+  const [selectedDay, setSelectedDay] = useState(today);
   const [newAppointment, setNewAppointment] = useState<AppointmentProps>(newAppointmentInit);
-  const weekOptions = generateWeekOptions();
   const [displayForm, setDisplayForm] = useState<CalendarFormsInitProps>(displayFormInit);
   const [appointments, setAppointments] = useState<AppointmentProps[]>([]);
   const [errorModal, setErrorModal] = useState<ErrorModalType>({ isVisible: false, text: '' });
@@ -172,11 +157,19 @@ const ClientCalendarDayView: React.FC = () => {
     appointmentData: '',
   });
   const [dataLoaded, setDataLoaded] = useState(false);
-  const weekDays = generateWeekDays();
+  const weekDays = generateDayObject(selectedDay);
   const weekDates = weekDays.map((day) => day.date);
   const slotDuration = 60; //Will come from server
   const timeSlots = generateTimeSlots(slotDuration);
   let isMounted = true;
+
+  console.log(selectedDay);
+  console.log(weekDates);
+
+  const changeDay = (increment = true) => {
+    const value = increment ? 1 : -1;
+    setSelectedDay(addDays(selectedDay, value));
+  };
 
   useEffect(() => {
     fetchCleintCalendarInitData(
@@ -245,15 +238,11 @@ const ClientCalendarDayView: React.FC = () => {
     <Container dataLoaded={dataLoaded}>
       <SelectContainer>
         <ArrowBtn
-          onClick={() => setSelectedWeek(selectedWeek - 1)}
-          disabled={selectedWeek === 0}
+          onClick={() => changeDay(false)}
+          disabled={selectedDay.toDateString() === today.toDateString()}
           direction='left'
         />
-        <ArrowBtn
-          onClick={() => setSelectedWeek(selectedWeek + 1)}
-          disabled={selectedWeek === weekOptions.length - 1}
-          direction='right'
-        />
+        <ArrowBtn onClick={() => changeDay(true)} direction='right' />
       </SelectContainer>
       <SlotsContainer>
         <DaysRow weekDays={weekDays} />

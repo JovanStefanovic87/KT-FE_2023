@@ -36,7 +36,7 @@ import WeekSelect from '../ui/select/WeekSelector';
 import SelectUser from '../ui/select/SelectUser';
 import Container from './Container';
 import DaysRow from './DaysRow';
-import SelectContainer from '../ui/select/SelectContainer';
+import SelectContainer from '../ui/containers/SelectContainer';
 import ServiceForm from './ServiceForm';
 import AppointmentModal from '../ui/modals/AppointmentModal';
 import ErrorModal from '../ui/modals/ErrorModal';
@@ -154,9 +154,8 @@ const Calendar: React.FC = () => {
             value={selectedWeek}
             onChange={(value) => setSelectedWeek(value)}
             weekOptions={weekOptions}
-            selectStyle='p-2.5 bg-ktHeaderGray border border-ktAppointmentBg text-ktOrange text-sm lg:text-base rounded-lg  placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 cursor-pointer'
+            selectStyle='p-2.5 bg-ktHeaderGray border border-ktAppointmentBg text-ktOrange text-xs lg:text-base rounded-lg placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 cursor-pointer'
           />
-
           <ArrowBtn
             onClick={() => setSelectedWeek(selectedWeek + 1)}
             disabled={selectedWeek === weekOptions.length - 1}
