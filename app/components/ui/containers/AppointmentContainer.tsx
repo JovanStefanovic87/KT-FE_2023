@@ -11,9 +11,7 @@ const AppointmentContainer: React.FC<Props> = ({ children }) => {
   const isWeekMode = calendarMode.mode === 'week';
   return (
     <div
-      className={`flex justify-center relative ${
-        isWeekMode ? 'w-slotsWidth' : 'w-full'
-      } rounded-lg h-appointmentSlot`}
+      className={`flex justify-center relative min-w-slotsWidth max-w-slotsWidth rounded-lg h-appointmentSlot`}
     >
       {children}
     </div>

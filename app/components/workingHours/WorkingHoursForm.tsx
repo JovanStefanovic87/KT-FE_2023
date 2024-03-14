@@ -132,7 +132,7 @@ const WorkingHoursForm = ({ handleCloseWorkingHoursForm }: any) => {
           <div className='flex flex-wrap -mx-4 px-8 gap-1'>
             {workingHours.map((wh, i) => {
               return (
-                <WorkingHoursBlockContainer obj={wh} index={i} key={wh.day}>
+                <WorkingHoursBlockContainer obj={wh} index={i} key={wh.id}>
                   <WorkingHoursBlock
                     dayNames={dayNames}
                     obj={wh}

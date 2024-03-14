@@ -89,9 +89,7 @@ const AppointmentLabel: React.FC<AppointmentLabelProps> = ({
 
   return (
     <div
-      className={`flex flex-col justify-start ${
-        isWeekMode ? 'w-slotsWidth min-w-slotsWidth max-w-slotsWidth' : 'w-full'
-      } text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg`}
+      className={`flex flex-col justify-start w-full text-white text-sm bg-ktAppointmentBg break-words text-center whitespace-pre-wrap absolute left-0 z-3 overflow-auto rounded-lg`}
       style={{ height: `${totalHeight}px` }}
       data-slots-needed={slotsNeeded}
       onDoubleClick={userType === 'admin' ? onDoubleClick : undefined}

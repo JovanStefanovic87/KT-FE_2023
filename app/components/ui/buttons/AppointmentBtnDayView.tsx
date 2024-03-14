@@ -7,7 +7,7 @@ const AppointmentBtnDayView: React.FC<Props> = ({ onClick, time }) => {
   return (
     <button
       onClick={onClick}
-      className={`bg-ktCyan text-white w-full h-appointmentSlot select-none rounded-lg`}
+      className={`bg-ktCyan text-white h-appointmentSlot select-none rounded-lg w-slotsWidth`}
     >
       <span className='text-ktAppointmentTime text-xl font-bold'>{time}</span>
       <div>REZERVIŠI TERMIN</div>

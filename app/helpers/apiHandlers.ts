@@ -114,6 +114,7 @@ export const fetchEmployeeWorkingHours = async (
       allWorkingHoursDataPromises.push(workingHoursPromise);
     }
     const allWorkingHoursDataResponses = await Promise.all(allWorkingHoursDataPromises);
+    console.log(allWorkingHoursDataResponses);
 
     const allWorkingHoursData = allWorkingHoursDataResponses
       .map((response) => response.data)
