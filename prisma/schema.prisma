@@ -23,10 +23,19 @@ model ServiceProvider {
   companyId Int
   company Company @relation(fields: [companyId], references: [id])
 
+  serviceProviderTypeId Int
+  serviceProviderType ServiceProviderType @relation(fields: [serviceProviderTypeId], references: [id])
+
   employee Employee[]
-  client Client[]
+  client ClientServiceProvider[]
   contactServiceProvider ContactServiceProvider[]
   service Service[]
+}
+
+model ServiceProviderType {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  serviceProviders ServiceProvider[]
 }
 
 model Employee {
@@ -52,11 +61,19 @@ model Client {
   userId Int? @unique
   user User? @relation(fields: [userId], references: [id])
 
-  serviceProviderId Int
-  serviceProvider ServiceProvider @relation(fields: [serviceProviderId], references: [id])
-
   contactClient ContactClient[]
   appointment Appointment[]
+  clientServiceProvider ClientServiceProvider[]
+}
+
+model ClientServiceProvider {
+  id Int @id @default(autoincrement())
+
+  clientId Int
+  client Client @relation(fields: [clientId], references: [id])
+
+  serviceProviderId Int
+  serviceProvider ServiceProvider @relation(fields: [serviceProviderId], references: [id])
 }
 
 model ContactType {
@@ -119,7 +136,6 @@ model Service {
   serviceAppointments ServiceAppointments[]
   serviceEmployee ServiceEmployee[]
 }
-
 
 model ServiceOption {
   id Int @id @default(autoincrement())

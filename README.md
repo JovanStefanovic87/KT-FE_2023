@@ -13,12 +13,10 @@ Commands to run application:
 npm run dev
 
 # Production
-npm run start 
+npm run start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-
 
 ## Database setup
 
@@ -30,6 +28,7 @@ Generate prisma client: npx prisma generate
 
 Generate migration: npx prisma migrate dev --name initialCreate
 
-Apply migration to database: prisma migrate up
+Apply migration to database or create database if not exist: prisma migrate dev
 
-
+Enable running scripts in windows (if commands regarding Prisma not work): Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+Disable running scripts in windows: Set-ExecutionPolicy Restricted -Scope CurrentUser
