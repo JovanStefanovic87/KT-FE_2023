@@ -10,8 +10,11 @@ import HamburgerButton from '../ui/buttons/HamburgerButton';
 import Logo from '../ui/media/Logo';
 import SidebarTitle from '../ui/text/SidebarTitle';
 import SideBarDividingLine from '../ui/dividingLines/SideBarDividingLine';
+import { usePathname } from 'next/navigation';
 
 const Header: React.FC = () => {
+  const pathname = usePathname();
+  if (pathname === '/prijava') return null;
   const userInfo = useSelector((state: RootState) => state.user);
   const userType: string = userInfo.userType;
   const isAdmin = userType === 'admin';
