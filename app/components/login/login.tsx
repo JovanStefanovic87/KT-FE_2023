@@ -13,6 +13,42 @@ export default function Login() {
     setPassword('');
   }, []);
 
+  const createNewUser = (): any => {
+    return {
+      id: '',
+      name: 'Petar Petrović',
+      username: 'petar.petrovic',
+      password: 'petar123',
+      email: 'petar@example.com',
+    };
+  };
+
+  const createUser = async (newUser: any) => {
+    try {
+      const response = await fetch('/api/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      if (response.ok) {
+        console.log('User created successfully');
+      } else {
+        console.error('Failed to create user:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
+  };
+
+  const handleClick = async () => {
+    console.log('Creating new user...');
+    const newUser = createNewUser();
+    await createUser(newUser);
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const result = await signIn('credentials', {
@@ -81,6 +117,15 @@ export default function Login() {
               className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
             >
               Sign in
+            </button>
+          </div>
+
+          <div>
+            <button
+              onClick={handleClick}
+              className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+            >
+              Register User
             </button>
           </div>
         </form>

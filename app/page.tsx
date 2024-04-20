@@ -11,6 +11,7 @@ import {
 import { toJovan, toAdri, toAlen } from './globalRedux/features/name/nameSlice';
 import { setFirstName, setLastName } from './globalRedux/features/form/formSlice';
 import Calendar from './components/calendar/Calendar';
+import { useSession } from 'next-auth/react';
 
 const Home = () => {
   const count = useSelector((state: RootState) => state.counter.value);
@@ -18,6 +19,8 @@ const Home = () => {
   const firstName = useSelector((state: RootState) => state.form.firstName);
   const lastName = useSelector((state: RootState) => state.form.lastName);
   const dispatch = useDispatch();
+  const { data: session } = useSession();
+  console.log('session', session);
 
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setFirstName(e.target.value));
