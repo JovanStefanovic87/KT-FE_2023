@@ -11,54 +11,91 @@ Commands to run application:
 ```bash
 # Development
 npm run dev
-<<<<<<< HEAD
-<<<<<<< HEAD
 # or
 yarn dev
 # or
 pnpm dev
+
 =======
 
 # Production
 npm run start
->>>>>>> 608a60e (Upgrading database schema with adding multiple service providers per client, by adding service provider type....)
-=======
 
-# Production
-npm run start
->>>>>>> feature/initial-db-merge
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Database setup
+## Database and DB tool installation
 
-<<<<<<< HEAD
+1. Install prisma database server, and set password used in this project: https://www.postgresql.org/download/
 
-## Database setup
+2. Install pgAdmin application, and set same password as in first step: [https://www.postgresql.org/ftp/pgadmin/pgadmin4/v7.6/windows/]
 
-# To learn more about Next.js, take a look at the following resources:
+## Create database from project migrations
 
-Install prisma database server: https://www.postgresql.org/download/
+Apply migration to database or create database if not exist:
 
-> > > > > > > feature/initial-db-merge
+```bash
+prisma migrate dev
+```
 
-Create empty database using pgAdmin application: [https://www.postgresql.org/ftp/pgadmin/pgadmin4/v7.6/windows/] (https://www.postgresql.org/ftp/pgadmin/pgadmin4/v7.6/windows/)
+## Prisma scripts does not work in terminal
 
-Generate prisma client: npx prisma generate
+Execute in Command Prompt or PowerShell:
 
-Generate migration: npx prisma migrate dev --name initialCreate
+Enable running scripts in windows (execute in Command Prompt or PowerShell):
 
-Apply migration to database: prisma migrate up
+```bash
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
-<<<<<<< HEAD
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-Generate migration: prisma migrate dev --name initialCreate
+Disable running scripts in windows if needed for security reasons:
 
-Apply migration to database or create database if not exist: prisma migrate dev
+```bash
+Set-ExecutionPolicy Restricted -Scope CurrentUser
+```
 
-Enable running scripts in windows (if commands regarding Prisma not work): Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-Disable running scripts in windows: Set-ExecutionPolicy Restricted -Scope CurrentUser
-=======
+## Prisma setup for new project only
 
-> > > > > > > feature/initial-db-merge
+1. Install Prisma CLI globally:
+
+```bash
+npm install prisma -g
+```
+
+2. Initialize a new Prisma project:
+
+```bash
+npx prisma init
+```
+
+3. Configure Prisma schema file ('schema.prisma') created in initialization (example)
+
+```bash
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  serviceProviders ServiceProvider[]
+}
+```
+
+4. Generate Prisma client (this is needed every time prisma schema changes)
+
+```bash
+npx prisma generate
+```
+
+5. Generate migration:
+
+```bash
+npx prisma migrate dev --name <migration-name>
+```
