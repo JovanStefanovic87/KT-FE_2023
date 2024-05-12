@@ -19,8 +19,9 @@ const Home = () => {
   const firstName = useSelector((state: RootState) => state.form.firstName);
   const lastName = useSelector((state: RootState) => state.form.lastName);
   const dispatch = useDispatch();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   console.log('session', session);
+  console.log('status', status);
 
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setFirstName(e.target.value));

@@ -10,6 +10,7 @@ import PasswordRecoveryButton from '../ui/buttons/PasswordRecoveryButton';
 import PrimaryForm from '../ui/containers/PrimaryForm';
 import PrimaryFormContainer from '../ui/containers/PrimaryFormContainer';
 import FormInputsContainer from '../ui/containers/FormInputsContainer';
+import { signIn } from 'next-auth/react';
 
 const Login = () => {
   const [username, setUsername] = useState<string | undefined>('');
@@ -18,9 +19,20 @@ const Login = () => {
   const isServiceProvider = true;
   const router = useRouter();
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSubmitted(true);
+    const result = await signIn('credentials', {
+      username,
+      password,
+      redirect: false,
+    });
+    if (result?.error) {
+      console.log('Error', result.error);
+      // TODO: Log error
+    } else {
+      router.push('/');
+    }
   };
 
   const handleClick = () => {
