@@ -34,7 +34,7 @@ model ServiceProvider {
 
 model ServiceProviderType {
   id Int @id @default(autoincrement())
-  name String @db.VarChar(100)
+  name String @unique @db.VarChar(100)
   serviceProviders ServiceProvider[]
 }
 
@@ -236,7 +236,7 @@ model Session {
   id           String   @id @default(cuid())
   userId       String
   expires      DateTime
-  sessionToken String
+  sessionToken String   @unique
   accessToken  String   @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -246,7 +246,6 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  username      String?   @unique
   password      String?
   email         String?   @unique
   emailVerified DateTime?

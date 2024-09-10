@@ -4,22 +4,21 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 export default function Login() {
-  const [username, setUsername] = useState<string | undefined>();
+  const [email, setEmail] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();
   const router = useRouter();
 
   useEffect(() => {
-    setUsername('');
+    setEmail('');
     setPassword('');
   }, []);
 
   const createNewUser = (): any => {
     return {
       id: '',
-      name: 'Petar Petrović',
-      username: 'petar.petrovic',
-      password: 'petar123',
-      email: 'petar@example.com',
+      name: 'Darko',
+      password: 'xxx',
+      email: 'x@x.com',
     };
   };
 
@@ -52,12 +51,15 @@ export default function Login() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const result = await signIn('credentials', {
-      username,
+      username: email,
       password,
       redirect: false,
     });
 
+    console.log('result', result);
+
     if (!result?.error) {
+      console.log('Sign in success:', result);
       router.push('/');
     } else {
       console.error('Sign in error:', result.error);
@@ -74,22 +76,22 @@ export default function Login() {
         </div>
         <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
           <input type='hidden' name='remember' value='true' />
-          {username !== undefined && password !== undefined && (
+          {email !== undefined && password !== undefined && (
             <div className='rounded-md shadow-sm -space-y-px'>
               <div>
-                <label htmlFor='username' className='sr-only'>
-                  Username
+                <label htmlFor='email' className='sr-only'>
+                  Email
                 </label>
                 <input
-                  id='username'
-                  name='username'
+                  id='email'
+                  name='email'
                   type='text'
-                  autoComplete='username'
+                  autoComplete='email'
                   required
                   className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-                  placeholder='Username'
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder='Email address'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>

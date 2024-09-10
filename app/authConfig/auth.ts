@@ -3,12 +3,40 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { JWT } from 'next-auth/jwt';
 import bcrypt from 'bcrypt';
+import { NextAuthOptions, DefaultSession } from 'next-auth';
+
+declare module 'next-auth' {
+  interface Session {
+    token?: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+    } & DefaultSession['user'];
+  }
+
+  interface User {
+    id: string;
+    name: string;
+    email: string;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    user?: {
+      id: string;
+      name: string;
+      email: string;
+    };
+  }
+}
 
 async function authorize(credentials: { username: string; password: string }): Promise<any | null> {
   try {
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ username: credentials.username }, { email: credentials.username }],
+        OR: [{ email: credentials.username }],
       },
     });
 
@@ -16,15 +44,18 @@ async function authorize(credentials: { username: string; password: string }): P
       return null;
     }
 
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    };
   } catch (error) {
     console.error('Error authenticating user:', error);
     throw new Error('Internal Server Error');
   }
 }
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/prijava',
     signOut: '/prijava',
@@ -38,18 +69,34 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        return authorize(credentials as any);
+        const user = await authorize(credentials as any);
+        return user;
       },
     }),
   ],
   callbacks: {
-    async session(session: any) {
-      console.log('session-auth-api', session);
+    async session({ session, token }) {
+      if (token.user) {
+        session.user = {
+          id: token.user.id,
+          name: token.user.name,
+          email: token.user.email,
+        };
+      }
+
       return session;
     },
-    async jwt(token: JWT) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        };
+      }
+      console.log('callbacks-jwt', token);
       return token;
     },
   },
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma),
 };

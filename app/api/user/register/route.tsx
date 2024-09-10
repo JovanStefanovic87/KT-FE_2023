@@ -3,19 +3,17 @@ import bcrypt from 'bcrypt';
 
 type RegisterUserBody = {
   name: string;
-  username: string;
   email: string;
   password: string;
 };
 
 export async function POST(req: Request): Promise<Response> {
   try {
-    const { name, username, email, password }: RegisterUserBody = await req.json();
+    const { name, email, password }: RegisterUserBody = await req.json();
 
     const existingUser = await prisma.user.findUnique({ where: { email: email } });
-    const userName = await prisma.user.findUnique({ where: { username: username } });
 
-    if (existingUser || userName) {
+    if (existingUser) {
       return new Response(
         JSON.stringify({
           error: existingUser ? 'Email is already registered' : 'User name already exist',
@@ -34,7 +32,6 @@ export async function POST(req: Request): Promise<Response> {
     const newUser = await prisma.user.create({
       data: {
         name,
-        username,
         email,
         password: hashedPassword,
       },

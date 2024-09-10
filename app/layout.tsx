@@ -8,6 +8,9 @@ import { Session, getServerSession } from 'next-auth';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+
+  console.log('session-layout', session);
+
   return (
     <html lang='en'>
       {/*
