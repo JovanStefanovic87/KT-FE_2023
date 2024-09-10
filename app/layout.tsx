@@ -1,11 +1,16 @@
-'use client';
-import { SessionProvider } from 'next-auth/react';
 import '../styles/globals.css';
+import { authOptions } from './authConfig/auth';
 import Header from './components/layout/Header';
+import SessionProvider from './components/sessionProvider/sessionProvider';
 
 import { Providers } from './globalRedux/provider';
+import { Session, getServerSession } from 'next-auth';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+
+  console.log('session-layout', session);
+
   return (
     <html lang='en'>
       {/*
@@ -18,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
         </Providers>
         <Providers>
-          <SessionProvider>{children}</SessionProvider>
+          <SessionProvider session={session}>{children}</SessionProvider>
         </Providers>
       </body>
     </html>

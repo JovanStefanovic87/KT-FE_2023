@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         name,
       },
     });
-
+    console.log('Company created successfully');
     return Response.json(newCompany);
   } catch (error) {
     console.error(error);
