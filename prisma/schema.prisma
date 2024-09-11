@@ -128,6 +128,7 @@ model Service {
   id Int @id @default(autoincrement())
   name String @db.VarChar(100)
   price Decimal @db.Decimal(10, 2)
+  duration Int
   note String
 
   serviceProviderId Int
