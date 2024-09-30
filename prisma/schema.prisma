@@ -51,6 +51,7 @@ model Employee {
   appointment Appointment[]
   serviceEmployee ServiceEmployee[]
   workingHours WorkingHours[]
+  systemOptionEmployee SystemOptionEmplyee[]
 }
 
 model Client {
@@ -130,6 +131,7 @@ model Service {
   price Decimal @db.Decimal(10, 2)
   duration Int
   note String
+  order Int @default(0)
 
   serviceProviderId Int
   serviceProvider ServiceProvider @relation(fields: [serviceProviderId], references: [id])
@@ -141,6 +143,7 @@ model Service {
 model ServiceOption {
   id Int @id @default(autoincrement())
   name String @db.VarChar(100)
+  description String @db.VarChar(200)
 
   serviceOptionEmployee ServiceOptionEmployee[]
 }
@@ -210,6 +213,24 @@ model WorkingHours {
 
   absenceTypeId Int
   absenceType AbsenceType @relation(fields: [absenceTypeId], references: [id])
+
+  employeeId Int
+  employee Employee @relation(fields: [employeeId], references: [id])
+}
+
+model SystemOption {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  description String @db.VarChar(200)
+
+  systemOptionEmployee SystemOptionEmplyee[]
+}
+
+model SystemOptionEmplyee {
+  id Int @id @default(autoincrement())
+
+  systemOptionId Int
+  systemOption SystemOption @relation(fields: [systemOptionId], references: [id])
 
   employeeId Int
   employee Employee @relation(fields: [employeeId], references: [id])

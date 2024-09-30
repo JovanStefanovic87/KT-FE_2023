@@ -1,7 +1,8 @@
 import '../styles/globals.css';
 import { authOptions } from './authConfig/auth';
 import Header from './components/layout/Header';
-import SessionProvider from './components/sessionProvider/sessionProvider';
+import QueryProviders from './components/providers/queryProvider/QueryProvider';
+import SessionProvider from './components/providers/sessionProvider/sessionProvider';
 
 import { Providers } from './globalRedux/provider';
 import { Session, getServerSession } from 'next-auth';
@@ -23,7 +24,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Header />
         </Providers>
         <Providers>
-          <SessionProvider session={session}>{children}</SessionProvider>
+          <SessionProvider session={session}>
+            <QueryProviders>{children}</QueryProviders>
+          </SessionProvider>
         </Providers>
       </body>
     </html>

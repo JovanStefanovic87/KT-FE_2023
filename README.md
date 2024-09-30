@@ -99,3 +99,21 @@ npx prisma generate
 ```bash
 npx prisma migrate dev --name <migration-name>
 ```
+
+6. Clear whole database:
+
+```bash
+npx prisma migrate reset
+```
+
+7. Apply specific migration.
+
+```bash
+npx prisma migrate resolve --applied "{migration_id}"
+```
+
+8. Seed static data
+
+```bash
+npm run seed
+```

@@ -34,7 +34,7 @@ export async function getData(url: string) {
   }
 }
 
-export async function getWithParams(url: string, params: any) {
+export async function getWithParams(url: string, params?: any) {
   try {
     const queryString = new URLSearchParams(
       Object.entries(params).reduce((acc, [key, value]) => {
@@ -45,7 +45,7 @@ export async function getWithParams(url: string, params: any) {
 
     console.log('queryString', queryString);
 
-    const urlConstructed = `${url}?${queryString}`;
+    const urlConstructed = `${url}${queryString ? '?' + queryString : ''}`;
 
     console.log('urlConstructed', urlConstructed);
 
